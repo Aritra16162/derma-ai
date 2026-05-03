@@ -34,10 +34,24 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+import os
+
 # ── CORS ────────────────────────────────────────────────────────────────
+origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
+
+frontend_url = os.environ.get("FRONTEND_URL")
+if frontend_url:
+    origins.append(frontend_url)
+
+# If no specific frontend URL is set and we're not in prod, we might allow all,
+# but for safety with credentials, explicit origins are better.
+# We'll include "*" but note that browsers may reject it if allow_credentials=True.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins if frontend_url else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

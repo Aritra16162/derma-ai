@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: derma-guide-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.12
+      - key: FRONTEND_URL
+        value: https://your-vercel-domain.vercel.app
+      - key: DATABASE_URL
+        fromDatabase:
+          name: derma-guide-db
+          property: connectionString
+      - key: SMTP_EMAIL
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+
+databases:
+  - name: derma-guide-db
+    plan: free
+    databaseName: derma
+    user: derma

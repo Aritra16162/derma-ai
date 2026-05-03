@@ -25,7 +25,12 @@ export function DashboardHeader() {
       </div>
       {/* User Actions */}
       <div className="flex items-center gap-4 relative group">
-        <div className="flex items-center gap-3 cursor-pointer py-1">
+        <div 
+          className="flex items-center gap-3 cursor-pointer py-1"
+          onClick={() => {
+            if (!user) setShowAuthModal(true);
+          }}
+        >
           <span className="text-sm font-medium text-gray-700 dark:text-slate-200 hidden md:block">
             {user ? `Welcome back, ${user.name.split(' ')[0]}!` : "Welcome! Please sign in."}
           </span>

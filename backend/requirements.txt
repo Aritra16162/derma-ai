@@ -9,3 +9,5 @@ passlib[bcrypt]>=1.7.4
 python-jose>=3.3.0
 fpdf2>=2.7.4
 python-dotenv>=1.0.0
+gunicorn>=21.2.0
+psycopg2-binary>=2.9.9
