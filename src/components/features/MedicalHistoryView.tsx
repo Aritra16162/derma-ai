@@ -1,4 +1,5 @@
 import { useStore } from '@/store/useStore';
+import { API_URL } from '@/lib/config';
 import { History, Calendar, AlertTriangle, Clock, CheckCircle, ChevronDown, ChevronUp, FileDown, Loader2, Mail } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -16,7 +17,7 @@ export function MedicalHistoryView() {
     setSendingId(log.id);
     try {
         const formattedDate = new Date(log.date).toLocaleDateString() + ' at ' + new Date(log.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        const res = await fetch('/api/proxy/send-report', {
+        const res = await fetch(`${API_URL}/send-report`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -49,7 +50,7 @@ export function MedicalHistoryView() {
   useEffect(() => {
     if (user?.email) {
       setLoading(true);
-      fetch(`/api/proxy/reports/${user.email}`)
+      fetch(`${API_URL}/reports/${user.email}`)
         .then(res => res.json())
         .then(data => {
             if (Array.isArray(data)) {

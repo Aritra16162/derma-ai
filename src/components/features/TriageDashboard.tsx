@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '@/store/useStore';
+import { API_URL } from '@/lib/config';
 import { motion } from 'framer-motion';
 import { FileDown, RefreshCcw, AlertTriangle, CheckCircle, Clock, Mail } from 'lucide-react';
 
@@ -15,7 +16,7 @@ export function TriageDashboard() {
   useEffect(() => {
     if (user && triageResult && conditionName && !savedRef.current) {
       savedRef.current = true;
-      fetch('/api/proxy/reports', {
+      fetch(`${API_URL}/reports`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -36,7 +37,7 @@ export function TriageDashboard() {
     }
     setSending(true);
     try {
-        const res = await fetch('/api/proxy/send-report', {
+        const res = await fetch(`${API_URL}/send-report`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

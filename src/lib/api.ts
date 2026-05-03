@@ -1,4 +1,5 @@
 import { SurveyData, TriageStatus } from '@/store/useStore';
+import { API_URL } from '@/lib/config';
 
 export async function submitToTriage(
   image: string | null,
@@ -6,7 +7,7 @@ export async function submitToTriage(
 ): Promise<{ status: TriageStatus; conditionName?: string }> {
   // Try calling the FastAPI (via proxy)
   try {
-    const response = await fetch('/api/proxy/classify', {
+    const response = await fetch(`${API_URL}/classify`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
