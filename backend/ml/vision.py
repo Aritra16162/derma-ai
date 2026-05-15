@@ -21,9 +21,12 @@ model: tf.keras.Model | None = None
 idx_to_class: dict[int, str] | None = None
 
 
-async def load_model() -> None:
-    """Load the Keras model and class-index mapping from disk."""
+def ensure_model_loaded() -> None:
+    """Load the Keras model and class-index mapping from disk if not already loaded."""
     global model, idx_to_class
+
+    if model is not None and idx_to_class is not None:
+        return
 
     if os.path.exists(_MODEL_PATH) and os.path.exists(_CLASS_INDICES_PATH):
         print("Loading Model...")
@@ -63,6 +66,8 @@ def predict(img_array: np.ndarray) -> tuple[str, float]:
     Run a forward pass on the loaded model and return the predicted
     class name together with its confidence score.
     """
+    ensure_model_loaded()
+    
     if model is None or idx_to_class is None:
         raise RuntimeError("Model has not been loaded yet.")
 

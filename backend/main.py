@@ -11,7 +11,6 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from ml.vision import load_model
 from api.routes import router as classify_router
 from api.auth_routes import router as auth_router
 from database import engine, Base
@@ -22,7 +21,6 @@ Base.metadata.create_all(bind=engine)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup / shutdown lifecycle hook."""
-    await load_model()
     yield  # app is running
     print("Shutting down Derma Guide Backend.")
 
