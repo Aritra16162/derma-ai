@@ -9,6 +9,8 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.10.12
+      - key: TF_ENABLE_ONEDNN_OPTS
+        value: "0"
       - key: DATABASE_URL
         fromDatabase:
           name: derma-guide-db
