@@ -167,10 +167,10 @@ export function AuthModal() {
           </button>
 
           <div className="p-6 md:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">
               {mode === 'signin' ? 'Welcome Back' : mode === 'signup' ? 'Create Account' : mode === 'verify' ? 'Verify Email' : mode === 'forgot-password' ? 'Reset Password' : 'New Password'}
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm">
+            <p className="text-gray-500 dark:text-gray-400 mb-6 text-sm text-center">
               {mode === 'verify' 
                 ? 'We sent a 6-digit code to your email. Please enter it below.' 
                 : mode === 'forgot-password'
