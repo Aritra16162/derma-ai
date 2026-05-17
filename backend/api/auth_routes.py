@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from database import get_db
 from schemas.models_db import User, VerificationCode
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from auth import get_password_hash, verify_password, create_access_token
 from email_service import generate_otp, send_otp_email, send_welcome_email
 
@@ -16,7 +16,7 @@ class AuthRequest(BaseModel):
 class SignupRequest(BaseModel):
     name: str
     email: str
-    password: str
+    password: str = Field(..., min_length=6)
 
 class VerifyRequest(BaseModel):
     email: str
@@ -35,7 +35,7 @@ class VerifyResetOtpRequest(BaseModel):
 class ResetPasswordRequest(BaseModel):
     email: str
     otp: str
-    new_password: str
+    new_password: str = Field(..., min_length=6)
 
 @router.post("/signup")
 def signup(req: SignupRequest, db: Session = Depends(get_db)):

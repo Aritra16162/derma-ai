@@ -226,7 +226,8 @@ export function AuthModal() {
                     <input
                       type={showPassword ? "text" : "password"}
                       required
-                      placeholder={mode === 'reset-password' ? "New Password" : "Password"}
+                      minLength={6}
+                      placeholder={mode === 'reset-password' ? "New Password (min 6 chars)" : "Password (min 6 chars)"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="new-password"
@@ -247,6 +248,7 @@ export function AuthModal() {
                       <input
                         type={showConfirmPassword ? "text" : "password"}
                         required
+                        minLength={6}
                         placeholder="Re-enter New Password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
