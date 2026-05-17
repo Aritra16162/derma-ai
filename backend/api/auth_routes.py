@@ -40,17 +40,28 @@ class ResetPasswordRequest(BaseModel):
 @router.post("/signup")
 def signup(req: SignupRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == req.email).first()
-    if user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-        
+    
     hashed_password = get_password_hash(req.password)
-    new_user = User(name=req.name, email=req.email, hashed_password=hashed_password)
-    db.add(new_user)
-    db.commit()
+    
+    if user:
+        if user.is_verified:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        else:
+            user.name = req.name
+            user.hashed_password = hashed_password
+            db.commit()
+    else:
+        new_user = User(name=req.name, email=req.email, hashed_password=hashed_password)
+        db.add(new_user)
+        db.commit()
     
     # Send OTP
     otp = generate_otp()
     expires_at = datetime.utcnow() + timedelta(minutes=10)
+    
+    # clear old OTPs
+    db.query(VerificationCode).filter(VerificationCode.email == req.email).delete()
+    
     code = VerificationCode(email=req.email, code=otp, expires_at=expires_at)
     db.add(code)
     db.commit()
