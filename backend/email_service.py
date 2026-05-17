@@ -48,7 +48,7 @@ Derma Guide Team"""
 
     payload = {
         "to": to_email,
-        "subject": "Derma Guide - Your Verification Code",
+        "subject": "Your Verification Code",
         "body": body
     }
     
@@ -79,7 +79,7 @@ Derma Guide Team"""
 
     payload = {
         "to": to_email,
-        "subject": "Derma Guide - Your Analysis Report",
+        "subject": "Your Analysis Report",
         "body": body,
         "pdf_base64": pdf_base64
     }
