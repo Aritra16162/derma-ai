@@ -1,15 +1,34 @@
 import { useStore } from '@/store/useStore';
 import { Sparkles, Activity, FileText, Calendar, AlertTriangle, Clock, CheckCircle, Info, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export function DashboardHome() {
   const { setCurrentView, historyLogs, user } = useStore();
-  
-  // Filter logs to match the signed in user's profile
-  const userLogs = user ? historyLogs.filter(log => log.patientName === user.name) : [];
-  const lastLog = userLogs.length > 0 ? userLogs[0] : null;
+  const [backendLogs, setBackendLogs] = useState<any[]>([]);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+
+  useEffect(() => {
+    if (user?.email) {
+      import('@/lib/config').then(({ API_URL }) => {
+        fetch(`${API_URL}/reports/${user.email}`)
+          .then(res => res.json())
+          .then(data => {
+              if (Array.isArray(data)) {
+                  setBackendLogs(data.map(log => ({...log, patientName: user.name})));
+              }
+          })
+          .catch(err => console.error("Failed to fetch dashboard history:", err));
+      });
+    } else {
+        setBackendLogs([]);
+    }
+  }, [user]);
+
+  // Filter logs to match the signed in user's profile
+  // If logged in, prioritize the cloud backend logs. If logged out, use local guest logs.
+  const userLogs = user ? backendLogs : historyLogs.filter(log => log.patientName === 'Guest User');
+  const lastLog = userLogs.length > 0 ? userLogs[0] : null;
 
   const getUrgencyConfig = (urgency: string) => {
     switch (urgency) {
