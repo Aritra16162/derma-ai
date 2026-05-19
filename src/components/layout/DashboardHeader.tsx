@@ -24,9 +24,10 @@ export function DashboardHeader() {
         </h1>
       </div>
       {/* User Actions */}
-      <div className="flex items-center gap-4 relative group">
+      <div className={`flex items-center gap-4 relative ${user ? 'group' : ''}`}>
         <button 
-          className="flex items-center gap-3 cursor-pointer py-1 focus:outline-none appearance-none bg-transparent border-none text-left"
+          type="button"
+          className="flex items-center gap-3 cursor-pointer p-2 -mr-2 relative z-20 focus:outline-none appearance-none bg-transparent border-none text-left touch-manipulation"
           onClick={() => {
             if (!user) setShowAuthModal(true);
           }}
