@@ -5,11 +5,13 @@ import { useState, useEffect } from 'react';
 
 export function DashboardHome() {
   const { setCurrentView, historyLogs, user } = useStore();
-  const [backendLogs, setBackendLogs] = useState<any[]>([]);
+  const [backendLogs, setBackendLogs] = useState<any[] | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
 
   useEffect(() => {
     if (user?.email) {
+      setIsFetching(true);
       import('@/lib/config').then(({ API_URL }) => {
         fetch(`${API_URL}/reports/${user.email}`)
           .then(res => res.json())
@@ -18,16 +20,20 @@ export function DashboardHome() {
                   setBackendLogs(data.map(log => ({...log, patientName: user.name})));
               }
           })
-          .catch(err => console.error("Failed to fetch dashboard history:", err));
+          .catch(err => console.error("Failed to fetch dashboard history:", err))
+          .finally(() => setIsFetching(false));
       });
     } else {
-        setBackendLogs([]);
+        setBackendLogs(null);
+        setIsFetching(false);
     }
   }, [user]);
 
-  // Filter logs to match the signed in user's profile
-  // If logged in, prioritize the cloud backend logs. If logged out, use local guest logs.
-  const userLogs = user ? backendLogs : historyLogs.filter(log => log.patientName === 'Guest User');
+  // Optimistic UI Fallback:
+  // If the backend logs haven't loaded yet (due to the 1-min cold start delay),
+  // instantly fallback to the local device's cached historyLogs so the screen isn't blank!
+  const localLogs = user ? historyLogs.filter(log => log.patientName === user.name) : historyLogs.filter(log => log.patientName === 'Guest User');
+  const userLogs = (user && backendLogs) ? backendLogs : localLogs;
   const lastLog = userLogs.length > 0 ? userLogs[0] : null;
 
   const getUrgencyConfig = (urgency: string) => {
@@ -95,7 +101,15 @@ export function DashboardHome() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2">
          <div className="glass-card p-6 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700 transition-colors duration-300">
-            <h3 className="font-semibold text-gray-700 dark:text-slate-200 flex items-center gap-2 mb-4"><FileText size={18}/> Recent Consultations</h3>
+            <h3 className="font-semibold text-gray-700 dark:text-slate-200 flex items-center gap-2 mb-4">
+               <FileText size={18}/> Recent Consultations
+               {isFetching && (
+                  <span className="flex items-center gap-1.5 ml-auto text-[10px] uppercase font-bold text-trust-blue animate-pulse">
+                     <span className="w-3 h-3 border-2 border-trust-blue border-t-transparent rounded-full animate-spin"></span>
+                     Syncing
+                  </span>
+               )}
+            </h3>
             <div className="flex flex-col gap-3">
               {lastLog ? (() => {
                  const config = getUrgencyConfig(lastLog.urgency || 'Routine');

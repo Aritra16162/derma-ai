@@ -57,3 +57,8 @@ app.add_middleware(
 # ── Routes ──────────────────────────────────────────────────────────────
 app.include_router(classify_router)
 app.include_router(auth_router, prefix="/auth")
+
+@app.get("/health")
+def health_check():
+    """Endpoint for uptime monitoring to prevent Render from sleeping."""
+    return {"status": "active", "message": "Derma Guide Backend is running."}
