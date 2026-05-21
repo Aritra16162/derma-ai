@@ -13,7 +13,7 @@ from PIL import Image
 
 # Resolve paths relative to the backend root (one level up from this file)
 _BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_MODEL_PATH = os.path.join(_BACKEND_DIR, "model.h5")
+_MODEL_PATH = os.path.join(_BACKEND_DIR, "model.keras")
 _CLASS_INDICES_PATH = os.path.join(_BACKEND_DIR, "class_indices.json")
 
 # Module-level state — populated on startup
@@ -39,7 +39,7 @@ def ensure_model_loaded() -> None:
         print("Model loaded successfully.")
     else:
         print(
-            "Warning: model.h5 or class_indices.json not found. "
+            "Warning: model.keras or class_indices.json not found. "
             "Run train.py first to generate them."
         )
 
@@ -54,9 +54,9 @@ def preprocess_image(img_base64: str) -> np.ndarray:
 
     img_data = base64.b64decode(img_base64)
     img = Image.open(io.BytesIO(img_data)).convert("RGB")
-    img = img.resize((224, 224))
+    img = img.resize((300, 300))
 
-    img_arr = np.array(img) / 255.0
+    img_arr = np.array(img, dtype=np.float32)
     img_arr = np.expand_dims(img_arr, axis=0)
     return img_arr
 
@@ -74,6 +74,19 @@ def predict(img_array: np.ndarray) -> tuple[str, float]:
     predictions = model.predict(img_array)
     pred_idx = int(np.argmax(predictions[0]))
     predicted_class = idx_to_class[pred_idx]
+    
+    # Map HAM10000 dataset short acronyms to full, human-readable medical names
+    label_map = {
+        "akiec": "Actinic Keratosis (AKIEC)",
+        "bcc": "Basal Cell Carcinoma (BCC)",
+        "bkl": "Benign Keratosis (BKL)",
+        "df": "Dermatofibroma (DF)",
+        "mel": "Melanoma (MEL)",
+        "nv": "Melanocytic Nevi (NV)",
+        "vasc": "Vascular Lesion (VASC)"
+    }
+    predicted_class = label_map.get(predicted_class, predicted_class.title())
+
     confidence = float(np.max(predictions[0]))
 
     return predicted_class, confidence
