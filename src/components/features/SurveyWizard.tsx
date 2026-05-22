@@ -49,6 +49,8 @@ export function SurveyWizard() {
       const result = await submitToTriage(capturedImage, surveyData);
       setTriageResult(result.status, result.conditionName);
       nextStep();
+    } catch (error: any) {
+      alert(error.message);
     } finally {
       setIsProcessing(false);
     }

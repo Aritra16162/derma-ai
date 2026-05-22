@@ -5,7 +5,6 @@ export async function submitToTriage(
   image: string | null,
   survey: SurveyData
 ): Promise<{ status: TriageStatus; conditionName?: string }> {
-  // Try calling the FastAPI (via proxy)
   try {
     const response = await fetch(`${API_URL}/classify`, {
       method: 'POST',
@@ -18,21 +17,15 @@ export async function submitToTriage(
       }),
     });
     
-    if (response.ok) {
-      const data = await response.json();
-      return { status: data.danger_level || 'Routine', conditionName: data.predicted_class };
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`API Error (${response.status}): ${errText}`);
     }
-  } catch (error) {
-    console.error("FastAPI unreachable, falling back to mock response", error);
+    
+    const data = await response.json();
+    return { status: data.danger_level || 'Routine', conditionName: data.predicted_class };
+  } catch (error: any) {
+    console.error("FastAPI fetch failed:", error);
+    throw new Error(`Failed to communicate with backend (${API_URL}): ${error.message}`);
   }
-
-  // MOCK FALLBACK for demo purposes
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // randomly pick a status
-      const statuses: TriageStatus[] = ['Routine', 'See Doctor', 'Seek Care Today'];
-      const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-      resolve({ status: randomStatus, conditionName: 'Contact Dermatitis' });
-    }, 2000);
-  });
 }
