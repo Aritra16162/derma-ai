@@ -13,7 +13,6 @@ __pycache__/
 
 # === ML Model Artifacts ===
 # Note: model.h5 is ~11MB which is well under GitHub's 100MB limit, so it is included for deployment.
-*.tflite
 *.pb
 *.onnx
 

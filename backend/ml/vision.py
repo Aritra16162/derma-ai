@@ -13,34 +13,40 @@ from PIL import Image
 
 # Resolve paths relative to the backend root (one level up from this file)
 _BACKEND_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-_MODEL_PATH = os.path.join(_BACKEND_DIR, "model.keras")
+_MODEL_PATH = os.path.join(_BACKEND_DIR, "model.tflite")
 _CLASS_INDICES_PATH = os.path.join(_BACKEND_DIR, "class_indices.json")
 
 # Module-level state — populated on startup
-model: tf.keras.Model | None = None
+model: tf.lite.Interpreter | None = None
 idx_to_class: dict[int, str] | None = None
+input_details = None
+output_details = None
 
 
 def ensure_model_loaded() -> None:
-    """Load the Keras model and class-index mapping from disk if not already loaded."""
-    global model, idx_to_class
+    """Load the TFLite model and class-index mapping from disk if not already loaded."""
+    global model, idx_to_class, input_details, output_details
 
     if model is not None and idx_to_class is not None:
         return
 
     if os.path.exists(_MODEL_PATH) and os.path.exists(_CLASS_INDICES_PATH):
-        print("Loading Model...")
-        model = tf.keras.models.load_model(_MODEL_PATH)
+        print("Loading TFLite Model...")
+        model = tf.lite.Interpreter(model_path=_MODEL_PATH)
+        model.allocate_tensors()
+        
+        input_details = model.get_input_details()
+        output_details = model.get_output_details()
 
         with open(_CLASS_INDICES_PATH, "r") as f:
             class_indices = json.load(f)
             idx_to_class = {v: k for k, v in class_indices.items()}
 
-        print("Model loaded successfully.")
+        print("TFLite Model loaded successfully.")
     else:
         print(
-            "Warning: model.keras or class_indices.json not found. "
-            "Run train.py first to generate them."
+            "Warning: model.tflite or class_indices.json not found. "
+            "Please ensure they are present."
         )
 
 
@@ -54,6 +60,7 @@ def preprocess_image(img_base64: str) -> np.ndarray:
 
     img_data = base64.b64decode(img_base64)
     img = Image.open(io.BytesIO(img_data)).convert("RGB")
+    # EfficientNetB3 typically expects 300x300, matching your previous logic
     img = img.resize((300, 300))
 
     img_arr = np.array(img, dtype=np.float32)
@@ -63,7 +70,7 @@ def preprocess_image(img_base64: str) -> np.ndarray:
 
 def predict(img_array: np.ndarray) -> tuple[str, float]:
     """
-    Run a forward pass on the loaded model and return the predicted
+    Run a forward pass on the loaded TFLite model and return the predicted
     class name together with its confidence score.
     """
     ensure_model_loaded()
@@ -71,7 +78,10 @@ def predict(img_array: np.ndarray) -> tuple[str, float]:
     if model is None or idx_to_class is None:
         raise RuntimeError("Model has not been loaded yet.")
 
-    predictions = model.predict(img_array)
+    model.set_tensor(input_details[0]['index'], img_array)
+    model.invoke()
+    predictions = model.get_tensor(output_details[0]['index'])
+    
     pred_idx = int(np.argmax(predictions[0]))
     predicted_class = idx_to_class[pred_idx]
     
