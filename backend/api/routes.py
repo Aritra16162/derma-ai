@@ -26,12 +26,13 @@ async def classify_endpoint(req: ClassifyRequest):
     Accept a base64 image and survey data, run the ML model,
     calculate triage urgency, and return a structured response.
     """
-    from ml.vision import model  # runtime check
+    import ml.vision
+    ml.vision.ensure_model_loaded()
 
-    if model is None:
+    if ml.vision.model is None:
         raise HTTPException(
             status_code=503,
-            detail="Model is not loaded. Please ensure model.h5 exists.",
+            detail="Model is not loaded. Please ensure model.keras exists.",
         )
 
     try:

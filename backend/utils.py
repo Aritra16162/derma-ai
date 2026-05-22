@@ -8,21 +8,14 @@ def map_triage_level(predicted_class, survey_data):
     spreading = survey_data.get('spreading', 'No') in ['Yes, slowly', 'Yes, rapidly']
     pain = survey_data.get('pain', 'None') in ['Moderate', 'Severe']
     
-    # Defaults
-    if predicted_class in ['BA- cellulitis', 'VI-shingles']:
-        if fever or spreading:
-            return "Seek Care Today"
+    # HAM10000 Classes mapping
+    if predicted_class in ["Melanoma (MEL)", "Basal Cell Carcinoma (BCC)"]:
+        return "Seek Care Today"
+        
+    elif predicted_class in ["Actinic Keratosis (AKIEC)"]:
         return "See Doctor"
         
-    elif predicted_class in ['VI-chickenpox', 'BA-impetigo']:
-        if fever and pain:
-            return "Seek Care Today"
-        return "See Doctor"
-        
-    elif predicted_class == 'PA-cutaneous-larva-migrans':
-        return "See Doctor"
-        
-    else: # Fungal infections
-        if spreading and pain:
+    else: # Benign conditions: BKL, DF, NV, VASC
+        if spreading or pain:
             return "See Doctor"
         return "Routine"
