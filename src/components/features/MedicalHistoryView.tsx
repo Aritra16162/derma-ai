@@ -10,11 +10,12 @@ export function MedicalHistoryView() {
   const [loading, setLoading] = useState(false);
   const [sendingId, setSendingId] = useState<string | null>(null);
 
-  const handleSendEmail = async (log: any, e: React.MouseEvent) => {
+  const handleSendEmail = async (log: any, index: number, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!user) return;
     
     setSendingId(log.id);
+    const displayId = `REC-${userLogs.length - index}`;
     try {
         const formattedDate = new Date(log.date).toLocaleDateString() + ' at ' + new Date(log.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         const res = await fetch(`${API_URL}/send-report`, {
@@ -25,7 +26,7 @@ export function MedicalHistoryView() {
                 triage_data: {
                     patient_name: user.name || 'Guest Patient',
                     patient_id: user.patientId || 'N/A',
-                    report_id: log.id,
+                    report_id: displayId,
                     date: formattedDate,
                     predicted_class: log.conditionName,
                     danger_level: log.urgency,
@@ -106,9 +107,10 @@ export function MedicalHistoryView() {
          </div>
       ) : (
         <div className="flex flex-col gap-4">
-          {userLogs.map((log) => {
+          {userLogs.map((log, index) => {
             const config = getUrgencyConfig(log.urgency || 'Routine');
             const Icon = config.icon;
+            const displayId = `REC-${userLogs.length - index}`;
             
             return (
               <div 
@@ -119,7 +121,7 @@ export function MedicalHistoryView() {
               >
                 <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex flex-col">
-                     <span className="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-1">{log.id}</span>
+                     <span className="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-widest mb-1">{displayId}</span>
                      <h4 className="text-lg font-bold text-gray-900 dark:text-white drop-shadow-sm">{log.conditionName}</h4>
                      <div className="flex items-center gap-2 mt-2 text-sm text-gray-500 dark:text-gray-400 font-medium">
                         <Calendar size={14} />
@@ -163,7 +165,7 @@ export function MedicalHistoryView() {
                      </div>
                      <div className="mt-5 flex justify-end gap-3 print:hidden">
                         <button 
-                          onClick={(e) => handleSendEmail(log, e)}
+                          onClick={(e) => handleSendEmail(log, index, e)}
                           disabled={sendingId === log.id}
                           className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold py-2 px-5 rounded-full flex items-center gap-2 shadow-sm transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
@@ -197,8 +199,10 @@ export function MedicalHistoryView() {
       {expandedLogId && (
         <div className="hidden print:block w-full min-h-screen bg-white text-black p-12">
            {(() => {
-             const log = userLogs.find(l => l.id === expandedLogId);
-             if (!log) return null;
+             const logIndex = userLogs.findIndex(l => l.id === expandedLogId);
+             if (logIndex === -1) return null;
+             const log = userLogs[logIndex];
+             const displayId = `REC-${userLogs.length - logIndex}`;
              const config = getUrgencyConfig(log.urgency || 'Routine');
              const Icon = config.icon;
              const formattedDate = new Date(log.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -211,7 +215,7 @@ export function MedicalHistoryView() {
                      </div>
                      <div className="text-right">
                         <h2 className="text-sm font-bold text-slate-500 uppercase tracking-widest">Automated Analysis Report</h2>
-                        <p className="text-sm text-slate-400 mt-1 font-mono">{log.id}</p>
+                        <p className="text-sm text-slate-400 mt-1 font-mono">{displayId}</p>
                      </div>
                   </div>
 
