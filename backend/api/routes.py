@@ -37,6 +37,14 @@ async def classify_endpoint(req: ClassifyRequest):
 
     try:
         img_arr = preprocess_image(req.image)
+        
+        from ml.vision import is_valid_skin_image
+        if not is_valid_skin_image(img_arr):
+            raise HTTPException(
+                status_code=400,
+                detail="INVALID_IMAGE_DETECTED",
+            )
+            
         predicted_class, confidence = predict(img_arr)
 
         # Combine ML prediction with survey answers for triage

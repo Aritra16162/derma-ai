@@ -50,7 +50,12 @@ export function SurveyWizard() {
       setTriageResult(result.status, result.conditionName);
       nextStep();
     } catch (error: any) {
-      alert(error.message);
+      if (error.message.includes("INVALID_IMAGE_DETECTED")) {
+        alert("Safety Check Failed: The uploaded image does not appear to be a valid photo of human skin. Please upload a clearer image.");
+        useStore.getState().setStep(0);
+      } else {
+        alert(error.message);
+      }
     } finally {
       setIsProcessing(false);
     }

@@ -19,7 +19,12 @@ export async function submitToTriage(
     
     if (!response.ok) {
       const errText = await response.text();
-      throw new Error(`API Error (${response.status}): ${errText}`);
+      let errorDetail = errText;
+      try {
+        const json = JSON.parse(errText);
+        if (json.detail) errorDetail = json.detail;
+      } catch (e) {}
+      throw new Error(errorDetail);
     }
     
     const data = await response.json();

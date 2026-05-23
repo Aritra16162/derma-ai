@@ -49,6 +49,32 @@ def ensure_model_loaded() -> None:
             "Please ensure they are present."
         )
 
+def is_valid_skin_image(img_arr: np.ndarray) -> bool:
+    """
+    Heuristic check to see if the image contains a minimum amount of skin-like pixels.
+    Expects img_arr of shape (1, H, W, 3) with values 0-255.
+    """
+    img = img_arr[0]
+    R = img[:, :, 0]
+    G = img[:, :, 1]
+    B = img[:, :, 2]
+
+    # Relaxed skin color bounds for various skin tones
+    is_skin = (
+        (R > 40) & 
+        (G > 20) & 
+        (B > 10) & 
+        (R > G) & 
+        (R > B) & 
+        (np.abs(R - G) > 5)
+    )
+    
+    # Calculate percentage of skin pixels
+    skin_ratio = np.mean(is_skin)
+    
+    # If less than 10% of the image is considered skin, reject it
+    return float(skin_ratio) > 0.10
+
 
 def preprocess_image(img_base64: str) -> np.ndarray:
     """
