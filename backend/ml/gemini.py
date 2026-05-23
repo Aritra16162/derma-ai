@@ -4,12 +4,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-
-if GEMINI_API_KEY:
-    genai.configure(api_key=GEMINI_API_KEY)
+def get_gemini_api_key():
+    load_dotenv(override=True)
+    return os.environ.get("GEMINI_API_KEY")
 
 def get_gemini_model():
+    key = get_gemini_api_key()
+    if key:
+        genai.configure(api_key=key)
     return genai.GenerativeModel('gemini-1.5-flash')
 
 def _prepare_image(img_base64: str):
@@ -30,7 +32,7 @@ def validate_image_with_gemini(img_base64: str) -> bool:
     Asks Gemini if the image is a clear photo of human skin or a medical condition.
     Returns True if valid, False if it's an object/landscape/etc.
     """
-    if not GEMINI_API_KEY:
+    if not get_gemini_api_key():
         # Fallback to true if no key provided, so we don't break the app
         return True
         
@@ -51,7 +53,7 @@ def get_advanced_insights(img_base64: str, survey_data: dict) -> tuple[str, str]
     Asks Gemini for a diagnosis based on image and survey.
     Returns (summary_word, details_paragraph).
     """
-    if not GEMINI_API_KEY:
+    if not get_gemini_api_key():
         return ("Unavailable", "Gemini API Key is missing. Advanced insights are unavailable.")
         
     try:
