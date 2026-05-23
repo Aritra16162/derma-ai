@@ -37,7 +37,7 @@ export function CameraView() {
     const isValid = await validateImage(localImage);
     setIsValidating(false);
     if (!isValid) {
-      alert("Safety Check Failed: The uploaded image does not appear to be a valid photo of human skin. Please upload a clearer image.");
+      alert("Safety Check Failed: We could not detect enough skin in this photo. Please ensure you take a close-up, clear photo of human skin.");
       setLocalImage(null);
       return;
     }

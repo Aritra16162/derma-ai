@@ -62,8 +62,8 @@ def is_valid_skin_image(img_arr: np.ndarray) -> bool:
     # Relaxed skin color bounds for various skin tones, including very dark skin.
     # We rely on the relative color (melanin signature) rather than strict absolute values.
     red_dominant = (R > G) & (R > B)
-    not_black = (R > 15)
-    not_gray = (R - G > 2)
+    not_black = (R > 20)
+    not_gray = (R - G > 5)
     
     # If the pixel is very bright (potential glare), require a stronger color difference
     # meaning it must be distinctly skin-colored, not just slightly tinted white light
@@ -74,8 +74,10 @@ def is_valid_skin_image(img_arr: np.ndarray) -> bool:
     # Calculate percentage of skin pixels
     skin_ratio = np.mean(is_skin)
     
-    # Lower threshold to 5% to be extremely inclusive of images with lots of background
-    return float(skin_ratio) > 0.05
+    # Require at least 30% of the image to be skin-colored.
+    # This prevents objects with minor brown/red reflections (like phone screens or rooms) from passing,
+    # and enforces that the user takes a close-up photo of their skin.
+    return float(skin_ratio) > 0.30
 
 
 def preprocess_image(img_base64: str) -> np.ndarray:
