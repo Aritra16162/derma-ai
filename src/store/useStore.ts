@@ -84,9 +84,15 @@ export const useStore = create<AppState>()(
       setCurrentView: (view) => set({ currentView: view }),
       setShowAuthModal: (show) => set({ showAuthModal: show }),
       setShowLogoutConfirm: (show) => set({ showLogoutConfirm: show }),
-      loginUser: (name, email) => set({ 
-        user: { name, email, patientId: `PT-${Math.floor(Math.random() * 900000) + 100000}` } 
-      }),
+      loginUser: (name, email) => {
+        let hash = 0;
+        for (let i = 0; i < email.length; i++) {
+          hash = ((hash << 5) - hash) + email.charCodeAt(i);
+          hash = hash & hash;
+        }
+        const patientId = `PT-${(Math.abs(hash) % 900000) + 100000}`;
+        set({ user: { name, email, patientId } });
+      },
       logoutUser: () => set({ user: null }),
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 
