@@ -19,6 +19,19 @@ from utils import map_triage_level
 
 router = APIRouter()
 
+class ValidateImageRequest(BaseModel):
+    image: str
+
+@router.post("/validate-image")
+async def validate_image_endpoint(req: ValidateImageRequest):
+    try:
+        img_arr = preprocess_image(req.image)
+        from ml.vision import is_valid_skin_image
+        is_valid = is_valid_skin_image(img_arr)
+        return {"valid": is_valid}
+    except Exception as e:
+        print(f"Error during validation: {e}")
+        return {"valid": False, "error": str(e)}
 
 @router.post("/classify", response_model=ClassifyResponse)
 async def classify_endpoint(req: ClassifyRequest):

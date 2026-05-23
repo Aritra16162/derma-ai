@@ -3,9 +3,10 @@
 import { useRef, useCallback, useState } from 'react';
 import Webcam from 'react-webcam';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, RefreshCw, CheckCircle2, Upload, Video, ArrowLeft } from 'lucide-react';
+import { Camera, RefreshCw, CheckCircle2, Upload, Video, ArrowLeft, Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '@/store/useStore';
+import { validateImage } from '@/lib/api';
 
 export function CameraView() {
   const { t } = useTranslation();
@@ -16,6 +17,7 @@ export function CameraView() {
   const [localImage, setLocalImage] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [isCameraEnabled, setIsCameraEnabled] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
 
   const capture = useCallback(() => {
     setIsScanning(true);
@@ -29,7 +31,16 @@ export function CameraView() {
     }, 1500);
   }, [webcamRef]);
 
-  const confirm = () => {
+  const confirm = async () => {
+    if (!localImage) return;
+    setIsValidating(true);
+    const isValid = await validateImage(localImage);
+    setIsValidating(false);
+    if (!isValid) {
+      alert("Safety Check Failed: The uploaded image does not appear to be a valid photo of human skin. Please upload a clearer image.");
+      setLocalImage(null);
+      return;
+    }
     setCapturedImage(localImage);
     nextStep();
   };
@@ -153,10 +164,11 @@ export function CameraView() {
             </button>
             <button 
               onClick={confirm}
-              className="flex-1 min-h-[48px] bg-[#28a745] hover:opacity-90 text-white font-semibold rounded-full flex items-center justify-center gap-2 transition-all shadow-md"
+              disabled={isValidating}
+              className="flex-1 min-h-[48px] bg-[#28a745] hover:opacity-90 text-white font-semibold rounded-full flex items-center justify-center gap-2 transition-all shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              <CheckCircle2 size={20} />
-              {t('camera.confirm')}
+              {isValidating ? <Loader2 size={20} className="animate-spin" /> : <CheckCircle2 size={20} />}
+              {isValidating ? 'Validating...' : t('camera.confirm')}
             </button>
           </>
         )}
