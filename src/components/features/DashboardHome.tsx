@@ -103,15 +103,14 @@ export function DashboardHome() {
          <div className="glass-card p-6 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700 transition-colors duration-300">
             <h3 className="font-semibold text-gray-700 dark:text-slate-200 flex items-center gap-2 mb-4">
                <FileText size={18}/> Recent Consultations
-               {isFetching && (
-                  <span className="flex items-center gap-1.5 ml-auto text-[10px] uppercase font-bold text-trust-blue animate-pulse">
-                     <span className="w-3 h-3 border-2 border-trust-blue border-t-transparent rounded-full animate-spin"></span>
-                     Syncing
-                  </span>
-               )}
             </h3>
             <div className="flex flex-col gap-3">
-              {lastLog ? (() => {
+              {isFetching ? (
+                 <div className="p-6 bg-gray-50 dark:bg-slate-700 rounded-lg border border-gray-100 dark:border-slate-600 flex flex-col items-center justify-center gap-3">
+                    <span className="w-6 h-6 border-2 border-trust-blue border-t-transparent rounded-full animate-spin"></span>
+                    <span className="text-sm font-bold text-trust-blue animate-pulse uppercase tracking-wider">Syncing</span>
+                 </div>
+              ) : lastLog ? (() => {
                  const config = getUrgencyConfig(lastLog.urgency || 'Routine');
                  const Icon = config.icon;
                  return (
