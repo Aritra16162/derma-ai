@@ -47,7 +47,7 @@ export function SurveyWizard() {
     setIsProcessing(true);
     try {
       const result = await submitToTriage(capturedImage, surveyData);
-      setTriageResult(result.status, result.conditionName);
+      setTriageResult(result.status, result.conditionName, result.geminiSummary, result.geminiDetails);
       nextStep();
     } catch (error: any) {
       if (error.message.includes("INVALID_IMAGE_DETECTED")) {

@@ -27,6 +27,8 @@ export interface MedicalRecord {
   conditionName: string;
   urgency: TriageStatus;
   surveyData: SurveyData;
+  geminiSummary?: string;
+  geminiDetails?: string;
 }
 
 export interface AppState {
@@ -50,6 +52,8 @@ export interface AppState {
   surveyData: SurveyData;
   triageResult: TriageStatus;
   conditionName: string | null;
+  geminiSummary: string | null;
+  geminiDetails: string | null;
   isProcessing: boolean;
   
   // Actions
@@ -58,7 +62,7 @@ export interface AppState {
   prevStep: () => void;
   setCapturedImage: (image: string | null) => void;
   updateSurvey: (data: Partial<SurveyData>) => void;
-  setTriageResult: (status: TriageStatus, conditionName?: string) => void;
+  setTriageResult: (status: TriageStatus, conditionName?: string, geminiSummary?: string, geminiDetails?: string) => void;
   setIsProcessing: (isProcessing: boolean) => void;
   resetFlow: () => void;
 }
@@ -102,6 +106,8 @@ export const useStore = create<AppState>()(
       surveyData: initialSurveyData,
       triageResult: null,
       conditionName: null,
+      geminiSummary: null,
+      geminiDetails: null,
       isProcessing: false,
 
       // Analysis Actions
@@ -110,7 +116,7 @@ export const useStore = create<AppState>()(
       prevStep: () => set((state) => ({ currentStep: Math.max(0, state.currentStep - 1) })),
       setCapturedImage: (image) => set({ capturedImage: image }),
       updateSurvey: (data) => set((state) => ({ surveyData: { ...state.surveyData, ...data } })),
-      setTriageResult: (status, conditionName) => set((state) => {
+      setTriageResult: (status, conditionName, geminiSummary, geminiDetails) => set((state) => {
         let newLogs = state.historyLogs;
         
         // Log to history if valid condition is generated
@@ -122,7 +128,9 @@ export const useStore = create<AppState>()(
                patientName: state.user ? state.user.name : 'Guest User',
                conditionName: conditionName,
                urgency: status,
-               surveyData: state.surveyData
+               surveyData: state.surveyData,
+               geminiSummary: geminiSummary,
+               geminiDetails: geminiDetails
             };
             newLogs = [newRecord, ...state.historyLogs];
         }
@@ -130,7 +138,9 @@ export const useStore = create<AppState>()(
         return { 
           triageResult: status, 
           historyLogs: newLogs,
-          ...(conditionName ? { conditionName } : {}) 
+          ...(conditionName ? { conditionName } : {}),
+          ...(geminiSummary ? { geminiSummary } : {}),
+          ...(geminiDetails ? { geminiDetails } : {})
         };
       }),
       setIsProcessing: (isProcessing) => set({ isProcessing }),
@@ -140,6 +150,8 @@ export const useStore = create<AppState>()(
         surveyData: initialSurveyData,
         triageResult: null,
         conditionName: null,
+        geminiSummary: null,
+        geminiDetails: null,
         isProcessing: false
       })
     }),

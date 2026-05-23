@@ -4,7 +4,7 @@ import { API_URL } from '@/lib/config';
 export async function submitToTriage(
   image: string | null,
   survey: SurveyData
-): Promise<{ status: TriageStatus; conditionName?: string }> {
+): Promise<{ status: TriageStatus; conditionName?: string; geminiSummary?: string; geminiDetails?: string }> {
   try {
     const response = await fetch(`${API_URL}/classify`, {
       method: 'POST',
@@ -28,7 +28,12 @@ export async function submitToTriage(
     }
     
     const data = await response.json();
-    return { status: data.danger_level || 'Routine', conditionName: data.predicted_class };
+    return { 
+      status: data.danger_level || 'Routine', 
+      conditionName: data.predicted_class,
+      geminiSummary: data.gemini_summary,
+      geminiDetails: data.gemini_details
+    };
   } catch (error: any) {
     console.error("FastAPI fetch failed:", error);
     throw new Error(`Failed to communicate with backend (${API_URL}): ${error.message}`);

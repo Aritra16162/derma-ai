@@ -21,6 +21,8 @@ class MedicalReport(Base):
     urgency = Column(String, nullable=False)
     survey_data = Column(String, nullable=False) # Store JSON string
     image_data = Column(String, nullable=True) # Store base64 image
+    gemini_summary = Column(String, nullable=True)
+    gemini_details = Column(String, nullable=True)
     date = Column(DateTime, default=datetime.utcnow)
 
 class VerificationCode(Base):
