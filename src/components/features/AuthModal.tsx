@@ -211,7 +211,7 @@ export function AuthModal() {
                       required
                       placeholder="Email Address"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => setEmail(e.target.value.trim())}
                       autoComplete="off"
                       disabled={mode === 'reset-password' && otpVerified}
                       className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
@@ -286,7 +286,7 @@ export function AuthModal() {
                     required
                     placeholder="6-Digit OTP"
                     value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
+                    onChange={(e) => setOtp(e.target.value.trim())}
                     className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white"
                   />
                   {(!otpVerified || mode === 'verify') && (
