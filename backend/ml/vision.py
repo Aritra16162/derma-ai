@@ -65,7 +65,11 @@ def is_valid_skin_image(img_arr: np.ndarray) -> bool:
     not_black = (R > 15)
     not_gray = (R - G > 2)
     
-    is_skin = red_dominant & not_black & not_gray
+    # If the pixel is very bright (potential glare), require a stronger color difference
+    # meaning it must be distinctly skin-colored, not just slightly tinted white light
+    not_glare = ~((R > 220) & (R - G < 15))
+    
+    is_skin = red_dominant & not_black & not_gray & not_glare
     
     # Calculate percentage of skin pixels
     skin_ratio = np.mean(is_skin)
