@@ -64,7 +64,7 @@ async def classify_endpoint(req: ClassifyRequest):
 
         # Call Gemini for advanced insights
         from ml.gemini import get_advanced_insights
-        gemini_summary, gemini_details = get_advanced_insights(req.image, req.survey.dict())
+        gemini_summary, gemini_details = get_advanced_insights(req.image, req.survey.dict(), predicted_class)
 
         return ClassifyResponse(
             predicted_class=predicted_class,
@@ -139,6 +139,8 @@ def get_reports(email: str, db: Session = Depends(get_db)):
             "conditionName": r.condition_name,
             "urgency": r.urgency,
             "surveyData": json.loads(r.survey_data),
-            "image_data": r.image_data
+            "image_data": r.image_data,
+            "gemini_summary": r.gemini_summary,
+            "gemini_details": r.gemini_details
         })
     return result

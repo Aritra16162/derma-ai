@@ -1,11 +1,30 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '@/store/useStore';
 import { API_URL } from '@/lib/config';
 import { motion } from 'framer-motion';
 import { FileDown, RefreshCcw, AlertTriangle, CheckCircle, Clock, Mail, Sparkles } from 'lucide-react';
+
+const renderHighlightedText = (text: string) => {
+  if (!text) return null;
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return (
+            <mark key={i} className="bg-yellow-200 text-yellow-900 px-1 rounded font-bold">
+              {part.slice(2, -2)}
+            </mark>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </>
+  );
+};
 
 export function TriageDashboard() {
   const { t } = useTranslation();
@@ -24,7 +43,9 @@ export function TriageDashboard() {
           condition_name: conditionName,
           urgency: triageResult,
           survey_data: surveyData,
-          image_data: capturedImage
+          image_data: capturedImage,
+          gemini_summary: geminiSummary,
+          gemini_details: geminiDetails
         })
       }).catch(err => console.error("Failed to save report automatically:", err));
     }
@@ -46,11 +67,13 @@ export function TriageDashboard() {
                     patient_name: user.name || 'Guest Patient',
                     patient_id: user.patientId || 'N/A',
                     report_id: `REF-AI-${Math.floor(Math.random() * 90000) + 10000}-TX`,
-                    date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    date: currentDate,
                     predicted_class: conditionName,
                     danger_level: triageResult,
                     survey: surveyData,
-                    image_data: capturedImage
+                    image_data: capturedImage,
+                    gemini_summary: geminiSummary,
+                    gemini_details: geminiDetails
                 }
             })
         });
@@ -81,8 +104,11 @@ export function TriageDashboard() {
   const config = getUrgencyConfig();
   const Icon = config.icon;
 
-  const reportId = `REF-AI-${Math.floor(Math.random() * 90000) + 10000}-TX`;
-  const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  const reportId = useMemo(() => `REF-AI-${Math.floor(Math.random() * 90000) + 10000}-TX`, []);
+  const currentDate = useMemo(() => {
+    const now = new Date();
+    return `${now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+  }, []);
 
   return (
     <>
@@ -132,7 +158,7 @@ export function TriageDashboard() {
                 {geminiSummary}
               </span>
               <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-1">
-                {geminiDetails}
+                {renderHighlightedText(geminiDetails)}
               </p>
             </div>
           </div>
@@ -178,8 +204,13 @@ export function TriageDashboard() {
       </div>
 
       {/* Printable Report UI (Hidden on Screen) */}
-      <div className="hidden print:block w-full min-h-screen bg-white text-black p-12">
-        {/* Header */}
+      <div className="hidden print:block w-full bg-white print:bg-white text-black print:m-0">
+        
+        {/* Page 1 */}
+        <div className="w-full print:h-[98vh] print:p-2 box-border break-after-page">
+          <div className="w-full h-full p-[3px] border-[4px] border-slate-900">
+            <div className="w-full h-full border border-slate-900 p-8 flex flex-col">
+            {/* Header */}
         <div className="flex justify-between items-end border-b-2 border-slate-200 pb-6 mb-8">
            <div>
               <h1 className="text-4xl font-black text-slate-800 tracking-tight">Derma<span className="text-blue-600">Guide</span> AI</h1>
@@ -191,17 +222,17 @@ export function TriageDashboard() {
         </div>
 
         {/* Patient Info Table */}
-        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 mb-8 grid grid-cols-2 gap-y-4 gap-x-12 text-sm">
-           <div className="flex justify-between border-b border-slate-200 pb-2">
-              <span className="font-semibold text-slate-600">Patient Name:</span>
+        <div className="bg-slate-50 p-6 mb-8 grid grid-cols-2 gap-y-4 gap-x-12 text-sm">
+           <div className="flex gap-12">
+              <span className="font-bold text-slate-700">Patient Name:</span>
               <span className="text-slate-900">{user?.name || 'Guest Patient'}</span>
            </div>
-           <div className="flex justify-between border-b border-slate-200 pb-2">
-              <span className="font-semibold text-slate-600">Date of Scan:</span>
+           <div className="flex gap-12">
+              <span className="font-bold text-slate-700">Date of Scan:</span>
               <span className="text-slate-900">{currentDate}</span>
            </div>
-           <div className="flex justify-between border-b border-slate-200 pb-2">
-              <span className="font-semibold text-slate-600">Patient ID:</span>
+           <div className="flex gap-12">
+              <span className="font-bold text-slate-700">Patient ID:</span>
               <span className="text-slate-900 font-mono">{user?.patientId || 'N/A'}</span>
            </div>
         </div>
@@ -213,36 +244,67 @@ export function TriageDashboard() {
              The AI model has processed the uploaded dermoscopic/clinical image to identify areas of morphological concern.
            </p>
            {capturedImage && (
-             <div className="w-full max-w-sm bg-slate-50 border border-slate-200 p-2 flex flex-col items-center rounded-xl shadow-sm">
-               <img src={capturedImage} alt="Clinical Scanned Region" className="w-full h-auto max-h-64 object-cover rounded-lg" />
-               <span className="text-xs text-slate-400 mt-2 font-medium uppercase tracking-wider">Input Image</span>
+             <div className="w-full max-w-sm bg-slate-50 border border-slate-200 p-3 flex flex-col items-center">
+               <img src={capturedImage} alt="Clinical Scanned Region" className="w-full h-auto max-h-64 object-contain" />
+               <span className="text-[10px] text-slate-400 mt-3 font-bold uppercase tracking-widest">INPUT IMAGE</span>
              </div>
            )}
         </div>
 
-        {/* Model Classification Results */}
+        {/* Survey Data */}
         <div className="mb-8">
-           <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">Model Classification Results</h3>
+           <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">Reported Symptoms</h3>
+           <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="flex flex-col border border-slate-200 bg-white p-3">
+                 <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">DURATION</span>
+                 <span className="text-slate-900">{surveyData.duration || 'Not specified'}</span>
+              </div>
+              <div className="flex flex-col border border-slate-200 bg-white p-3">
+                 <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">PAIN/ITCHINESS</span>
+                 <span className="text-slate-900">{surveyData.pain || 'Not specified'}</span>
+              </div>
+              <div className="flex flex-col border border-slate-200 bg-white p-3">
+                 <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">SPREADING</span>
+                 <span className="text-slate-900">{surveyData.spreading || 'Not specified'}</span>
+              </div>
+              <div className="flex flex-col border border-slate-200 bg-white p-3">
+                 <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">PRIOR OCCURRENCE</span>
+                 <span className="text-slate-900">{surveyData.history || 'Not specified'}</span>
+              </div>
+              <div className="flex flex-col border border-slate-200 bg-white p-3">
+                 <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">FEVER</span>
+                 <span className="text-slate-900">{surveyData.fever || 'Not specified'}</span>
+              </div>
+           </div>
+        </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* Page 2 */}
+        <div className="w-full print:h-[98vh] print:p-2 box-border break-before-page">
+          <div className="w-full h-full p-[3px] border-[4px] border-slate-900">
+            <div className="w-full h-full border border-slate-900 p-8 flex flex-col">
+               <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4 mt-4">Model Classification Results</h3>
            <table className="w-full text-sm text-left border-collapse">
               <thead className="bg-slate-800 text-white">
                  <tr>
-                    <th className="px-4 py-3 font-semibold rounded-tl-lg">Diagnostic Category</th>
-                    <th className="px-4 py-3 font-semibold rounded-tr-lg">Triage Recommendation</th>
+                    <th className="px-4 py-3 font-semibold">Diagnostic Category</th>
+                    <th className="px-4 py-3 font-semibold">Triage Recommendation</th>
                  </tr>
               </thead>
               <tbody>
-                 <tr className="border-b border-slate-200 bg-slate-50">
+                 <tr className="border-b border-slate-200 bg-white">
                     <td className="px-4 py-4 font-bold text-slate-900">{conditionName || 'Unknown'}</td>
                     <td className="px-4 py-4">
-                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${triageResult === 'Seek Care Today' ? 'bg-red-100 text-red-700 border border-red-200' : triageResult === 'See Doctor' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' : 'bg-green-100 text-green-700 border border-green-200'}`}>
-                         <Icon size={12} />
+                       <span className={`inline-flex items-center font-bold ${triageResult === 'Seek Care Today' ? 'text-red-700' : triageResult === 'See Doctor' ? 'text-yellow-700' : 'text-green-700'}`}>
                          {config.label}
                        </span>
                     </td>
                  </tr>
               </tbody>
            </table>
-        </div>
 
         {/* Gemini Insights (Print) */}
         {geminiSummary && geminiDetails && (
@@ -250,45 +312,27 @@ export function TriageDashboard() {
             <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-4 flex items-center gap-2">
                Advanced AI Insights
             </h3>
-            <div className="bg-purple-50 border border-purple-100 rounded-xl p-5 shadow-sm">
+            <div className="bg-white border border-purple-200 rounded-xl p-5">
                <div className="mb-3">
-                 <span className="bg-white border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm shadow-sm">
+                 <span className="bg-white border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm">
                    {geminiSummary}
                  </span>
                </div>
                <p className="text-sm text-slate-700 leading-relaxed">
-                 {geminiDetails}
+                 {renderHighlightedText(geminiDetails)}
                </p>
             </div>
           </div>
         )}
 
-        {/* Survey Data */}
-        <div className="mb-8">
-           <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">Reported Symptoms</h3>
-           <div className="grid grid-cols-2 gap-4 text-sm bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-              <div className="flex flex-col">
-                 <span className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Duration</span>
-                 <span className="text-slate-900 font-medium">{surveyData.duration || 'Not specified'}</span>
-              </div>
-              <div className="flex flex-col">
-                 <span className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Pain/Itchiness</span>
-                 <span className="text-slate-900 font-medium">{surveyData.pain || 'Not specified'}</span>
-              </div>
-              <div className="flex flex-col">
-                 <span className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Spreading</span>
-                 <span className="text-slate-900 font-medium">{surveyData.spreading || 'Not specified'}</span>
-              </div>
-              <div className="flex flex-col">
-                 <span className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Fever</span>
-                 <span className="text-slate-900 font-medium">{surveyData.fever || 'Not specified'}</span>
-              </div>
-           </div>
-        </div>
+
 
         {/* Footer Note */}
-        <div className="mt-12 pt-6 border-t border-slate-200 text-xs text-slate-400 text-center leading-relaxed">
+        <div className="mt-auto pt-6 border-t border-slate-200 text-xs text-slate-400 text-center leading-relaxed">
            This report is generated automatically by an AI model and is intended for informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
+        </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

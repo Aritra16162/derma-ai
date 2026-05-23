@@ -75,7 +75,7 @@ export default function Home() {
                   className="w-full flex flex-col items-center max-w-4xl mx-auto"
                 >
                   {/* Minimal breadcrumb for the analysis flow */}
-                  <div className="w-full mb-4 px-4 flex items-center justify-between text-sm text-gray-500 font-medium">
+                  <div className="w-full mb-4 px-4 flex items-center justify-between text-sm text-gray-500 font-medium print:hidden">
                      <span>Symptom Consultation Request</span>
                   </div>
 

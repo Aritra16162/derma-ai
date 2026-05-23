@@ -2,6 +2,26 @@ import { useStore } from '@/store/useStore';
 import { API_URL } from '@/lib/config';
 import { History, Calendar, AlertTriangle, Clock, CheckCircle, ChevronDown, ChevronUp, FileDown, Loader2, Mail } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { Sparkles } from 'lucide-react';
+
+const renderHighlightedText = (text: string) => {
+  if (!text) return null;
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+  return (
+    <>
+      {parts.map((part, i) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return (
+            <mark key={i} className="bg-yellow-200 text-yellow-900 px-1 rounded font-bold">
+              {part.slice(2, -2)}
+            </mark>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </>
+  );
+};
 
 export function MedicalHistoryView() {
   const { user } = useStore();
@@ -17,7 +37,8 @@ export function MedicalHistoryView() {
     setSendingId(log.id);
     const displayId = `REC-${userLogs.length - index}`;
     try {
-        const formattedDate = new Date(log.date).toLocaleDateString() + ' at ' + new Date(log.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const d = new Date(log.date);
+        const formattedDate = `${d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} ${d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
         const res = await fetch(`${API_URL}/send-report`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -31,7 +52,9 @@ export function MedicalHistoryView() {
                     predicted_class: log.conditionName,
                     danger_level: log.urgency,
                     survey: log.surveyData,
-                    image_data: log.image_data
+                    image_data: log.image_data,
+                    gemini_summary: log.gemini_summary,
+                    gemini_details: log.gemini_details
                 }
             })
         });
@@ -159,10 +182,33 @@ export function MedicalHistoryView() {
                           <span className="text-sm font-semibold text-gray-800 dark:text-slate-200">{log.surveyData.spreading || 'Not specified'}</span>
                         </div>
                         <div className="bg-white dark:bg-slate-800 p-3 rounded-lg border border-gray-100 dark:border-slate-700 shadow-sm">
+                          <span className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 dark:text-slate-500 mb-1">Prior Occurrence</span>
+                          <span className="text-sm font-semibold text-gray-800 dark:text-slate-200">{log.surveyData.history || 'Not specified'}</span>
+                        </div>
+                        <div className="bg-white dark:bg-slate-800 p-3 rounded-lg border border-gray-100 dark:border-slate-700 shadow-sm">
                           <span className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 dark:text-slate-500 mb-1">Fever</span>
                           <span className="text-sm font-semibold text-gray-800 dark:text-slate-200">{log.surveyData.fever || 'Not specified'}</span>
                         </div>
                      </div>
+                     
+                     {/* Advanced AI Insights (UI) */}
+                     {log.gemini_summary && log.gemini_details && (
+                       <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/30 rounded-xl transition-colors">
+                         <div className="flex items-center gap-2 mb-3">
+                           <Sparkles size={16} className="text-purple-500 dark:text-purple-400" />
+                           <h3 className="text-sm font-bold text-purple-900 dark:text-purple-300">Advanced AI Insights</h3>
+                         </div>
+                         <div className="flex flex-col gap-2">
+                           <span className="inline-block px-3 py-1 bg-white dark:bg-slate-800 rounded-lg text-sm font-bold text-purple-900 dark:text-purple-200 border border-purple-200 dark:border-purple-600 self-start shadow-sm">
+                             {log.gemini_summary}
+                           </span>
+                           <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-1">
+                             {renderHighlightedText(log.gemini_details)}
+                           </p>
+                         </div>
+                       </div>
+                     )}
+                     
                      <div className="mt-5 flex justify-end gap-3 print:hidden">
                         <button 
                           onClick={(e) => handleSendEmail(log, index, e)}
@@ -197,18 +243,24 @@ export function MedicalHistoryView() {
 
       {/* Printable Report UI (Hidden on Screen) */}
       {expandedLogId && (
-        <div className="hidden print:block w-full min-h-screen bg-white text-black p-12">
-           {(() => {
-             const logIndex = userLogs.findIndex(l => l.id === expandedLogId);
-             if (logIndex === -1) return null;
-             const log = userLogs[logIndex];
-             const displayId = `REC-${userLogs.length - logIndex}`;
-             const config = getUrgencyConfig(log.urgency || 'Routine');
-             const Icon = config.icon;
-             const formattedDate = new Date(log.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-             
-             return (
-               <>
+        <div className="hidden print:block w-full bg-white print:bg-white text-black print:m-0">
+         {(() => {
+           const logIndex = userLogs.findIndex(l => l.id === expandedLogId);
+           if (logIndex === -1) return null;
+           const log = userLogs[logIndex];
+           const displayId = `REC-${userLogs.length - logIndex}`;
+           const config = getUrgencyConfig(log.urgency || 'Routine');
+           const Icon = config.icon;
+           const d2 = new Date(log.date);
+           const formattedDate = `${d2.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} ${d2.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`;
+           
+           return (
+             <>
+               {/* Page 1 */}
+               <div className="w-full print:h-[98vh] print:p-2 box-border break-after-page">
+                 <div className="w-full h-full p-[3px] border-[4px] border-slate-900">
+                   <div className="w-full h-full border border-slate-900 p-8 flex flex-col">
+
                   <div className="flex justify-between items-end border-b-2 border-slate-200 pb-6 mb-8">
                      <div>
                         <h1 className="text-4xl font-black text-slate-800 tracking-tight">Derma<span className="text-blue-600">Guide</span> AI</h1>
@@ -220,17 +272,17 @@ export function MedicalHistoryView() {
                   </div>
 
                   {/* Patient Info Table */}
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-6 mb-8 grid grid-cols-2 gap-y-4 gap-x-12 text-sm">
-                     <div className="flex justify-between border-b border-slate-200 pb-2">
-                        <span className="font-semibold text-slate-600">Patient Name:</span>
+                  <div className="bg-slate-50 p-6 mb-8 grid grid-cols-2 gap-y-4 gap-x-12 text-sm">
+                     <div className="flex gap-12">
+                        <span className="font-bold text-slate-700">Patient Name:</span>
                         <span className="text-slate-900">{user?.name || 'Guest Patient'}</span>
                      </div>
-                     <div className="flex justify-between border-b border-slate-200 pb-2">
-                        <span className="font-semibold text-slate-600">Date of Scan:</span>
+                     <div className="flex gap-12">
+                        <span className="font-bold text-slate-700">Date of Scan:</span>
                         <span className="text-slate-900">{formattedDate}</span>
                      </div>
-                     <div className="flex justify-between border-b border-slate-200 pb-2">
-                        <span className="font-semibold text-slate-600">Patient ID:</span>
+                     <div className="flex gap-12">
+                        <span className="font-bold text-slate-700">Patient ID:</span>
                         <span className="text-slate-900 font-mono">{user?.patientId || 'N/A'}</span>
                      </div>
                   </div>
@@ -242,67 +294,95 @@ export function MedicalHistoryView() {
                        <p className="text-sm text-slate-500 mb-4">
                          The AI model has processed the uploaded dermoscopic/clinical image to identify areas of morphological concern.
                        </p>
-                       <div className="w-full max-w-sm bg-slate-50 border border-slate-200 p-2 flex flex-col items-center rounded-xl shadow-sm">
-                         <img src={log.image_data} alt="Clinical Scanned Region" className="w-full h-auto max-h-64 object-cover rounded-lg" />
-                         <span className="text-xs text-slate-400 mt-2 font-medium uppercase tracking-wider">Input Image</span>
+                       <div className="w-full max-w-sm bg-slate-50 border border-slate-200 p-3 flex flex-col items-center">
+                         <img src={log.image_data} alt="Clinical Scanned Region" className="w-full h-auto max-h-64 object-contain" />
+                         <span className="text-[10px] text-slate-400 mt-3 font-bold uppercase tracking-widest">INPUT IMAGE</span>
                        </div>
                     </div>
                   )}
 
-                  {/* Model Classification Results */}
                   <div className="mb-8">
-                     <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">Model Classification Results</h3>
+                     <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">Reported Symptoms</h3>
+                     <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div className="flex flex-col border border-slate-200 bg-white p-3">
+                           <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">DURATION</span>
+                           <span className="text-slate-900">{log.surveyData?.duration || 'Not specified'}</span>
+                        </div>
+                        <div className="flex flex-col border border-slate-200 bg-white p-3">
+                           <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">PAIN/ITCHINESS</span>
+                           <span className="text-slate-900">{log.surveyData?.pain || 'Not specified'}</span>
+                        </div>
+                        <div className="flex flex-col border border-slate-200 bg-white p-3">
+                           <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">SPREADING</span>
+                           <span className="text-slate-900">{log.surveyData?.spreading || 'Not specified'}</span>
+                        </div>
+                        <div className="flex flex-col border border-slate-200 bg-white p-3">
+                           <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">PRIOR OCCURRENCE</span>
+                           <span className="text-slate-900">{log.surveyData?.history || 'Not specified'}</span>
+                        </div>
+                        <div className="flex flex-col border border-slate-200 bg-white p-3">
+                           <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-1">FEVER</span>
+                           <span className="text-slate-900">{log.surveyData?.fever || 'Not specified'}</span>
+                        </div>
+                     </div>
+                  </div>
+                   </div>
+                 </div>
+               </div>
+
+               {/* Page 2 */}
+               <div className="w-full print:h-[98vh] print:p-2 box-border break-before-page">
+                 <div className="w-full h-full p-[3px] border-[4px] border-slate-900">
+                   <div className="w-full h-full border border-slate-900 p-8 flex flex-col">
+                     <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4 mt-4">Model Classification Results</h3>
                      <table className="w-full text-sm text-left border-collapse">
                         <thead className="bg-slate-800 text-white">
                            <tr>
-                              <th className="px-4 py-3 font-semibold rounded-tl-lg">Diagnostic Category</th>
-                              <th className="px-4 py-3 font-semibold rounded-tr-lg">Triage Recommendation</th>
+                              <th className="px-4 py-3 font-semibold">Diagnostic Category</th>
+                              <th className="px-4 py-3 font-semibold">Triage Recommendation</th>
                            </tr>
                         </thead>
                         <tbody>
-                           <tr className="border-b border-slate-200 bg-slate-50">
+                           <tr className="border-b border-slate-200 bg-white">
                               <td className="px-4 py-4 font-bold text-slate-900">{log.conditionName || 'Unknown'}</td>
                               <td className="px-4 py-4">
-                                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${log.urgency === 'Seek Care Today' ? 'bg-red-100 text-red-700 border border-red-200' : log.urgency === 'See Doctor' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' : 'bg-green-100 text-green-700 border border-green-200'}`}>
-                                   <Icon size={12} />
+                                 <span className={`inline-flex items-center font-bold ${log.urgency === 'Seek Care Today' ? 'text-red-700' : log.urgency === 'See Doctor' ? 'text-yellow-700' : 'text-green-700'}`}>
                                    {log.urgency || 'Routine'}
                                  </span>
                               </td>
                            </tr>
                         </tbody>
                      </table>
-                  </div>
 
-                  {/* Survey Data */}
-                  <div className="mb-8">
-                     <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">Reported Symptoms</h3>
-                     <div className="grid grid-cols-2 gap-4 text-sm bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                        <div className="flex flex-col">
-                           <span className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Duration</span>
-                           <span className="text-slate-900 font-medium">{log.surveyData?.duration || 'Not specified'}</span>
-                        </div>
-                        <div className="flex flex-col">
-                           <span className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Pain/Itchiness</span>
-                           <span className="text-slate-900 font-medium">{log.surveyData?.pain || 'Not specified'}</span>
-                        </div>
-                        <div className="flex flex-col">
-                           <span className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Spreading</span>
-                           <span className="text-slate-900 font-medium">{log.surveyData?.spreading || 'Not specified'}</span>
-                        </div>
-                        <div className="flex flex-col">
-                           <span className="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Fever</span>
-                           <span className="text-slate-900 font-medium">{log.surveyData?.fever || 'Not specified'}</span>
-                        </div>
-                     </div>
-                  </div>
+                  {/* Gemini Insights (Print) */}
+                  {log.gemini_summary && log.gemini_details && (
+                    <div className="mb-8">
+                      <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-4 flex items-center gap-2">
+                         Advanced AI Insights
+                      </h3>
+                      <div className="bg-white border border-purple-200 rounded-xl p-5">
+                         <div className="mb-3">
+                           <span className="bg-white border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm">
+                             {log.gemini_summary}
+                           </span>
+                         </div>
+                         <p className="text-sm text-slate-700 leading-relaxed">
+                           {renderHighlightedText(log.gemini_details)}
+                         </p>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Footer Note */}
-                  <div className="mt-12 pt-6 border-t border-slate-200 text-xs text-slate-400 text-center leading-relaxed">
+                  <div className="mt-auto pt-6 border-t border-slate-200 text-xs text-slate-400 text-center leading-relaxed">
                      This report is generated automatically by an AI model and is intended for informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
                   </div>
-               </>
-             );
-           })()}
+                   </div>
+                 </div>
+               </div>
+             </>
+           );
+         })()}
         </div>
       )}
     </>

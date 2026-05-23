@@ -20,6 +20,13 @@ def create_report_pdf(triage_data: dict, output_path: str):
     pdf.add_page()
     pdf.set_margins(15, 15, 15)
     
+    # Double Black Border (Page 1)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.set_line_width(0.6)
+    pdf.rect(5, 5, 200, 287)
+    pdf.set_line_width(0.2)
+    pdf.rect(6.5, 6.5, 197, 284)
+    
     # ---------------- Header ----------------
     pdf.set_font("helvetica", "B", 24)
     pdf.set_text_color(30, 41, 59)
@@ -110,55 +117,22 @@ def create_report_pdf(triage_data: dict, output_path: str):
         
         pdf.set_fill_color(248, 250, 252)
         pdf.set_draw_color(226, 232, 240)
-        pdf.rect(15, pdf.get_y(), 80, 65, style="DF")
+        # Increase image size to fill page better
+        pdf.rect(15, pdf.get_y(), 130, 95, style="DF")
         
         try:
-            pdf.image(temp_img_path, x=17, y=pdf.get_y()+2, w=76, h=52)
-            pdf.set_xy(15, pdf.get_y()+55)
+            pdf.image(temp_img_path, x=17, y=pdf.get_y()+2, w=126, h=82)
+            pdf.set_xy(15, pdf.get_y()+85)
             pdf.set_font("helvetica", "B", 7)
             pdf.set_text_color(148, 163, 184)
-            pdf.cell(80, 5, "INPUT IMAGE", align="C", ln=1)
-            pdf.ln(5)
+            pdf.cell(130, 5, "INPUT IMAGE", align="C", ln=1)
+            pdf.ln(20) # Space after image
         except Exception as e:
             print("Error embedding image:", e)
-            pdf.set_y(pdf.get_y()+65)
+            pdf.set_y(pdf.get_y()+95)
     else:
-        pdf.ln(5)
+        pdf.ln(15)
         
-    # ---------------- Model Classification Results ----------------
-    pdf.set_font("helvetica", "B", 14)
-    pdf.set_text_color(30, 41, 59)
-    pdf.set_fill_color(59, 130, 246)
-    pdf.rect(15, pdf.get_y()+1, 1.5, 5, style="F")
-    pdf.set_x(18)
-    pdf.cell(0, 7, "Model Classification Results", ln=1)
-    pdf.ln(2)
-    
-    pdf.set_fill_color(30, 41, 59)
-    pdf.set_text_color(255, 255, 255)
-    pdf.set_font("helvetica", "B", 10)
-    pdf.cell(w/2, 10, " Diagnostic Category", fill=True, ln=0)
-    pdf.cell(w/2, 10, " Triage Recommendation", fill=True, ln=1)
-    
-    pdf.set_fill_color(248, 250, 252)
-    pdf.set_text_color(15, 23, 42)
-    pdf.set_font("helvetica", "B", 10)
-    
-    condition = str(triage_data.get('predicted_class', 'Unknown'))
-    urgency = str(triage_data.get('danger_level', 'Routine'))
-    
-    pdf.cell(w/2, 12, f" {condition}", border="B", fill=True, ln=0)
-    
-    if urgency == "Seek Care Today":
-        pdf.set_text_color(185, 28, 28)
-    elif urgency == "See Doctor":
-        pdf.set_text_color(161, 98, 7)
-    else:
-        pdf.set_text_color(21, 128, 61)
-        
-    pdf.cell(w/2, 12, f" {urgency}", border="B", fill=True, ln=1)
-    pdf.ln(8)
-    
     # ---------------- Survey Data ----------------
     pdf.set_font("helvetica", "B", 14)
     pdf.set_text_color(30, 41, 59)
@@ -175,6 +149,7 @@ def create_report_pdf(triage_data: dict, output_path: str):
     pain = str(survey.get('pain', 'Not specified'))
     spreading = str(survey.get('spreading', 'Not specified'))
     fever = str(survey.get('fever', 'Not specified'))
+    history = str(survey.get('history', 'Not specified'))
     
     y = pdf.get_y()
     pdf.rect(15, y, w/2 - 2, 15)
@@ -212,12 +187,95 @@ def create_report_pdf(triage_data: dict, output_path: str):
     pdf.set_xy(17 + w/2 + 2, y + 2)
     pdf.set_font("helvetica", "B", 7)
     pdf.set_text_color(148, 163, 184)
-    pdf.cell(0, 4, "FEVER", ln=1)
+    pdf.cell(0, 4, "PRIOR OCCURRENCE", ln=1)
     pdf.set_x(17 + w/2 + 2)
     pdf.set_font("helvetica", "", 10)
     pdf.set_text_color(15, 23, 42)
+    pdf.cell(0, 6, history, ln=1)
+
+    y += 18
+    pdf.rect(15, y, w/2 - 2, 15)
+    pdf.set_xy(17, y + 2)
+    pdf.set_font("helvetica", "B", 7)
+    pdf.set_text_color(148, 163, 184)
+    pdf.cell(0, 4, "FEVER", ln=1)
+    pdf.set_x(17)
+    pdf.set_font("helvetica", "", 10)
+    pdf.set_text_color(15, 23, 42)
     pdf.cell(0, 6, fever, ln=1)
+
+    pdf.ln(15)
+
+    # ---------------- Next Page ----------------
+    pdf.add_page()
     
+    # Double Black Border (Page 2)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.set_line_width(0.6)
+    pdf.rect(5, 5, 200, 287)
+    pdf.set_line_width(0.2)
+    pdf.rect(6.5, 6.5, 197, 284)
+
+    # ---------------- Model Classification Results ----------------
+    pdf.set_font("helvetica", "B", 14)
+    pdf.set_text_color(30, 41, 59)
+    pdf.set_fill_color(59, 130, 246)
+    pdf.rect(15, pdf.get_y()+1, 1.5, 5, style="F")
+    pdf.set_x(18)
+    pdf.cell(0, 7, "Model Classification Results", ln=1)
+    pdf.ln(8) # Space before table
+    
+    pdf.set_fill_color(30, 41, 59)
+    pdf.set_text_color(255, 255, 255)
+    pdf.set_font("helvetica", "B", 10)
+    pdf.cell(w/2, 10, " Diagnostic Category", fill=True, ln=0)
+    pdf.cell(w/2, 10, " Triage Recommendation", fill=True, ln=1)
+    
+    pdf.set_fill_color(248, 250, 252)
+    pdf.set_text_color(15, 23, 42)
+    pdf.set_font("helvetica", "B", 10)
+    
+    condition = str(triage_data.get('predicted_class', 'Unknown'))
+    urgency = str(triage_data.get('danger_level', 'Routine'))
+    
+    pdf.cell(w/2, 12, f" {condition}", border="B", fill=True, ln=0)
+    
+    if urgency == "Seek Care Today":
+        pdf.set_text_color(185, 28, 28)
+    elif urgency == "See Doctor":
+        pdf.set_text_color(161, 98, 7)
+    else:
+        pdf.set_text_color(21, 128, 61)
+        
+    pdf.cell(w/2, 12, f" {urgency}", border="B", fill=True, ln=1)
+    pdf.ln(15) # Space after table
+    
+    # ---------------- Advanced AI Insights ----------------
+    gemini_summary = triage_data.get('gemini_summary')
+    gemini_details = triage_data.get('gemini_details')
+    
+    if gemini_summary and gemini_details:
+        pdf.set_font("helvetica", "B", 14)
+        pdf.set_text_color(30, 41, 59)
+        pdf.set_fill_color(168, 85, 247)
+        pdf.rect(15, pdf.get_y()+1, 1.5, 5, style="F")
+        pdf.set_x(18)
+        pdf.cell(0, 7, "Advanced AI Insights", ln=1)
+        pdf.ln(2)
+        
+        pdf.set_font("helvetica", "B", 10)
+        pdf.set_text_color(88, 28, 135)
+        pdf.set_fill_color(243, 232, 255)
+        summary_w = pdf.get_string_width(gemini_summary) + 6
+        pdf.cell(summary_w, 10, gemini_summary, fill=True, border=1, align="C", ln=1)
+        pdf.ln(3) # Minimal space before text, matching paragraph line height
+        
+        pdf.set_font("helvetica", "", 12) # Larger font
+        pdf.set_text_color(51, 65, 85)
+        formatted_details = gemini_details.replace('\n', '\n\n')
+        pdf.multi_cell(0, 7, formatted_details, markdown=True)
+        pdf.ln(12)
+        
     try:
         pdf.output(output_path)
     finally:

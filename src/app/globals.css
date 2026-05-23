@@ -92,6 +92,7 @@ h1, h2, h3, h4, h5, h6 {
 
   /* Do not force body to white, so the dashboard behind the print dialog stays dark */
   html, body {
+    background-color: white !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
