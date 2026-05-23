@@ -4,6 +4,8 @@ backend/
 
 # Ignore dataset to prevent massive upload timeouts during Vercel builds
 archive/
+archive.zip.zip
+dataset_colab.zip
 
 # Ignore other non-frontend files
 start.bat
