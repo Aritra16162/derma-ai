@@ -30,7 +30,7 @@ export function DashboardHeader() {
       if (splashState === 'waiting') {
         const timer = setTimeout(() => {
           setSplashState('moving');
-        }, 2000);
+        }, 5000);
         return () => clearTimeout(timer);
       }
     }
@@ -65,17 +65,17 @@ export function DashboardHeader() {
       {/* Central Title Area */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-max z-50">
         <motion.h1 
-          initial={splashState !== 'done' ? { scale: 2.5, y: "42vh", x: "0%", opacity: 0 } : { scale: 1, y: 0, x: "0%", opacity: 1 }}
+          initial={splashState !== 'done' ? { scale: 3.5, y: "42vh", x: "0%" } : { scale: 1, y: 0, x: "0%" }}
           animate={
             splashState === 'waiting' 
-              ? { scale: 3.5, y: "42vh", x: "0%", opacity: 1 }
+              ? { scale: 3.5, y: "42vh", x: "0%" }
               : splashState === 'moving'
-                ? { scale: 1, y: 0, x: ["0%", "15%", "0%"], opacity: 1 }
-                : { scale: 1, y: 0, x: "0%", opacity: 1 }
+                ? { scale: 1, y: 0, x: ["0%", "15%", "0%"] }
+                : { scale: 1, y: 0, x: "0%" }
           }
           transition={
             splashState === 'waiting'
-              ? { duration: 1.5, ease: "easeOut" }
+              ? { duration: 0 }
               : splashState === 'moving'
                 ? { 
                     duration: 1.0, 
