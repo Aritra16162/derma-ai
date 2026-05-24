@@ -37,16 +37,17 @@ export function DashboardHeader() {
   }, [splashState]);
 
   return (
-    <header className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-b border-gray-200/50 dark:border-slate-800/50 sticky top-0 z-50 transition-colors duration-300">
+    <header className={`flex items-center justify-between p-4 sticky top-0 z-50 transition-colors duration-300 ${splashState === 'done' ? 'bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-b border-gray-200/50 dark:border-slate-800/50' : 'bg-transparent border-transparent'}`}>
       
       {/* Splash Screen Background */}
       <AnimatePresence>
         {splashState !== 'done' && (
           <motion.div 
             initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="fixed inset-0 z-40 bg-white dark:bg-slate-950 pointer-events-auto"
+            className="fixed inset-0 z-40 bg-white pointer-events-auto"
           />
         )}
       </AnimatePresence>
