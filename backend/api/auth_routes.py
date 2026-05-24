@@ -9,6 +9,17 @@ from email_service import generate_otp, send_otp_email, send_welcome_email
 
 router = APIRouter()
 
+def cleanup_old_otps(db: Session):
+    try:
+        # Code expires in 10 mins. Deleting it when expires_at is 10 mins in the past
+        # means it deletes codes exactly 20 minutes after they were created.
+        db.query(VerificationCode).filter(
+            VerificationCode.expires_at < datetime.utcnow() - timedelta(minutes=10)
+        ).delete()
+        db.commit()
+    except Exception as e:
+        print(f"Error cleaning up OTPs: {e}")
+
 class AuthRequest(BaseModel):
     email: str
     password: str
@@ -39,6 +50,7 @@ class ResetPasswordRequest(BaseModel):
 
 @router.post("/signup")
 def signup(req: SignupRequest, db: Session = Depends(get_db)):
+    cleanup_old_otps(db)
     user = db.query(User).filter(User.email == req.email).first()
     
     hashed_password = get_password_hash(req.password)
@@ -71,6 +83,7 @@ def signup(req: SignupRequest, db: Session = Depends(get_db)):
 
 @router.post("/signin")
 def signin(req: AuthRequest, db: Session = Depends(get_db)):
+    cleanup_old_otps(db)
     user = db.query(User).filter(User.email == req.email).first()
     if not user or not verify_password(req.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
