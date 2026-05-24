@@ -24,9 +24,9 @@ const renderHighlightedText = (text: string) => {
 };
 
 export function MedicalHistoryView() {
-  const { user } = useStore();
+  const { user, historyLogs } = useStore();
   const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
-  const [userLogs, setUserLogs] = useState<any[]>([]);
+  const [backendLogs, setBackendLogs] = useState<any[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [sendingId, setSendingId] = useState<string | null>(null);
 
@@ -78,15 +78,27 @@ export function MedicalHistoryView() {
         .then(res => res.json())
         .then(data => {
             if (Array.isArray(data)) {
-                setUserLogs(data.map(log => ({...log, patientName: user.name})));
+                setBackendLogs(data.map(log => ({...log, patientName: user.name})));
+            } else {
+                setBackendLogs([]);
             }
         })
-        .catch(err => console.error("Failed to fetch history:", err))
+        .catch(err => {
+            console.error("Failed to fetch history:", err);
+            setBackendLogs([]);
+        })
         .finally(() => setLoading(false));
     } else {
-        setUserLogs([]);
+        setBackendLogs(null);
     }
   }, [user]);
+
+  const localLogs = user ? historyLogs.filter(log => log.patientName === user.name) : [];
+  const allLogs = [...(backendLogs || []), ...localLogs];
+  const userLogs = Array.from(new Map(allLogs.map(log => [
+      log.conditionName + JSON.stringify(log.surveyData), 
+      log
+  ])).values()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const getUrgencyConfig = (urgency: string) => {
     switch (urgency) {

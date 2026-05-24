@@ -30,10 +30,15 @@ export function DashboardHome() {
   }, [user]);
 
   // Optimistic UI Fallback:
-  // If the backend logs haven't loaded yet (due to the 1-min cold start delay),
-  // instantly fallback to the local device's cached historyLogs so the screen isn't blank!
+  // Merge backend and local logs to prevent data loss if SQLite DB resets on Render
   const localLogs = user ? historyLogs.filter(log => log.patientName === user.name) : historyLogs.filter(log => log.patientName === 'Guest User');
-  const userLogs = (user && backendLogs) ? backendLogs : localLogs;
+  
+  const allLogs = [...(backendLogs || []), ...localLogs];
+  const userLogs = Array.from(new Map(allLogs.map(log => [
+      log.conditionName + JSON.stringify(log.surveyData), 
+      log
+  ])).values()).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  
   const lastLog = userLogs.length > 0 ? userLogs[0] : null;
 
   const getUrgencyConfig = (urgency: string) => {
