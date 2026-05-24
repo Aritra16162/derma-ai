@@ -186,6 +186,9 @@ export function DashboardHome() {
                 <p>
                   It identifies possible conditions, assigns confidence levels, and classifies risk to help users understand the seriousness of their situation. The system offers clear explanations and suggests next steps such as home care, monitoring, or consulting a doctor. 
                 </p>
+                <p>
+                  Additionally, our Advanced AI Insights feature utilizes advanced reasoning capabilities to deeply evaluate the clinical presentation. It provides patients with a comprehensive, personalized explanation of the identified condition alongside detailed potential care guidance to help them make informed health decisions.
+                </p>
                 <p className="font-semibold text-gray-800 dark:text-slate-200 border-l-4 border-trust-blue dark:border-blue-500 pl-3">
                   Designed as a decision-support tool, it focuses on safety, clarity, and accessibility.
                 </p>
