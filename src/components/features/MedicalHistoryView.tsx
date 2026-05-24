@@ -368,7 +368,7 @@ export function MedicalHistoryView() {
 
                   {/* GeA Insights (Print) */}
                   {log.gea_summary && log.gea_details && (
-                    <div className="mb-8">
+                    <div className="mb-8 mt-6">
                       <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-4 flex items-center gap-2">
                          Advanced AI Insights
                       </h3>
