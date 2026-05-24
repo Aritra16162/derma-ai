@@ -59,7 +59,7 @@ export default function Home() {
          {/* Decorative tech background elements */}
          <div className="absolute top-0 left-0 w-full h-[500px] bg-[radial-gradient(circle_at_50%_0%,rgba(32,86,179,0.05)_0%,transparent_70%)] pointer-events-none z-0" />
          
-         <div className="relative z-10 print:hidden">
+         <div className="relative z-50 print:hidden">
             <DashboardHeader />
          </div>
          
