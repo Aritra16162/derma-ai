@@ -85,6 +85,21 @@ export function DashboardHeader() {
         >
           Derma-Guide AI
         </motion.h1>
+        <AnimatePresence>
+          {splashState === 'waiting' && (
+            <motion.div
+              initial={{ opacity: 0, y: "42vh" }}
+              animate={{ opacity: 1, y: "42vh" }}
+              exit={{ opacity: 0, y: "42vh" }}
+              transition={{ duration: 0.8 }}
+              className="absolute top-full left-1/2 -translate-x-1/2 mt-[45px] w-max pointer-events-none"
+            >
+              <p className="text-slate-400 font-semibold tracking-[0.2em] text-sm md:text-base uppercase opacity-80">
+                See Beyond the Surface
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
       {/* User Actions */}
       <div className={`flex items-center gap-4 relative z-50 transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} ref={dropdownRef}>
