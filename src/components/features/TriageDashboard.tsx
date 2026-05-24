@@ -309,8 +309,8 @@ export function TriageDashboard() {
         {/* GeA Insights (Print) */}
         {geaSummary && geaDetails && (
           <div className="mb-8">
-            <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-4 flex items-center gap-2">
-               Advanced GeA Insights
+            <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-6 flex items-center gap-2">
+               Advanced AI Insights
             </h3>
             <div className="bg-white border border-purple-200 rounded-xl p-5">
                <div className="mb-3">
