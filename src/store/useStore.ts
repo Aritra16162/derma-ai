@@ -83,7 +83,7 @@ export const useStore = create<AppState>()(
       currentView: 'dashboard',
       user: null,
       historyLogs: [],
-      isSidebarOpen: true,
+      isSidebarOpen: false,
       showAuthModal: false,
       showLogoutConfirm: false,
       setCurrentView: (view) => set({ currentView: view }),

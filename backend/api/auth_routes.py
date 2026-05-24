@@ -28,6 +28,7 @@ class SignupRequest(BaseModel):
     name: str
     email: str
     password: str = Field(..., min_length=6)
+    gender: str = "Prefer not to say"
 
 class VerifyRequest(BaseModel):
     email: str
@@ -61,9 +62,10 @@ def signup(req: SignupRequest, db: Session = Depends(get_db)):
         else:
             user.name = req.name
             user.hashed_password = hashed_password
+            user.gender = req.gender
             db.commit()
     else:
-        new_user = User(name=req.name, email=req.email, hashed_password=hashed_password)
+        new_user = User(name=req.name, email=req.email, hashed_password=hashed_password, gender=req.gender)
         db.add(new_user)
         db.commit()
     

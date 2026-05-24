@@ -54,12 +54,12 @@ Derma Guide Team"""
     
     _send_http_email(payload)
 
-def send_pdf_email(to_email: str, pdf_path: str):
+def send_pdf_email(to_email: str, name: str, pdf_path: str):
     if not SMTP_EMAIL:
         print(f"Mock Email sent to {to_email} with PDF {pdf_path}")
         return
         
-    body = """Hello,
+    body = f"""Hello {name},
 
 Please find attached your recent Derma Guide AI Skin Analysis report.
 

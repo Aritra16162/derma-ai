@@ -10,6 +10,7 @@ class User(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
     is_verified = Column(Boolean, default=False)
+    gender = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 class MedicalReport(Base):

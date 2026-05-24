@@ -85,13 +85,17 @@ class ReportRequest(BaseModel):
     triage_data: dict
 
 @router.post("/send-report")
-async def send_report_endpoint(req: ReportRequest):
+async def send_report_endpoint(req: ReportRequest, db: Session = Depends(get_db)):
     try:
         import uuid
+        from schemas.models_db import User
+        user = db.query(User).filter(User.email == req.email).first()
+        name = user.name if user else "User"
+
         pdf_path = f"report_{req.email.split('@')[0]}_{uuid.uuid4().hex[:8]}.pdf"
         create_report_pdf(req.triage_data, pdf_path)
         
-        send_pdf_email(req.email, pdf_path)
+        send_pdf_email(req.email, name, pdf_path)
         
         if os.path.exists(pdf_path):
             os.remove(pdf_path)
