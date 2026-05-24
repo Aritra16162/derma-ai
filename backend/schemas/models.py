@@ -21,5 +21,5 @@ class ClassifyResponse(BaseModel):
     predicted_class: str
     confidence: float
     danger_level: str
-    gemini_summary: str | None = None
-    gemini_details: str | None = None
+    gea_summary: str | None = None
+    gea_details: str | None = None

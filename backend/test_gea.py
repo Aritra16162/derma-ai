@@ -4,7 +4,7 @@ import os
 # Add backend directory to sys.path
 sys.path.append(os.path.join(os.path.dirname(__file__)))
 
-from ml.gemini import get_advanced_insights
+from ml.gea import get_advanced_insights
 
 # A 1x1 transparent pixel base64 image
 b64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="

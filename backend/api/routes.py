@@ -25,8 +25,8 @@ class ValidateImageRequest(BaseModel):
 @router.post("/validate-image")
 async def validate_image_endpoint(req: ValidateImageRequest):
     try:
-        from ml.gemini import validate_image_with_gemini
-        is_valid = validate_image_with_gemini(req.image)
+        from ml.gea import validate_image_with_gea
+        is_valid = validate_image_with_gea(req.image)
         return {"valid": is_valid}
     except Exception as e:
         print(f"Error during validation: {e}")
@@ -62,16 +62,16 @@ async def classify_endpoint(req: ClassifyRequest):
         # Combine ML prediction with survey answers for triage
         danger_level = map_triage_level(predicted_class, req.survey.dict())
 
-        # Call Gemini for advanced insights
-        from ml.gemini import get_advanced_insights
-        gemini_summary, gemini_details = get_advanced_insights(req.image, req.survey.dict(), predicted_class)
+        # Call GeA for advanced insights
+        from ml.gea import get_advanced_insights
+        gea_summary, gea_details = get_advanced_insights(req.image, req.survey.dict(), predicted_class)
 
         return ClassifyResponse(
             predicted_class=predicted_class,
             confidence=confidence,
             danger_level=danger_level,
-            gemini_summary=gemini_summary,
-            gemini_details=gemini_details,
+            gea_summary=gea_summary,
+            gea_details=gea_details,
         )
     except Exception as e:
         print(f"Error during classification: {e}")
@@ -109,8 +109,8 @@ class SaveReportRequest(BaseModel):
     urgency: str
     survey_data: dict
     image_data: Optional[str] = None
-    gemini_summary: Optional[str] = None
-    gemini_details: Optional[str] = None
+    gea_summary: Optional[str] = None
+    gea_details: Optional[str] = None
 
 @router.post("/reports")
 def save_report(req: SaveReportRequest, db: Session = Depends(get_db)):
@@ -120,8 +120,8 @@ def save_report(req: SaveReportRequest, db: Session = Depends(get_db)):
         urgency=req.urgency,
         survey_data=json.dumps(req.survey_data),
         image_data=req.image_data,
-        gemini_summary=req.gemini_summary,
-        gemini_details=req.gemini_details
+        gea_summary=req.gea_summary,
+        gea_details=req.gea_details
     )
     db.add(report)
     db.commit()
@@ -140,7 +140,7 @@ def get_reports(email: str, db: Session = Depends(get_db)):
             "urgency": r.urgency,
             "surveyData": json.loads(r.survey_data),
             "image_data": r.image_data,
-            "gemini_summary": r.gemini_summary,
-            "gemini_details": r.gemini_details
+            "gea_summary": r.gea_summary,
+            "gea_details": r.gea_details
         })
     return result

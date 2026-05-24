@@ -53,8 +53,8 @@ export function MedicalHistoryView() {
                     danger_level: log.urgency,
                     survey: log.surveyData,
                     image_data: log.image_data,
-                    gemini_summary: log.gemini_summary,
-                    gemini_details: log.gemini_details
+                    gea_summary: log.gea_summary,
+                    gea_details: log.gea_details
                 }
             })
         });
@@ -203,19 +203,19 @@ export function MedicalHistoryView() {
                         </div>
                      </div>
                      
-                     {/* Advanced AI Insights (UI) */}
-                     {log.gemini_summary && log.gemini_details && (
+                     {/* Advanced GeA Insights (UI) */}
+                     {log.gea_summary && log.gea_details && (
                        <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/30 rounded-xl transition-colors">
                          <div className="flex items-center gap-2 mb-3">
                            <Sparkles size={16} className="text-purple-500 dark:text-purple-400" />
-                           <h3 className="text-sm font-bold text-purple-900 dark:text-purple-300">Advanced AI Insights</h3>
+                           <h3 className="text-sm font-bold text-purple-900 dark:text-purple-300">Advanced GeA Insights</h3>
                          </div>
                          <div className="flex flex-col gap-2">
                            <span className="inline-block px-3 py-1 bg-white dark:bg-slate-800 rounded-lg text-sm font-bold text-purple-900 dark:text-purple-200 border border-purple-200 dark:border-purple-600 self-start shadow-sm">
-                             {log.gemini_summary}
+                             {log.gea_summary}
                            </span>
                            <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed mt-1">
-                             {renderHighlightedText(log.gemini_details)}
+                             {renderHighlightedText(log.gea_details)}
                            </p>
                          </div>
                        </div>
@@ -366,20 +366,20 @@ export function MedicalHistoryView() {
                         </tbody>
                      </table>
 
-                  {/* Gemini Insights (Print) */}
-                  {log.gemini_summary && log.gemini_details && (
+                  {/* GeA Insights (Print) */}
+                  {log.gea_summary && log.gea_details && (
                     <div className="mb-8">
                       <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-4 flex items-center gap-2">
-                         Advanced AI Insights
+                         Advanced GeA Insights
                       </h3>
                       <div className="bg-white border border-purple-200 rounded-xl p-5">
                          <div className="mb-3">
                            <span className="bg-white border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm">
-                             {log.gemini_summary}
+                             {log.gea_summary}
                            </span>
                          </div>
                          <p className="text-sm text-slate-700 leading-relaxed">
-                           {renderHighlightedText(log.gemini_details)}
+                           {renderHighlightedText(log.gea_details)}
                          </p>
                       </div>
                     </div>

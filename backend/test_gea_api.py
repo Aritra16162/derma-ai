@@ -5,7 +5,7 @@ from google.genai import types
 from dotenv import load_dotenv
 
 load_dotenv()
-key = os.environ.get("GEMINI_API_KEY")
+key = os.environ.get("GEA_API_KEY")
 
 try:
     client = genai.Client(api_key=key)
@@ -17,7 +17,7 @@ try:
     image_bytes = base64.b64decode(base64_data)
     
     response = client.models.generate_content(
-        model='gemini-2.5-flash',
+        model=os.environ.get('GEA_MODEL_NAME', 'gea-2.5-flash'),
         contents=[
             "Describe this image.",
             types.Part.from_bytes(data=image_bytes, mime_type=mime_type)

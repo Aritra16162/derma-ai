@@ -4,7 +4,7 @@ import { API_URL } from '@/lib/config';
 export async function submitToTriage(
   image: string | null,
   survey: SurveyData
-): Promise<{ status: TriageStatus; conditionName?: string; geminiSummary?: string; geminiDetails?: string }> {
+): Promise<{ status: TriageStatus; conditionName?: string; geaSummary?: string; geaDetails?: string }> {
   try {
     const response = await fetch(`${API_URL}/classify`, {
       method: 'POST',
@@ -31,8 +31,8 @@ export async function submitToTriage(
     return { 
       status: data.danger_level || 'Routine', 
       conditionName: data.predicted_class,
-      geminiSummary: data.gemini_summary,
-      geminiDetails: data.gemini_details
+      geaSummary: data.gea_summary,
+      geaDetails: data.gea_details
     };
   } catch (error: any) {
     console.error("FastAPI fetch failed:", error);

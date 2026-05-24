@@ -7,12 +7,12 @@ from dotenv import load_dotenv
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env')
 load_dotenv(dotenv_path=env_path)
 
-def get_gemini_api_key():
+def get_gea_api_key():
     load_dotenv(dotenv_path=env_path, override=True)
-    return os.environ.get("GEMINI_API_KEY")
+    return os.environ.get("GEA_API_KEY")
 
-def get_gemini_client():
-    key = get_gemini_api_key()
+def get_gea_client():
+    key = get_gea_api_key()
     if key:
         return genai.Client(api_key=key)
     return None
@@ -28,12 +28,12 @@ def _prepare_image_part(img_base64: str):
     image_bytes = base64.b64decode(base64_data)
     return types.Part.from_bytes(data=image_bytes, mime_type=mime_type)
 
-def validate_image_with_gemini(img_base64: str) -> bool:
+def validate_image_with_gea(img_base64: str) -> bool:
     """
-    Asks Gemini if the image is a clear photo of human skin or a medical condition.
+    Asks GeA if the image is a clear photo of human skin or a medical condition.
     Returns True if valid, False if it's an object/landscape/etc.
     """
-    client = get_gemini_client()
+    client = get_gea_client()
     if not client:
         # Fallback to true if no key provided, so we don't break the app
         return True
@@ -43,21 +43,21 @@ def validate_image_with_gemini(img_base64: str) -> bool:
         prompt = "Is this a clear, close-up photo of human skin or a medical skin condition? Answer ONLY 'YES' or 'NO'."
         
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model=os.environ.get('GEA_MODEL_NAME', 'gea-2.5-flash'),
             contents=[prompt, image_part]
         )
         text = response.text.strip().upper()
         return "YES" in text
     except Exception as e:
-        print(f"Gemini validation error: {e}")
+        print(f"GeA validation error: {e}")
         return True # Fallback if API fails
 
 def get_advanced_insights(img_base64: str, survey_data: dict, predicted_class: str) -> tuple[str, str]:
     """
-    Asks Gemini for a diagnosis based on image and survey.
+    Asks GeA for a diagnosis based on image and survey.
     Returns (summary_word, details_paragraph).
     """
-    client = get_gemini_client()
+    client = get_gea_client()
     if not client:
         return ("Unavailable", "Failed to generate advanced AI insights. Contact admin.")
         
@@ -85,7 +85,7 @@ Line 2: Given the uploaded photo its shows...
 """
         
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model=os.environ.get('GEA_MODEL_NAME', 'gea-2.5-flash'),
             contents=[prompt, image_part]
         )
         text = response.text.strip()

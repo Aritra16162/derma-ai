@@ -251,28 +251,28 @@ def create_report_pdf(triage_data: dict, output_path: str):
     pdf.ln(15) # Space after table
     
     # ---------------- Advanced AI Insights ----------------
-    gemini_summary = triage_data.get('gemini_summary')
-    gemini_details = triage_data.get('gemini_details')
+    gea_summary = triage_data.get('gea_summary')
+    gea_details = triage_data.get('gea_details')
     
-    if gemini_summary and gemini_details:
+    if gea_summary and gea_details:
         pdf.set_font("helvetica", "B", 14)
         pdf.set_text_color(30, 41, 59)
         pdf.set_fill_color(168, 85, 247)
         pdf.rect(15, pdf.get_y()+1, 1.5, 5, style="F")
         pdf.set_x(18)
-        pdf.cell(0, 7, "Advanced AI Insights", ln=1)
+        pdf.cell(0, 7, "Advanced GeA Insights", ln=1)
         pdf.ln(2)
         
         pdf.set_font("helvetica", "B", 10)
         pdf.set_text_color(88, 28, 135)
         pdf.set_fill_color(243, 232, 255)
-        summary_w = pdf.get_string_width(gemini_summary) + 6
-        pdf.cell(summary_w, 10, gemini_summary, fill=True, border=1, align="C", ln=1)
+        summary_w = pdf.get_string_width(gea_summary) + 6
+        pdf.cell(summary_w, 10, gea_summary, fill=True, border=1, align="C", ln=1)
         pdf.ln(3) # Minimal space before text, matching paragraph line height
         
         pdf.set_font("helvetica", "", 12) # Larger font
         pdf.set_text_color(51, 65, 85)
-        formatted_details = gemini_details.replace('\n', '\n\n')
+        formatted_details = gea_details.replace('\n', '\n\n')
         pdf.multi_cell(0, 7, formatted_details, markdown=True)
         pdf.ln(12)
         
