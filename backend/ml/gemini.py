@@ -59,7 +59,7 @@ def get_advanced_insights(img_base64: str, survey_data: dict, predicted_class: s
     """
     client = get_gemini_client()
     if not client:
-        return ("Unavailable", "Gemini API Key is missing. Advanced insights are unavailable.")
+        return ("Unavailable", "Failed to generate advanced ai ......")
         
     try:
         image_part = _prepare_image_part(img_base64)
