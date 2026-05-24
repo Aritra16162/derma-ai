@@ -25,7 +25,7 @@ export function DashboardHeader() {
       if (splashState === 'waiting') {
         const timer = setTimeout(() => {
           setSplashState('moving');
-        }, 3000);
+        }, 2300);
         return () => clearTimeout(timer);
       }
     }
