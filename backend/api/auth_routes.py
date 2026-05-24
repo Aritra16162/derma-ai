@@ -75,6 +75,9 @@ def signin(req: AuthRequest, db: Session = Depends(get_db)):
     if not user or not verify_password(req.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
         
+    if not user.is_verified:
+        raise HTTPException(status_code=403, detail="Account not verified. Please go to Sign Up to verify your email.")
+        
     # Send OTP
     otp = generate_otp()
     expires_at = datetime.utcnow() + timedelta(minutes=10)
@@ -141,6 +144,9 @@ def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == req.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="No account found with this email address")
+        
+    if not user.is_verified:
+        raise HTTPException(status_code=403, detail="Account not verified. Please go to Sign Up to create your account.")
         
     # Send OTP
     otp = generate_otp()
