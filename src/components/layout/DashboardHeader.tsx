@@ -52,9 +52,9 @@ export function DashboardHeader() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="fixed inset-0 z-40 bg-slate-900 pointer-events-auto flex items-center justify-center"
+            className="fixed inset-0 z-40 bg-white dark:bg-slate-950 pointer-events-auto flex items-center justify-center"
           >
-             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(32,86,179,0.7)_0%,transparent_80%)] pointer-events-none z-0" />
+             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(32,86,179,0.15)_0%,transparent_70%)] pointer-events-none z-0" />
           </motion.div>
         )}
       </AnimatePresence>
