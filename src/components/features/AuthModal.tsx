@@ -10,7 +10,7 @@ export function AuthModal() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [gender, setGender] = useState('Prefer not to say');
+  const [gender, setGender] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -26,7 +26,7 @@ export function AuthModal() {
       setName('');
       setEmail('');
       setPassword('');
-      setGender('Prefer not to say');
+      setGender('');
       setConfirmPassword('');
       setOtp('');
       setOtpVerified(false);
@@ -211,11 +211,13 @@ export function AuthModal() {
                     <select
                       value={gender}
                       onChange={(e) => setGender(e.target.value)}
-                      className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white appearance-none cursor-pointer"
+                      required
+                      className={`w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue appearance-none cursor-pointer ${gender === '' ? 'text-gray-400' : 'text-gray-900 dark:text-white'}`}
                     >
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Prefer not to say">Prefer not to say</option>
+                      <option value="" disabled hidden>Gender</option>
+                      <option value="Male" className="text-gray-900 dark:text-white">Male</option>
+                      <option value="Female" className="text-gray-900 dark:text-white">Female</option>
+                      <option value="Prefer not to say" className="text-gray-900 dark:text-white">Prefer not to say</option>
                     </select>
                     <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>

@@ -1,11 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, Menu, UserCircle, LogOut } from 'lucide-react';
 import { useStore } from '@/store/useStore';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function DashboardHeader() {
   const { user, toggleSidebar, setCurrentView, logoutUser, setShowAuthModal, setShowLogoutConfirm } = useStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const [showSplash, setShowSplash] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -17,9 +20,37 @@ export function DashboardHeader() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if (!sessionStorage.getItem('hasSeenSplash')) {
+        setShowSplash(true);
+        const timer = setTimeout(() => {
+          setShowSplash(false);
+          sessionStorage.setItem('hasSeenSplash', 'true');
+        }, 1800);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
+
   return (
     <header className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-b border-gray-200/50 dark:border-slate-800/50 sticky top-0 z-50 transition-colors duration-300">
-      <div className="flex items-center gap-6">
+      
+      {/* Splash Screen Background */}
+      <AnimatePresence>
+        {showSplash && (
+          <motion.div 
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            className="fixed inset-0 z-40 bg-[#070b14] pointer-events-auto flex items-center justify-center"
+          >
+             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(32,86,179,0.4)_0%,transparent_60%)] pointer-events-none z-0" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className={`flex items-center gap-6 z-50 relative transition-opacity duration-700 ${showSplash ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <button 
           onClick={toggleSidebar} 
           className="text-gray-600 dark:text-slate-300 font-medium text-sm flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -31,13 +62,18 @@ export function DashboardHeader() {
       </div>
 
       {/* Central Title Area */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-max">
-        <h1 className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm">
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-max z-50">
+        <motion.h1 
+          initial={showSplash ? { scale: 3.5, y: "42vh", opacity: 0 } : false}
+          animate={showSplash ? { scale: 3.5, y: "42vh", opacity: 1 } : { scale: 1, y: 0, opacity: 1 }}
+          transition={showSplash ? { duration: 0.8, ease: "easeOut" } : { duration: 1.2, type: "spring", bounce: 0.3 }}
+          className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm origin-center"
+        >
           Derma-Guide AI
-        </h1>
+        </motion.h1>
       </div>
       {/* User Actions */}
-      <div className="flex items-center gap-4 relative" ref={dropdownRef}>
+      <div className={`flex items-center gap-4 relative z-50 transition-opacity duration-700 ${showSplash ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} ref={dropdownRef}>
         <button 
           type="button"
           className="flex items-center gap-3 cursor-pointer p-2 -mr-2 relative z-20 focus:outline-none appearance-none bg-transparent border-none text-left touch-manipulation"
