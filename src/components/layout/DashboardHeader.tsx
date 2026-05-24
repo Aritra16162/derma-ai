@@ -8,7 +8,8 @@ export function DashboardHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [showSplash, setShowSplash] = useState(false);
+  const [isLogoBig, setIsLogoBig] = useState(false);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -23,11 +24,11 @@ export function DashboardHeader() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       if (!sessionStorage.getItem('hasSeenSplash')) {
-        setShowSplash(true);
+        setIsLogoBig(true);
+        setIsOverlayVisible(true);
         const timer = setTimeout(() => {
-          setShowSplash(false);
-          sessionStorage.setItem('hasSeenSplash', 'true');
-        }, 1800);
+          setIsLogoBig(false);
+        }, 1500);
         return () => clearTimeout(timer);
       }
     }
@@ -37,20 +38,13 @@ export function DashboardHeader() {
     <header className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-b border-gray-200/50 dark:border-slate-800/50 sticky top-0 z-50 transition-colors duration-300">
       
       {/* Splash Screen Background */}
-      <AnimatePresence>
-        {showSplash && (
-          <motion.div 
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1, ease: "easeInOut" }}
-            className="fixed inset-0 z-40 bg-[#070b14] pointer-events-auto flex items-center justify-center"
-          >
-             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(32,86,179,0.4)_0%,transparent_60%)] pointer-events-none z-0" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isOverlayVisible && (
+        <div className="fixed inset-0 z-40 bg-[#070b14] pointer-events-auto flex items-center justify-center">
+           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(32,86,179,0.4)_0%,transparent_60%)] pointer-events-none z-0" />
+        </div>
+      )}
 
-      <div className={`flex items-center gap-6 z-50 relative transition-opacity duration-700 ${showSplash ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className={`flex items-center gap-6 z-50 relative ${isOverlayVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <button 
           onClick={toggleSidebar} 
           className="text-gray-600 dark:text-slate-300 font-medium text-sm flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -64,16 +58,30 @@ export function DashboardHeader() {
       {/* Central Title Area */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-max z-50">
         <motion.h1 
-          initial={showSplash ? { scale: 3.5, y: "42vh", opacity: 0 } : false}
-          animate={showSplash ? { scale: 3.5, y: "42vh", opacity: 1 } : { scale: 1, y: 0, opacity: 1 }}
-          transition={showSplash ? { duration: 0.8, ease: "easeOut" } : { duration: 1.2, type: "spring", bounce: 0.3 }}
+          initial={isOverlayVisible ? { scale: 3.5, y: "42vh", x: "-50%" } : { scale: 1, y: 0, x: "-50%" }}
+          animate={isLogoBig 
+            ? { scale: 3.5, y: "42vh", x: "-50%" } 
+            : isOverlayVisible 
+              ? { scale: 1, y: 0, x: ["-50%", "-10%", "-50%"] }
+              : { scale: 1, y: 0, x: "-50%" }
+          }
+          transition={isLogoBig 
+            ? { duration: 0.8, ease: "easeOut" } 
+            : { duration: 1.2, ease: "easeInOut", times: [0, 0.6, 1] }
+          }
+          onAnimationComplete={() => {
+            if (!isLogoBig && isOverlayVisible) {
+              setIsOverlayVisible(false);
+              sessionStorage.setItem('hasSeenSplash', 'true');
+            }
+          }}
           className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm origin-center"
         >
           Derma-Guide AI
         </motion.h1>
       </div>
       {/* User Actions */}
-      <div className={`flex items-center gap-4 relative z-50 transition-opacity duration-700 ${showSplash ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} ref={dropdownRef}>
+      <div className={`flex items-center gap-4 relative z-50 ${isOverlayVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} ref={dropdownRef}>
         <button 
           type="button"
           className="flex items-center gap-3 cursor-pointer p-2 -mr-2 relative z-20 focus:outline-none appearance-none bg-transparent border-none text-left touch-manipulation"
