@@ -8,12 +8,7 @@ export function DashboardHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [splashState, setSplashState] = useState<'waiting' | 'moving' | 'done'>(() => {
-    if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('hasSeenSplash') ? 'done' : 'waiting';
-    }
-    return 'waiting';
-  });
+  const [splashState, setSplashState] = useState<'waiting' | 'moving' | 'done'>('waiting');
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -88,7 +83,6 @@ export function DashboardHeader() {
           onAnimationComplete={() => {
             if (splashState === 'moving') {
               setSplashState('done');
-              sessionStorage.setItem('hasSeenSplash', 'true');
             }
           }}
           className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm origin-center"
