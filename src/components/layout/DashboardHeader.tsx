@@ -8,17 +8,11 @@ export function DashboardHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [isLogoBig, setIsLogoBig] = useState(() => {
+  const [splashState, setSplashState] = useState<'waiting' | 'moving' | 'done'>(() => {
     if (typeof window !== 'undefined') {
-      return !sessionStorage.getItem('hasSeenSplash');
+      return sessionStorage.getItem('hasSeenSplash') ? 'done' : 'waiting';
     }
-    return true;
-  });
-  const [isOverlayVisible, setIsOverlayVisible] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return !sessionStorage.getItem('hasSeenSplash');
-    }
-    return true;
+    return 'waiting';
   });
 
   useEffect(() => {
@@ -33,33 +27,31 @@ export function DashboardHeader() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (isLogoBig) {
+      if (splashState === 'waiting') {
         const timer = setTimeout(() => {
-          setIsLogoBig(false);
-        }, 5000);
+          setSplashState('moving');
+        }, 2000);
         return () => clearTimeout(timer);
       }
     }
-  }, []);
+  }, [splashState]);
 
   return (
     <header className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border-b border-gray-200/50 dark:border-slate-800/50 sticky top-0 z-50 transition-colors duration-300">
       
       {/* Splash Screen Background */}
       <AnimatePresence>
-        {isOverlayVisible && (
+        {splashState !== 'done' && (
           <motion.div 
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="fixed inset-0 z-40 bg-white dark:bg-slate-950 pointer-events-auto flex items-center justify-center"
-          >
-             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(32,86,179,0.15)_0%,transparent_70%)] pointer-events-none z-0" />
-          </motion.div>
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="fixed inset-0 z-40 bg-white dark:bg-slate-950 pointer-events-auto"
+          />
         )}
       </AnimatePresence>
 
-      <div className={`flex items-center gap-6 z-50 relative transition-opacity duration-[1200ms] ${isOverlayVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className={`flex items-center gap-6 z-50 relative transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <button 
           onClick={toggleSidebar} 
           className="text-gray-600 dark:text-slate-300 font-medium text-sm flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -73,20 +65,28 @@ export function DashboardHeader() {
       {/* Central Title Area */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-max z-50">
         <motion.h1 
-          initial={isOverlayVisible ? { scale: 3.5, y: "42vh", x: "0%" } : { scale: 1, y: 0, x: "0%" }}
-          animate={isLogoBig 
-            ? { scale: 3.5, y: "42vh", x: "0%" } 
-            : isOverlayVisible 
-              ? { scale: 1, y: 0, x: ["0%", "40%", "0%"] }
-              : { scale: 1, y: 0, x: "0%" }
+          initial={splashState !== 'done' ? { scale: 2.5, y: "42vh", x: "0%", opacity: 0 } : { scale: 1, y: 0, x: "0%", opacity: 1 }}
+          animate={
+            splashState === 'waiting' 
+              ? { scale: 3.5, y: "42vh", x: "0%", opacity: 1 }
+              : splashState === 'moving'
+                ? { scale: 1, y: 0, x: ["0%", "15%", "0%"], opacity: 1 }
+                : { scale: 1, y: 0, x: "0%", opacity: 1 }
           }
-          transition={isLogoBig 
-            ? { duration: 0.8, ease: "easeOut" } 
-            : { duration: 1.8, ease: "easeInOut", times: [0, 0.6, 1] }
+          transition={
+            splashState === 'waiting'
+              ? { duration: 1.5, ease: "easeOut" }
+              : splashState === 'moving'
+                ? { 
+                    duration: 1.0, 
+                    ease: [0.22, 1, 0.36, 1],
+                    x: { duration: 1.0, times: [0, 0.6, 1], ease: "easeInOut" }
+                  }
+                : { duration: 0 }
           }
           onAnimationComplete={() => {
-            if (!isLogoBig && isOverlayVisible) {
-              setIsOverlayVisible(false);
+            if (splashState === 'moving') {
+              setSplashState('done');
               sessionStorage.setItem('hasSeenSplash', 'true');
             }
           }}
@@ -96,7 +96,7 @@ export function DashboardHeader() {
         </motion.h1>
       </div>
       {/* User Actions */}
-      <div className={`flex items-center gap-4 relative z-50 transition-opacity duration-[1200ms] ${isOverlayVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} ref={dropdownRef}>
+      <div className={`flex items-center gap-4 relative z-50 transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} ref={dropdownRef}>
         <button 
           type="button"
           className="flex items-center gap-3 cursor-pointer p-2 -mr-2 relative z-20 focus:outline-none appearance-none bg-transparent border-none text-left touch-manipulation"
