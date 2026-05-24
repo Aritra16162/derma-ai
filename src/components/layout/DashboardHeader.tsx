@@ -66,12 +66,12 @@ export function DashboardHeader() {
       {/* Central Title Area */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-max z-50">
         <motion.h1 
-          initial={isOverlayVisible ? { scale: 3.5, y: "42vh", x: "-50%" } : { scale: 1, y: 0, x: "-50%" }}
+          initial={isOverlayVisible ? { scale: 3.5, y: "42vh", x: "0%" } : { scale: 1, y: 0, x: "0%" }}
           animate={isLogoBig 
-            ? { scale: 3.5, y: "42vh", x: "-50%" } 
+            ? { scale: 3.5, y: "42vh", x: "0%" } 
             : isOverlayVisible 
-              ? { scale: 1, y: 0, x: ["-50%", "-10%", "-50%"] }
-              : { scale: 1, y: 0, x: "-50%" }
+              ? { scale: 1, y: 0, x: ["0%", "40%", "0%"] }
+              : { scale: 1, y: 0, x: "0%" }
           }
           transition={isLogoBig 
             ? { duration: 0.8, ease: "easeOut" } 
