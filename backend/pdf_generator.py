@@ -260,8 +260,8 @@ def create_report_pdf(triage_data: dict, output_path: str):
         pdf.set_fill_color(168, 85, 247)
         pdf.rect(15, pdf.get_y()+1, 1.5, 5, style="F")
         pdf.set_x(18)
-        pdf.cell(0, 7, "Advanced GeA Insights", ln=1)
-        pdf.ln(2)
+        pdf.cell(0, 7, "Advanced AI Insights", ln=1)
+        pdf.ln(6)
         
         pdf.set_font("helvetica", "B", 10)
         pdf.set_text_color(88, 28, 135)

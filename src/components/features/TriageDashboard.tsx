@@ -149,9 +149,9 @@ export function TriageDashboard() {
         {/* Advanced AI Insights */}
         {geaSummary && geaDetails && (
           <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 rounded-xl transition-colors">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-4">
               <Sparkles size={16} className="text-blue-500 dark:text-blue-400" />
-              <h3 className="text-sm font-bold text-blue-900 dark:text-blue-300">Advanced GeA Insights</h3>
+              <h3 className="text-sm font-bold text-blue-900 dark:text-blue-300">Advanced AI Insights</h3>
             </div>
             <div className="flex flex-col gap-2">
               <span className="inline-block px-3 py-1 bg-white dark:bg-slate-800 rounded-lg text-sm font-bold text-gray-800 dark:text-gray-200 border dark:border-slate-600 self-start shadow-sm">
@@ -309,10 +309,10 @@ export function TriageDashboard() {
         {/* GeA Insights (Print) */}
         {geaSummary && geaDetails && (
           <div className="mb-8">
-            <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-6 flex items-center gap-2">
+            <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-4 flex items-center gap-2">
                Advanced AI Insights
             </h3>
-            <div className="bg-white border border-purple-200 rounded-xl p-5">
+            <div className="bg-white border border-purple-200 rounded-xl p-5 mt-4">
                <div className="mb-3">
                  <span className="bg-white border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm">
                    {geaSummary}
