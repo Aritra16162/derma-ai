@@ -16,46 +16,48 @@ export function Footer() {
         </div>
 
         {/* Right - Contact */}
-        <div className="flex-1 flex flex-col items-center md:items-end justify-center gap-1.5">
-          <span className="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-widest opacity-80">
-            Connect with us
-          </span>
-          <Link 
-            href="https://instagram.com/syntaxx_brothers" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group flex items-center gap-2 transition-all text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform duration-300">
-              <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-            </svg>
-            <span className="text-sm font-medium tracking-wide group-hover:underline decoration-blue-500/30 underline-offset-4">
-              @syntaxx_brothers
+        <div className="flex-1 flex flex-col items-center md:items-end justify-center">
+          <div className="flex flex-col items-center gap-1.5">
+            <span className="text-xs font-medium text-slate-400 dark:text-slate-500 uppercase tracking-widest opacity-80">
+              Connect with us
             </span>
-          </Link>
-          <div className="flex items-center gap-4 mt-1">
             <Link 
-              href="https://www.linkedin.com/in/mondalagnish05/" 
+              href="https://instagram.com/syntaxx_brothers" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group flex items-center gap-1.5 transition-all text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
-              title="Agnish Mondal LinkedIn"
+              className="group flex items-center gap-2 transition-all text-slate-500 dark:text-slate-400 hover:text-blue-500 dark:hover:text-blue-400"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform duration-300"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-              <span className="text-xs font-medium tracking-wide group-hover:underline decoration-blue-500/30 underline-offset-4">Agnish</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform duration-300">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+              </svg>
+              <span className="text-sm font-medium tracking-wide group-hover:underline decoration-blue-500/30 underline-offset-4">
+                @syntaxx_brothers
+              </span>
             </Link>
-            <Link 
-              href="https://www.linkedin.com/in/aritra-dasgupta-311868324/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="group flex items-center gap-1.5 transition-all text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
-              title="Aritra Dasgupta LinkedIn"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform duration-300"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
-              <span className="text-xs font-medium tracking-wide group-hover:underline decoration-blue-500/30 underline-offset-4">Aritra</span>
-            </Link>
+            <div className="flex items-center gap-4 mt-1">
+              <Link 
+                href="https://www.linkedin.com/in/mondalagnish05/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex items-center gap-1.5 transition-all text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                title="Agnish Mondal LinkedIn"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform duration-300"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                <span className="text-xs font-medium tracking-wide group-hover:underline decoration-blue-500/30 underline-offset-4">Agnish</span>
+              </Link>
+              <Link 
+                href="https://www.linkedin.com/in/aritra-dasgupta-311868324/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group flex items-center gap-1.5 transition-all text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                title="Aritra Dasgupta LinkedIn"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform duration-300"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                <span className="text-xs font-medium tracking-wide group-hover:underline decoration-blue-500/30 underline-offset-4">Aritra</span>
+              </Link>
+            </div>
           </div>
         </div>
 
