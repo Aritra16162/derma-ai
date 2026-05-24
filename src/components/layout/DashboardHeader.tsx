@@ -36,7 +36,7 @@ export function DashboardHeader() {
       if (isLogoBig) {
         const timer = setTimeout(() => {
           setIsLogoBig(false);
-        }, 1200);
+        }, 5000);
         return () => clearTimeout(timer);
       }
     }
