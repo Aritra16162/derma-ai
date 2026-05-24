@@ -255,7 +255,24 @@ export function MedicalHistoryView() {
 
       {/* Printable Report UI (Hidden on Screen) */}
       {expandedLogId && (
-        <div className="hidden print:block w-full bg-white print:bg-white text-black print:m-0">
+        <div className="hidden print:block bg-white print:bg-white text-black">
+         <style>{`
+           @media print {
+             @page { size: A4 portrait; margin: 0 !important; }
+             body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+             .print-page { 
+               width: 210mm; 
+               height: 296mm; 
+               padding: 8mm; 
+               margin: 0 auto; 
+               page-break-after: always; 
+               box-sizing: border-box; 
+               overflow: hidden; 
+               background: white;
+             }
+             .print-page:last-child { page-break-after: auto; }
+           }
+         `}</style>
          {(() => {
            const logIndex = userLogs.findIndex(l => l.id === expandedLogId);
            if (logIndex === -1) return null;
@@ -269,7 +286,7 @@ export function MedicalHistoryView() {
            return (
              <>
                {/* Page 1 */}
-               <div className="w-full print:h-[98vh] print:p-2 box-border break-after-page">
+               <div className="print-page">
                  <div className="w-full h-full p-[3px] border-[4px] border-slate-900">
                    <div className="w-full h-full border border-slate-900 p-8 flex flex-col">
 
@@ -343,7 +360,7 @@ export function MedicalHistoryView() {
                </div>
 
                {/* Page 2 */}
-               <div className="w-full print:h-[98vh] print:p-2 box-border break-before-page">
+               <div className="print-page">
                  <div className="w-full h-full p-[3px] border-[4px] border-slate-900">
                    <div className="w-full h-full border border-slate-900 p-8 flex flex-col">
                      <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4 mt-4">Model Classification Results</h3>
