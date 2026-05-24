@@ -94,7 +94,7 @@ export function DashboardHeader() {
               transition={{ duration: 0.8 }}
               className="absolute top-full left-1/2 -translate-x-1/2 mt-[45px] w-max pointer-events-none"
             >
-              <p className="text-slate-400 font-semibold tracking-[0.2em] text-sm md:text-base uppercase opacity-80">
+              <p className="text-slate-400 font-semibold tracking-[0.2em] text-lg md:text-xl uppercase opacity-80">
                 See Beyond the Surface
               </p>
             </motion.div>
