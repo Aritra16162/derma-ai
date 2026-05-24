@@ -66,18 +66,14 @@ export function DashboardHeader() {
             splashState === 'waiting' 
               ? { scale: 3.5, y: "42vh", x: "0%" }
               : splashState === 'moving'
-                ? { scale: 1, y: 0, x: ["0%", "15%", "0%"] }
+                ? { scale: 1, y: 0, x: "0%" }
                 : { scale: 1, y: 0, x: "0%" }
           }
           transition={
             splashState === 'waiting'
               ? { duration: 0 }
               : splashState === 'moving'
-                ? { 
-                    duration: 1.0, 
-                    ease: [0.22, 1, 0.36, 1],
-                    x: { duration: 1.0, times: [0, 0.6, 1], ease: "easeInOut" }
-                  }
+                ? { duration: 1.0, ease: [0.22, 1, 0.36, 1] }
                 : { duration: 0 }
           }
           onAnimationComplete={() => {
