@@ -29,6 +29,7 @@ export interface MedicalRecord {
   surveyData: SurveyData;
   geminiSummary?: string;
   geminiDetails?: string;
+  image_data?: string;
 }
 
 export interface AppState {
@@ -130,7 +131,8 @@ export const useStore = create<AppState>()(
                urgency: status,
                surveyData: state.surveyData,
                geminiSummary: geminiSummary,
-               geminiDetails: geminiDetails
+               geminiDetails: geminiDetails,
+               image_data: state.capturedImage || undefined
             };
             newLogs = [newRecord, ...state.historyLogs];
         }
