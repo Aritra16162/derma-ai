@@ -8,8 +8,18 @@ export function DashboardHeader() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [isLogoBig, setIsLogoBig] = useState(false);
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [isLogoBig, setIsLogoBig] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !sessionStorage.getItem('hasSeenSplash');
+    }
+    return true;
+  });
+  const [isOverlayVisible, setIsOverlayVisible] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !sessionStorage.getItem('hasSeenSplash');
+    }
+    return true;
+  });
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -23,9 +33,7 @@ export function DashboardHeader() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      if (!sessionStorage.getItem('hasSeenSplash')) {
-        setIsLogoBig(true);
-        setIsOverlayVisible(true);
+      if (isLogoBig) {
         const timer = setTimeout(() => {
           setIsLogoBig(false);
         }, 1500);
@@ -39,8 +47,8 @@ export function DashboardHeader() {
       
       {/* Splash Screen Background */}
       {isOverlayVisible && (
-        <div className="fixed inset-0 z-40 bg-[#070b14] pointer-events-auto flex items-center justify-center">
-           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(32,86,179,0.4)_0%,transparent_60%)] pointer-events-none z-0" />
+        <div className="fixed inset-0 z-40 bg-slate-900 pointer-events-auto flex items-center justify-center">
+           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(32,86,179,0.7)_0%,transparent_80%)] pointer-events-none z-0" />
         </div>
       )}
 
