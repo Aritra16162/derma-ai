@@ -59,7 +59,7 @@ def get_advanced_insights(img_base64: str, survey_data: dict, predicted_class: s
     """
     client = get_gemini_client()
     if not client:
-        return ("Unavailable", "failed to generate advanced AI insights . contact admin.")
+        return ("Unavailable", "Failed to generate advanced AI insights . Contact admin.")
         
     try:
         image_part = _prepare_image_part(img_base64)
@@ -100,4 +100,4 @@ Line 2: Given the uploaded photo its shows...
             
         return (summary, details)
     except Exception as e:
-        return ("Error", "failed to generate advanced AI insights . contact admin.")
+        return ("Error", "Failed to generate advanced AI insights . Contact admin.")

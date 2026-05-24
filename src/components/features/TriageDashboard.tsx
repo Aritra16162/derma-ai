@@ -66,7 +66,7 @@ export function TriageDashboard() {
                 triage_data: {
                     patient_name: user.name || 'Guest Patient',
                     patient_id: user.patientId || 'N/A',
-                    report_id: `REF-AI-${Math.floor(Math.random() * 90000) + 10000}-TX`,
+                    report_id: reportId,
                     date: currentDate,
                     predicted_class: conditionName,
                     danger_level: triageResult,
