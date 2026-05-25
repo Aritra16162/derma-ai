@@ -4,6 +4,286 @@ import { X, Mail, Lock, KeyRound, UserCircle, Eye, EyeOff } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { API_URL } from '@/lib/config';
 
+const InteractiveMonkey = ({ 
+  activeField, 
+  inputValue, 
+  showPassword,
+  showConfirmPassword,
+  mode,
+  error
+}: { 
+  activeField: string, 
+  inputValue: string, 
+  showPassword: boolean,
+  showConfirmPassword: boolean,
+  mode: string,
+  error?: string
+}) => {
+  const [showGreeting, setShowGreeting] = useState(true);
+  const [cursorPos, setCursorPos] = useState(0);
+
+  // If there's an error, always show the bubble. Otherwise show greetings on login/signup and OTP screens.
+  const isBubbleVisible = !!error || (showGreeting && (
+    mode === 'signin' || 
+    mode === 'signup' || 
+    mode === 'verify' || 
+    (mode === 'reset-password' && !otpVerified)
+  ));
+
+  useEffect(() => {
+    // Reset greeting on mode switch, hide after 3 seconds
+    setShowGreeting(true);
+    const timer = setTimeout(() => setShowGreeting(false), 3000);
+    return () => clearTimeout(timer);
+  }, [mode]);
+
+  useEffect(() => {
+    // Hide greeting (but not errors) when typing
+    if (activeField !== 'none' && !error) {
+      setShowGreeting(false);
+    }
+  }, [activeField, error]);
+
+  // Track the actual caret/cursor position instead of just total string length
+  useEffect(() => {
+    const updateCursor = () => {
+      if (document.activeElement instanceof HTMLInputElement) {
+        setCursorPos(document.activeElement.selectionStart || 0);
+      }
+    };
+    
+    updateCursor();
+    
+    document.addEventListener('keyup', updateCursor);
+    document.addEventListener('click', updateCursor);
+    document.addEventListener('input', updateCursor);
+    
+    return () => {
+      document.removeEventListener('keyup', updateCursor);
+      document.removeEventListener('click', updateCursor);
+      document.removeEventListener('input', updateCursor);
+    };
+  }, [activeField]);
+  let pupilX = 0;
+  let pupilY = 0;
+  let headX = 0;
+  let headY = 0;
+  let handsUp = false;
+
+  if (activeField === 'password' || activeField === 'confirmPassword') {
+    if ((activeField === 'password' && !showPassword) || (activeField === 'confirmPassword' && !showConfirmPassword)) {
+      handsUp = true;
+    } else {
+      pupilY = activeField === 'confirmPassword' ? 18 : 14;
+      headY = activeField === 'confirmPassword' ? 12 : 10;
+      const length = cursorPos;
+      const maxOffset = 14;
+      const headMaxOffset = 8;
+      const percent = Math.min(length / 22, 1);
+      pupilX = (percent * (maxOffset * 2)) - maxOffset;
+      headX = (percent * (headMaxOffset * 2)) - headMaxOffset;
+    }
+  } else if (activeField !== 'none' && activeField !== 'gender') {
+    if (activeField === 'name') {
+      pupilY = 6;
+      headY = 4;
+    } else if (activeField === 'email') {
+      pupilY = 10;
+      headY = 8;
+    } else {
+      pupilY = 10;
+      headY = 8;
+    }
+    const length = cursorPos;
+    const maxOffset = 14;
+    const headMaxOffset = 8;
+    const percent = Math.min(length / 22, 1);
+    pupilX = (percent * (maxOffset * 2)) - maxOffset;
+    headX = (percent * (headMaxOffset * 2)) - headMaxOffset;
+  }
+
+  return (
+    <div className="relative w-32 h-32 mx-auto pointer-events-none select-none">
+      <AnimatePresence>
+        {isBubbleVisible && (
+          <motion.div
+            key={error || mode}
+            initial={{ opacity: 0, scale: 0.8, y: -10, x: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -10, x: -10 }}
+            className={`absolute top-4 left-[90%] z-20 px-3 py-1.5 rounded-2xl rounded-bl-none shadow-[0_4px_15px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_15px_rgba(0,0,0,0.5)] text-sm font-bold border whitespace-nowrap ${
+              error 
+                ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800' 
+                : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border-gray-100 dark:border-slate-700'
+            }`}
+            style={{ transformOrigin: 'bottom left' }}
+          >
+            {error 
+              ? `Oops! ${error} 🙈`
+              : mode === 'signup' 
+                ? 'Hi there! 👋' 
+                : (mode === 'forgot-password' || mode === 'reset-password' || mode === 'verify')
+                  ? 'Check inbox or spam folder 📬'
+                  : 'Love to see you again! 👋'
+            }
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" className="w-full h-full">
+        <defs>
+          <filter id="drop-shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="10" stdDeviation="8" floodColor="#000000" floodOpacity="0.5"/>
+          </filter>
+
+          <linearGradient id="ear-inner-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#f3c6a5"/>
+            <stop offset="100%" stopColor="#df9b70"/>
+          </linearGradient>
+
+          <linearGradient id="face-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#fff4dd"/>
+            <stop offset="70%" stopColor="#fce2be"/>
+            <stop offset="100%" stopColor="#f5ca99"/>
+          </linearGradient>
+
+          <linearGradient id="fur-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#a4633b"/>
+            <stop offset="40%" stopColor="#8a4925"/>
+            <stop offset="100%" stopColor="#5c2e14"/>
+          </linearGradient>
+
+          <linearGradient id="highlight-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#d68d5b" stopOpacity="0.6"/>
+            <stop offset="100%" stopColor="#a4633b" stopOpacity="0"/>
+          </linearGradient>
+
+          <radialGradient id="blush">
+            <stop offset="0%" stopColor="#ff7356" stopOpacity="0.6"/>
+            <stop offset="100%" stopColor="#ff7356" stopOpacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <g filter="url(#drop-shadow)">
+          
+          {/* Static Head Base */}
+          <path d="M 90 260 C 50 260, 40 180, 90 170 C 110 130, 170 90, 256 90 C 342 90, 402 130, 422 170 C 472 180, 462 260, 422 260 C 425 340, 345 395, 256 395 C 167 395, 87 340, 90 260 Z" fill="#23130a" />
+
+          {/* Ears (Parallax - moves in opposite direction to create 3D sphere illusion) */}
+          <motion.g 
+            animate={{ x: -headX * 0.6, y: -headY * 0.4 }} 
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            <circle cx="105" cy="215" r="50" fill="url(#fur-grad)" stroke="#23130a" strokeWidth="12" />
+            <path d="M 115 180 C 80 180, 75 245, 115 250 C 130 250, 135 180, 115 180 Z" fill="url(#ear-inner-grad)" stroke="#4d240c" strokeWidth="6" />
+            <circle cx="407" cy="215" r="50" fill="url(#fur-grad)" stroke="#23130a" strokeWidth="12" />
+            <path d="M 397 180 C 432 180, 437 245, 397 250 C 382 250, 377 180, 397 180 Z" fill="url(#ear-inner-grad)" stroke="#4d240c" strokeWidth="6" />
+          </motion.g>
+
+          {/* Base Head Sphere (Static) */}
+          <path d="M 256 100 C 150 100, 100 150, 100 245 C 100 340, 150 385, 256 385 C 362 385, 412 340, 412 245 C 412 150, 362 100, 256 100 Z" fill="url(#fur-grad)" />
+
+          {/* Hair Tuft (Parallax - moves faster to feel closer) */}
+          <motion.g 
+            animate={{ x: headX * 0.6, y: headY * 0.6 }} 
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            <path d="M 230 105 Q 256 75, 275 102 Q 295 85, 305 110" fill="none" stroke="#23130a" strokeWidth="14" strokeLinecap="round" />
+            <path d="M 230 105 Q 256 75, 275 102 Q 295 85, 305 110 Z" fill="url(#fur-grad)" />
+          </motion.g>
+
+          {/* Forehead Highlight (Parallax) */}
+          <motion.g 
+            animate={{ x: headX * 0.5, y: headY * 0.3 }} 
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          >
+            <path d="M 140 140 C 190 112, 300 110, 360 135 C 330 120, 200 115, 140 140 Z" fill="url(#highlight-grad)" />
+          </motion.g>
+
+          {/* Tracking Face Features */}
+          <motion.g 
+            animate={{ x: headX, y: headY, rotate: headX * 0.5 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            style={{ transformOrigin: '256px 256px' }}
+          >
+            {/* Face Mask Base */}
+            <path d="M 256 185 
+                     C 290 140, 385 145, 385 220 
+                     C 385 305, 350 360, 256 360 
+                     C 162 360, 127 305, 127 220 
+                     C 127 145, 222 140, 256 185 Z" 
+                  fill="url(#face-grad)" stroke="#23130a" strokeWidth="12" strokeLinejoin="round" />
+
+            {/* Blushes */}
+            <circle cx="165" cy="275" r="22" fill="url(#blush)" />
+            <circle cx="347" cy="275" r="22" fill="url(#blush)" />
+
+            {/* Left Eye */}
+            <motion.g animate={{ x: pupilX, y: pupilY }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+              <rect x="180" y="200" width="36" height="48" rx="18" fill="#23130a" />
+              <circle cx="190" cy="212" r="7" fill="#ffffff" />
+              <circle cx="196" cy="228" r="3.5" fill="#ffffff" />
+            </motion.g>
+
+            {/* Right Eye */}
+            <motion.g animate={{ x: pupilX, y: pupilY }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+              <rect x="296" y="200" width="36" height="48" rx="18" fill="#23130a" />
+              <circle cx="306" cy="212" r="7" fill="#ffffff" />
+              <circle cx="312" cy="228" r="3.5" fill="#ffffff" />
+            </motion.g>
+
+            {/* Snout */}
+            <ellipse cx="256" cy="246" rx="8" ry="5" fill="#4d240c" />
+            <path 
+              d={error 
+                ? "M 234 276 Q 256 252, 278 276" // More curved sad pout
+                : "M 226 262 Q 241 276, 256 264 Q 271 276, 286 262" // Happy W-mouth
+              } 
+              fill="none" stroke="#23130a" strokeWidth="10" strokeLinecap="round" 
+            />
+          </motion.g>
+
+          {/* Hands covering eyes */}
+          <motion.g 
+            initial={{ y: 200, opacity: 0 }}
+            animate={{ y: handsUp ? -50 : 200, opacity: handsUp ? 1 : 0 }} 
+            transition={{ 
+              y: { type: 'spring', stiffness: 120, damping: 14, mass: 1.2 },
+              opacity: { duration: 0.1 }
+            }}
+          >
+            {/* Left Arm (scalloped fingers) */}
+            <g transform="rotate(15 180 300)">
+              {/* Outer arm */}
+              <path d="M 135 430 L 135 255 A 15 15 0 0 1 165 255 A 15 15 0 0 1 195 255 A 15 15 0 0 1 225 255 L 225 430 A 45 45 0 0 1 135 430 Z" 
+                    fill="url(#fur-grad)" stroke="#23130a" strokeWidth="12" strokeLinejoin="round" />
+              {/* Inner pad */}
+              <path d="M 150 335 L 150 265 A 10 10 0 0 1 170 265 A 10 10 0 0 1 190 265 A 10 10 0 0 1 210 265 L 210 335 A 30 30 0 0 1 150 335 Z" 
+                    fill="url(#ear-inner-grad)" />
+              {/* Finger cuts */}
+              <path d="M 165 255 L 168 285" stroke="#23130a" strokeWidth="8" strokeLinecap="round" fill="none" />
+              <path d="M 195 255 L 192 285" stroke="#23130a" strokeWidth="8" strokeLinecap="round" fill="none" />
+            </g>
+            
+            {/* Right Arm (scalloped fingers) */}
+            <g transform="rotate(-15 332 300)">
+              {/* Outer arm */}
+              <path d="M 287 430 L 287 255 A 15 15 0 0 1 317 255 A 15 15 0 0 1 347 255 A 15 15 0 0 1 377 255 L 377 430 A 45 45 0 0 1 287 430 Z" 
+                    fill="url(#fur-grad)" stroke="#23130a" strokeWidth="12" strokeLinejoin="round" />
+              {/* Inner pad */}
+              <path d="M 302 335 L 302 265 A 10 10 0 0 1 322 265 A 10 10 0 0 1 342 265 A 10 10 0 0 1 362 265 L 362 335 A 30 30 0 0 1 302 335 Z" 
+                    fill="url(#ear-inner-grad)" />
+              {/* Finger cuts */}
+              <path d="M 317 255 L 320 285" stroke="#23130a" strokeWidth="8" strokeLinecap="round" fill="none" />
+              <path d="M 347 255 L 344 285" stroke="#23130a" strokeWidth="8" strokeLinecap="round" fill="none" />
+            </g>
+          </motion.g>
+
+        </g>
+      </svg>
+    </div>
+  );
+};
+
 export function AuthModal() {
   const { showAuthModal, setShowAuthModal, loginUser } = useStore();
   const [mode, setMode] = useState<'signin' | 'signup' | 'verify' | 'forgot-password' | 'reset-password'>('signin');
@@ -19,6 +299,16 @@ export function AuthModal() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(60);
+  const [activeField, setActiveField] = useState<'none' | 'name' | 'email' | 'password' | 'confirmPassword' | 'otp' | 'gender'>('none');
+
+  const getInputValue = () => {
+    if (activeField === 'name') return name;
+    if (activeField === 'email') return email;
+    if (activeField === 'password') return password;
+    if (activeField === 'confirmPassword') return confirmPassword;
+    if (activeField === 'otp') return otp;
+    return '';
+  };
 
   useEffect(() => {
     if (showAuthModal) {
@@ -159,7 +449,7 @@ export function AuthModal() {
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: -10 }}
-          className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden relative border border-gray-200 dark:border-slate-800"
+          className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl w-full max-w-md relative border border-gray-200 dark:border-slate-800"
         >
           <button 
             onClick={() => setShowAuthModal(false)}
@@ -184,11 +474,16 @@ export function AuthModal() {
                 : 'Secure access to your AI symptom analysis and history.'}
             </p>
 
-            {error && (
-              <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm rounded-lg border border-red-100 dark:border-red-900/50">
-                {error}
-              </div>
-            )}
+            <div className="flex justify-center mb-6 h-24 items-center">
+               <InteractiveMonkey 
+                 activeField={activeField} 
+                 inputValue={getInputValue()} 
+                 showPassword={showPassword} 
+                 showConfirmPassword={showConfirmPassword} 
+                 mode={mode}
+                 error={error}
+               />
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === 'signup' && (
@@ -201,6 +496,8 @@ export function AuthModal() {
                       placeholder="Full Name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      onFocus={() => setActiveField('name')}
+                      onBlur={() => setActiveField('none')}
                       className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white"
                     />
                   </div>
@@ -211,6 +508,8 @@ export function AuthModal() {
                     <select
                       value={gender}
                       onChange={(e) => setGender(e.target.value)}
+                      onFocus={() => setActiveField('gender')}
+                      onBlur={() => setActiveField('none')}
                       required
                       className={`w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue appearance-none cursor-pointer ${gender === '' ? 'text-gray-400' : 'text-gray-900 dark:text-white'}`}
                     >
@@ -235,6 +534,8 @@ export function AuthModal() {
                       placeholder="Email Address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value.trim())}
+                      onFocus={() => setActiveField('email')}
+                      onBlur={() => setActiveField('none')}
                       autoComplete="off"
                       disabled={mode === 'reset-password' && otpVerified}
                       className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
@@ -253,8 +554,10 @@ export function AuthModal() {
                       placeholder={mode === 'reset-password' ? "New Password (min 6 chars)" : "Password (min 6 chars)"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      onFocus={() => setActiveField('password')}
+                      onBlur={() => setActiveField('none')}
                       autoComplete="new-password"
-                      className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white"
+                      className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white [&::-ms-reveal]:hidden [&::-ms-clear]:hidden"
                     />
                     <button
                       type="button"
@@ -275,7 +578,9 @@ export function AuthModal() {
                         placeholder="Re-enter New Password"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white"
+                        onFocus={() => setActiveField('confirmPassword')}
+                        onBlur={() => setActiveField('none')}
+                        className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white [&::-ms-reveal]:hidden [&::-ms-clear]:hidden"
                       />
                       <button
                         type="button"
@@ -310,6 +615,8 @@ export function AuthModal() {
                     placeholder="6-Digit OTP"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value.trim())}
+                    onFocus={() => setActiveField('otp')}
+                    onBlur={() => setActiveField('none')}
                     className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl outline-none focus:ring-2 focus:ring-trust-blue text-gray-900 dark:text-white"
                   />
                   {(!otpVerified || mode === 'verify') && (

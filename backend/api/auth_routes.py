@@ -158,7 +158,7 @@ def resend_otp(req: ResendRequest, db: Session = Depends(get_db)):
 def forgot_password(req: ForgotPasswordRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == req.email).first()
     if not user:
-        raise HTTPException(status_code=404, detail="No account found with this email address")
+        raise HTTPException(status_code=404, detail="Email not registered")
         
     if not user.is_verified:
         raise HTTPException(status_code=403, detail="Account not verified. Please go to Sign Up to create your account.")
