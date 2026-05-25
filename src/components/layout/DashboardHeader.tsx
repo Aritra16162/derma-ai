@@ -49,7 +49,7 @@ export function DashboardHeader() {
       <style>{`
         @keyframes splashMove {
           0% {
-            transform: translate3d(0, 42vh, 0) scale(3.5);
+            transform: translate3d(0, 42vh, 0) scale(2.33);
           }
           100% {
             transform: translate3d(0, 0, 0) scale(1);
@@ -74,11 +74,11 @@ export function DashboardHeader() {
       {/* Central Title Area */}
       <div className="flex-1 flex justify-center items-center pointer-events-none z-50 relative">
         <h1 
-          className={`text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d ${
+          className={`text-xl sm:text-2xl md:text-3xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d ${
             splashState === 'moving' ? 'animate-splash-move' : ''
           }`}
           style={{ 
-             transform: splashState === 'waiting' ? 'translate3d(0, 42vh, 0) scale(3.5)' : (splashState === 'done' ? 'translate3d(0, 0, 0) scale(1)' : undefined),
+             transform: splashState === 'waiting' ? 'translate3d(0, 42vh, 0) scale(2.33)' : (splashState === 'done' ? 'translate3d(0, 0, 0) scale(1)' : undefined),
              willChange: 'transform'
           }}
           onAnimationEnd={() => {
