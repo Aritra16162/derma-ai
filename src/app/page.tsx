@@ -18,7 +18,7 @@ export default function Home() {
   const { currentStep, currentView, isSidebarOpen } = useStore();
 
   return (
-    <div className="h-screen print:h-auto print:block w-full flex overflow-hidden print:overflow-visible bg-gradient-to-b from-blue-50/50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 transition-colors duration-500">
+    <div className="h-[100dvh] print:h-auto print:block w-full flex overflow-hidden print:overflow-visible bg-gradient-to-b from-blue-50/50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 transition-colors duration-500">
       <AuthModal />
       <ConfirmLogoutModal />
       {/* Mobile Sidebar Overlay */}

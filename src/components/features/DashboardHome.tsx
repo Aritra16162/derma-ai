@@ -55,8 +55,8 @@ export function DashboardHome() {
   return (
     <div className="w-full max-w-4xl mx-auto mt-8 px-4 flex flex-col items-center relative gap-8 pb-12">
       <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="relative w-full glass-card overflow-hidden p-6 md:p-12 flex flex-col items-center justify-center bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/40 dark:border-slate-700/50 transition-all duration-500 shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
       >

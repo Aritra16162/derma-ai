@@ -60,37 +60,39 @@ export function DashboardHeader() {
 
       {/* Central Title Area */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-max z-50">
-        <motion.h1 
-          initial={splashState !== 'done' ? { scale: 3.5, y: "42vh", x: "0%" } : { scale: 1, y: 0, x: "0%" }}
-          animate={
-            splashState === 'waiting' 
-              ? { scale: 3.5, y: "42vh", x: "0%" }
-              : splashState === 'moving'
-                ? { scale: 1, y: 0, x: "0%" }
-                : { scale: 1, y: 0, x: "0%" }
-          }
-          transition={
-            splashState === 'waiting'
-              ? { duration: 0 }
-              : splashState === 'moving'
-                ? { duration: 1.0, ease: [0.22, 1, 0.36, 1] }
-                : { duration: 0 }
-          }
-          onAnimationComplete={() => {
-            if (splashState === 'moving') {
-              setSplashState('done');
+        {splashState === 'done' ? (
+          <h1 className="text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm origin-center">
+            Derma-Guide AI
+          </h1>
+        ) : (
+          <motion.h1 
+            initial={{ scale: 3.5, y: "42dvh", x: "0%" }}
+            animate={
+              splashState === 'waiting' 
+                ? { scale: 3.5, y: "42dvh", x: "0%" }
+                : { scale: 1, y: "0dvh", x: "0%" }
             }
-          }}
-          className="text-base md:text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm origin-center"
-        >
-          Derma-Guide AI
-        </motion.h1>
+            transition={
+              splashState === 'waiting'
+                ? { duration: 0 }
+                : { duration: 1.5, ease: [0.22, 1, 0.36, 1] }
+            }
+            onAnimationComplete={() => {
+              if (splashState === 'moving') {
+                setSplashState('done');
+              }
+            }}
+            className="text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm origin-center"
+          >
+            Derma-Guide AI
+          </motion.h1>
+        )}
         <AnimatePresence>
           {splashState === 'waiting' && (
             <motion.div
-              initial={{ opacity: 0, y: "42vh" }}
-              animate={{ opacity: 1, y: "42vh" }}
-              exit={{ opacity: 0, y: "42vh" }}
+              initial={{ opacity: 0, y: "42dvh" }}
+              animate={{ opacity: 1, y: "42dvh" }}
+              exit={{ opacity: 0, y: "42dvh" }}
               transition={{ duration: 0.8 }}
               className="absolute top-full left-1/2 -translate-x-1/2 mt-[45px] w-max pointer-events-none"
             >
