@@ -301,7 +301,7 @@ const InteractiveMonkey = ({
 };
 
 export function AuthModal() {
-  const { showAuthModal, setShowAuthModal, loginUser } = useStore();
+  const { showAuthModal, authMode, setShowAuthModal, loginUser } = useStore();
   const [mode, setMode] = useState<'signin' | 'signup' | 'verify' | 'forgot-password' | 'reset-password'>('signin');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -329,7 +329,7 @@ export function AuthModal() {
 
   useEffect(() => {
     if (showAuthModal) {
-      setMode('signin');
+      setMode(authMode);
       setName('');
       setEmail('');
       setPassword('');
@@ -343,7 +343,7 @@ export function AuthModal() {
       setShowPassword(false);
       setShowConfirmPassword(false);
     }
-  }, [showAuthModal]);
+  }, [showAuthModal, authMode]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -423,7 +423,7 @@ export function AuthModal() {
         setSuccess('Success!');
         await new Promise(resolve => setTimeout(resolve, 1500));
         
-        loginUser(data.name || email.split('@')[0], email);
+        loginUser(data.name || email.split('@')[0], email, data.gender);
         setShowAuthModal(false);
       } else if (mode === 'forgot-password') {
         const res = await fetch(`${API_URL}/auth/forgot-password`, {

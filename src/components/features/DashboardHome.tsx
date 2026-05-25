@@ -78,8 +78,28 @@ export function DashboardHome() {
           />
         </div>
 
-        <div className="relative z-10 w-24 h-24 bg-gradient-to-tr from-blue-100 to-indigo-50 dark:from-blue-900/40 dark:to-indigo-800/40 rounded-full flex items-center justify-center mb-6 shadow-inner ring-1 ring-white/50 dark:ring-white/10">
-          <Activity size={40} className="text-blue-600 dark:text-blue-400 drop-shadow-md" />
+        <div className="relative z-10 w-24 h-24 flex items-center justify-center mb-6">
+          {/* Radiating Ripples */}
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-blue-400/60 dark:border-blue-500/60"
+            animate={{ scale: [1, 1.3, 1.6], opacity: [0, 0.5, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-blue-400/60 dark:border-blue-500/60"
+            animate={{ scale: [1, 1.3, 1.6], opacity: [0, 0.5, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 0.66 }}
+          />
+          <motion.div
+            className="absolute inset-0 rounded-full border-2 border-blue-400/60 dark:border-blue-500/60"
+            animate={{ scale: [1, 1.3, 1.6], opacity: [0, 0.5, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 1.33 }}
+          />
+          
+          {/* Main Logo Container */}
+          <div className="relative z-20 w-full h-full bg-gradient-to-tr from-blue-100 to-indigo-50 dark:from-blue-900/40 dark:to-indigo-800/40 rounded-full flex items-center justify-center shadow-inner ring-1 ring-white/50 dark:ring-white/10">
+            <Activity size={40} className="text-blue-600 dark:text-blue-400 drop-shadow-md" />
+          </div>
         </div>
         
         <h2 className="relative z-10 text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-slate-300 mb-4 tracking-tight text-center leading-tight">

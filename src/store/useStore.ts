@@ -17,6 +17,7 @@ export interface User {
   name: string;
   email: string;
   patientId: string;
+  gender?: string;
 }
 
 export interface MedicalRecord {
@@ -39,11 +40,12 @@ export interface AppState {
   historyLogs: MedicalRecord[];
   isSidebarOpen: boolean;
   showAuthModal: boolean;
+  authMode: 'signin' | 'signup';
   showLogoutConfirm: boolean;
   setCurrentView: (view: ViewState) => void;
-  setShowAuthModal: (show: boolean) => void;
+  setShowAuthModal: (show: boolean, mode?: 'signin' | 'signup') => void;
   setShowLogoutConfirm: (show: boolean) => void;
-  loginUser: (name: string, email: string) => void;
+  loginUser: (name: string, email: string, gender?: string) => void;
   logoutUser: () => void;
   toggleSidebar: () => void;
 
@@ -85,18 +87,19 @@ export const useStore = create<AppState>()(
       historyLogs: [],
       isSidebarOpen: false,
       showAuthModal: false,
+      authMode: 'signin',
       showLogoutConfirm: false,
       setCurrentView: (view) => set({ currentView: view }),
-      setShowAuthModal: (show) => set({ showAuthModal: show }),
+      setShowAuthModal: (show, mode = 'signin') => set({ showAuthModal: show, authMode: mode }),
       setShowLogoutConfirm: (show) => set({ showLogoutConfirm: show }),
-      loginUser: (name, email) => {
+      loginUser: (name, email, gender) => {
         let hash = 0;
         for (let i = 0; i < email.length; i++) {
           hash = ((hash << 5) - hash) + email.charCodeAt(i);
           hash = hash & hash;
         }
         const patientId = `PT-${(Math.abs(hash) % 900000) + 100000}`;
-        set({ user: { name, email, patientId } });
+        set({ user: { name, email, patientId, gender: gender || 'Prefer not to say' } });
       },
       logoutUser: () => set({ user: null }),
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),

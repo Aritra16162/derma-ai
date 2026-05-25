@@ -54,6 +54,34 @@ Derma Guide Team"""
     
     _send_http_email(payload)
 
+def send_delete_account_email(to_email: str, otp: str):
+    if not SMTP_EMAIL:
+        print(f"Mock Delete Account Email sent to {to_email}. OTP: {otp}")
+        return
+
+    body = f"""Hello,
+
+We are very sorry that you are leaving us.
+
+Your account deletion verification code is: {otp}
+
+This code will expire in 10 minutes.
+
+Derma AI - Empowering your skin health journey with AI.
+
+Feel free to reach out to us at any time.
+
+Warm regards,
+Derma Guide Team"""
+
+    payload = {
+        "to": to_email,
+        "subject": "Account Deletion Confirmation",
+        "body": body
+    }
+    
+    _send_http_email(payload)
+
 def send_pdf_email(to_email: str, name: str, pdf_path: str):
     if not SMTP_EMAIL:
         print(f"Mock Email sent to {to_email} with PDF {pdf_path}")

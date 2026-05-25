@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from database import get_db
-from schemas.models_db import User, VerificationCode
+from schemas.models_db import User, VerificationCode, MedicalReport
 from pydantic import BaseModel, Field
 from auth import get_password_hash, verify_password, create_access_token
-from email_service import generate_otp, send_otp_email, send_welcome_email
+from email_service import generate_otp, send_otp_email, send_welcome_email, send_delete_account_email
 
 router = APIRouter()
 
@@ -130,7 +130,7 @@ def verify_otp(req: VerifyRequest, db: Session = Depends(get_db)):
         send_welcome_email(user.email, user.name)
     
     access_token = create_access_token(data={"sub": req.email})
-    return {"access_token": access_token, "token_type": "bearer", "email": req.email, "name": user.name if user else "User"}
+    return {"access_token": access_token, "token_type": "bearer", "email": req.email, "name": user.name if user else "User", "gender": user.gender if user else "Prefer not to say"}
 
 @router.post("/resend-otp")
 def resend_otp(req: ResendRequest, db: Session = Depends(get_db)):
@@ -206,3 +206,46 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
     db.commit()
     
     return {"message": "Password has been successfully reset."}
+
+@router.post("/request-delete-account")
+def request_delete_account(req: ResendRequest, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == req.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    otp = generate_otp()
+    expires_at = datetime.utcnow() + timedelta(minutes=10)
+    
+    # clear old OTPs
+    db.query(VerificationCode).filter(VerificationCode.email == req.email).delete()
+    
+    code = VerificationCode(email=req.email, code=otp, expires_at=expires_at)
+    db.add(code)
+    db.commit()
+    
+    send_delete_account_email(req.email, otp)
+    return {"message": "OTP sent to email for account deletion."}
+
+@router.post("/verify-delete-account")
+def verify_delete_account(req: VerifyRequest, db: Session = Depends(get_db)):
+    record = db.query(VerificationCode).filter(VerificationCode.email == req.email, VerificationCode.code == req.otp).first()
+    
+    if not record or record.expires_at < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP")
+        
+    user = db.query(User).filter(User.email == req.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    # Delete associated medical reports if any
+    db.query(MedicalReport).filter(MedicalReport.user_email == req.email).delete()
+    
+    # Delete OTP records
+    db.query(VerificationCode).filter(VerificationCode.email == req.email).delete()
+    
+    # Delete User
+    db.delete(user)
+    db.commit()
+    
+    return {"message": "Account successfully deleted."}
+

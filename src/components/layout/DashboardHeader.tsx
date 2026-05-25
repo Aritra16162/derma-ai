@@ -36,7 +36,7 @@ export function DashboardHeader() {
       
       {/* Splash Screen Background */}
       <AnimatePresence>
-        {splashState !== 'done' && (
+        {splashState === 'waiting' && (
           <motion.div 
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
@@ -123,7 +123,7 @@ export function DashboardHeader() {
           </span>
           <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border border-gray-300 dark:border-slate-600">
              {user ? (
-                <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}`} alt="User Avatar" />
+                <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}${user.gender === 'Male' ? '&beardProbability=100' : user.gender === 'Female' ? '&lipsProbability=100' : ''}`} alt="User Avatar" />
              ) : (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
              )}
