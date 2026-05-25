@@ -540,11 +540,20 @@ export function AuthModal() {
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
-                      type="email"
+                      type="text"
+                      inputMode="email"
                       required
                       placeholder="Email Address"
                       value={email}
                       onChange={(e) => setEmail(e.target.value.trim())}
+                      onInvalid={(e) => {
+                        if (!(e.target as HTMLInputElement).value.includes('@')) {
+                          (e.target as HTMLInputElement).setCustomValidity(`Please include an '@' in the email address. '${(e.target as HTMLInputElement).value}' is missing an '@'.`);
+                        }
+                      }}
+                      onInput={(e) => {
+                        (e.target as HTMLInputElement).setCustomValidity("");
+                      }}
                       onFocus={() => setActiveField('email')}
                       onBlur={() => setActiveField('none')}
                       autoComplete="off"
@@ -607,7 +616,7 @@ export function AuthModal() {
                     <div className="flex justify-end mt-2">
                       <button
                         type="button"
-                        onClick={() => { setError(''); setMode('forgot-password'); }}
+                        onClick={() => { setError(''); setEmail(''); setPassword(''); setMode('forgot-password'); }}
                         className="text-sm text-trust-blue hover:underline font-medium"
                       >
                         Forgot Password?
@@ -657,7 +666,7 @@ export function AuthModal() {
                 {mode === 'signin' ? "Don't have an account? " : "Already have an account? "}
                 <button
                   type="button"
-                  onClick={() => { setError(''); setMode(mode === 'signin' ? 'signup' : 'signin'); }}
+                  onClick={() => { setError(''); setEmail(''); setPassword(''); setName(''); setConfirmPassword(''); setMode(mode === 'signin' ? 'signup' : 'signin'); }}
                   className="text-trust-blue hover:underline font-medium"
                 >
                   {mode === 'signin' ? 'Sign Up' : 'Sign In'}
@@ -668,7 +677,7 @@ export function AuthModal() {
               <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
                 <button
                   type="button"
-                  onClick={() => { setError(''); setOtpVerified(false); setMode('signin'); }}
+                  onClick={() => { setError(''); setEmail(''); setPassword(''); setOtpVerified(false); setMode('signin'); }}
                   className="text-trust-blue hover:underline font-medium"
                 >
                   Back to Sign In
