@@ -25,11 +25,28 @@ export const metadata: Metadata = {
   description: "AI skin condition analysis and triage",
 };
 
+import MaintenancePage from "./maintenance/page";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // If maintenance mode is active, override the entire layout with the maintenance screen
+  if (process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true') {
+    return (
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={`${montserrat.variable} ${openSans.variable} h-full antialiased`}
+      >
+        <body className="min-h-full flex flex-col m-0 p-0">
+          <MaintenancePage />
+        </body>
+      </html>
+    );
+  }
+
   return (
     <html
       lang="en"
