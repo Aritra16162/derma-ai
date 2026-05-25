@@ -47,7 +47,7 @@ export function DashboardHeader() {
         )}
       </AnimatePresence>
 
-      <div className={`flex items-center gap-6 z-50 relative transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`flex-1 flex items-center justify-start gap-6 z-50 relative transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <button 
           onClick={toggleSidebar} 
           className="text-gray-600 dark:text-slate-300 font-medium text-sm flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -59,18 +59,18 @@ export function DashboardHeader() {
       </div>
 
       {/* Central Title Area */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none w-max z-50">
+      <div className="flex-1 flex justify-center items-center pointer-events-none z-50 relative">
         {splashState === 'done' ? (
-          <h1 className="text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm origin-center">
+          <h1 className="text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center">
             Derma-Guide AI
           </h1>
         ) : (
           <motion.h1 
-            initial={{ scale: 3.5, y: "42dvh", x: "0%" }}
+            initial={{ scale: 3.5, y: "42vh", x: "0%", z: 0 }}
             animate={
               splashState === 'waiting' 
-                ? { scale: 3.5, y: "42dvh", x: "0%" }
-                : { scale: 1, y: "0dvh", x: "0%" }
+                ? { scale: 3.5, y: "42vh", x: "0%", z: 0 }
+                : { scale: 1, y: "0vh", x: "0%", z: 0 }
             }
             transition={
               splashState === 'waiting'
@@ -82,7 +82,8 @@ export function DashboardHeader() {
                 setSplashState('done');
               }
             }}
-            className="text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight drop-shadow-sm origin-center"
+            className="text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d"
+            style={{ willChange: "transform" }}
           >
             Derma-Guide AI
           </motion.h1>
@@ -94,9 +95,9 @@ export function DashboardHeader() {
               animate={{ opacity: 1, y: "42dvh" }}
               exit={{ opacity: 0, y: "42dvh" }}
               transition={{ duration: 0.8 }}
-              className="absolute top-full left-1/2 -translate-x-1/2 mt-[45px] w-max pointer-events-none"
+              className="absolute top-full left-0 right-0 mt-[45px] pointer-events-none flex justify-center"
             >
-              <p className="text-slate-400 font-semibold tracking-[0.2em] text-lg md:text-xl uppercase opacity-80">
+              <p className="text-slate-400 font-semibold tracking-[0.2em] text-lg md:text-xl uppercase opacity-80 whitespace-nowrap">
                 See Beyond the Surface
               </p>
             </motion.div>
@@ -104,7 +105,7 @@ export function DashboardHeader() {
         </AnimatePresence>
       </div>
       {/* User Actions */}
-      <div className={`flex items-center gap-4 relative z-50 transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} ref={dropdownRef}>
+      <div className={`flex-1 flex items-center justify-end gap-4 relative z-50 transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} ref={dropdownRef}>
         <button 
           type="button"
           className="flex items-center gap-3 cursor-pointer p-2 -mr-2 relative z-20 focus:outline-none appearance-none bg-transparent border-none text-left touch-manipulation"

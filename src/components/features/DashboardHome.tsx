@@ -64,7 +64,6 @@ export function DashboardHome() {
         <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl z-0">
           <motion.div 
             animate={{ 
-              scale: [1, 1.2, 1],
               opacity: [0.3, 0.5, 0.3] 
             }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -72,7 +71,6 @@ export function DashboardHome() {
           />
           <motion.div 
             animate={{ 
-              scale: [1, 1.3, 1],
               opacity: [0.2, 0.4, 0.2] 
             }}
             transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
