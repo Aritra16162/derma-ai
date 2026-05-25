@@ -60,34 +60,26 @@ export function DashboardHeader() {
 
       {/* Central Title Area */}
       <div className="flex-1 flex justify-center items-center pointer-events-none z-50 relative">
-        {splashState === 'done' ? (
-          <h1 className="text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center">
-            Derma-Guide AI
-          </h1>
-        ) : (
-          <motion.h1 
-            initial={{ scale: 3.5, y: "42vh", x: "0%", z: 0 }}
-            animate={
-              splashState === 'waiting' 
-                ? { scale: 3.5, y: "42vh", x: "0%", z: 0 }
-                : { scale: 1, y: "0vh", x: "0%", z: 0 }
+        <h1 
+          className={`text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d ${
+            splashState === 'waiting' 
+              ? 'duration-0' 
+              : splashState === 'moving' 
+                ? 'transition-transform duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)]' 
+                : ''
+          }`}
+          style={{ 
+             transform: splashState === 'waiting' ? 'translate3d(0, 42vh, 0) scale(3.5)' : 'translate3d(0, 0vh, 0) scale(1)',
+             willChange: 'transform'
+          }}
+          onTransitionEnd={() => {
+            if (splashState === 'moving') {
+              setSplashState('done');
             }
-            transition={
-              splashState === 'waiting'
-                ? { duration: 0 }
-                : { duration: 1.5, ease: [0.22, 1, 0.36, 1] }
-            }
-            onAnimationComplete={() => {
-              if (splashState === 'moving') {
-                setSplashState('done');
-              }
-            }}
-            className="text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d"
-            style={{ willChange: "transform" }}
-          >
-            Derma-Guide AI
-          </motion.h1>
-        )}
+          }}
+        >
+          Derma-Guide AI
+        </h1>
         <AnimatePresence>
           {splashState === 'waiting' && (
             <motion.div
