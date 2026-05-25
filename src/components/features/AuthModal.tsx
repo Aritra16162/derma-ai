@@ -10,14 +10,16 @@ const InteractiveMonkey = ({
   showPassword,
   showConfirmPassword,
   mode,
-  error
+  error,
+  otpVerified
 }: { 
   activeField: string, 
   inputValue: string, 
   showPassword: boolean,
   showConfirmPassword: boolean,
   mode: string,
-  error?: string
+  error?: string,
+  otpVerified?: boolean
 }) => {
   const [showGreeting, setShowGreeting] = useState(true);
   const [cursorPos, setCursorPos] = useState(0);
@@ -48,7 +50,15 @@ const InteractiveMonkey = ({
   useEffect(() => {
     const updateCursor = () => {
       if (document.activeElement instanceof HTMLInputElement) {
-        setCursorPos(document.activeElement.selectionStart || 0);
+        try {
+          if (document.activeElement.type === 'email' || document.activeElement.type === 'number') {
+            setCursorPos(document.activeElement.value.length);
+          } else {
+            setCursorPos(document.activeElement.selectionStart ?? document.activeElement.value.length);
+          }
+        } catch (e) {
+          setCursorPos(document.activeElement.value.length);
+        }
       }
     };
     
@@ -482,6 +492,7 @@ export function AuthModal() {
                  showConfirmPassword={showConfirmPassword} 
                  mode={mode}
                  error={error}
+                 otpVerified={otpVerified}
                />
             </div>
 
