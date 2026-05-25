@@ -46,7 +46,7 @@ export default function MaintenancePage() {
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute text-blue-400/20"
+              className="text-blue-400/20"
             >
               <Settings size={120} strokeWidth={1} />
             </motion.div>
