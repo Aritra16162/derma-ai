@@ -11,6 +11,7 @@ const InteractiveMonkey = ({
   showConfirmPassword,
   mode,
   error,
+  success,
   otpVerified
 }: { 
   activeField: string, 
@@ -19,13 +20,14 @@ const InteractiveMonkey = ({
   showConfirmPassword: boolean,
   mode: string,
   error?: string,
+  success?: string,
   otpVerified?: boolean
 }) => {
   const [showGreeting, setShowGreeting] = useState(true);
   const [cursorPos, setCursorPos] = useState(0);
 
-  // If there's an error, always show the bubble. Otherwise show greetings on login/signup and OTP screens.
-  const isBubbleVisible = !!error || (showGreeting && (
+  // If there's an error or success, always show the bubble. Otherwise show greetings on login/signup and OTP screens.
+  const isBubbleVisible = !!error || !!success || (showGreeting && (
     mode === 'signin' || 
     mode === 'signup' || 
     mode === 'verify' || 
@@ -40,11 +42,11 @@ const InteractiveMonkey = ({
   }, [mode]);
 
   useEffect(() => {
-    // Hide greeting (but not errors) when typing
-    if (activeField !== 'none' && !error) {
+    // Hide greeting (but not errors or success) when typing
+    if (activeField !== 'none' && !error && !success) {
       setShowGreeting(false);
     }
-  }, [activeField, error]);
+  }, [activeField, error, success]);
 
   // Track the actual caret/cursor position instead of just total string length
   useEffect(() => {
@@ -124,17 +126,21 @@ const InteractiveMonkey = ({
             className={`absolute top-4 left-[90%] z-20 px-3 py-1.5 rounded-2xl rounded-bl-none shadow-[0_4px_15px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_15px_rgba(0,0,0,0.5)] text-sm font-bold border whitespace-nowrap ${
               error 
                 ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800' 
-                : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border-gray-100 dark:border-slate-700'
+                : success
+                  ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800'
+                  : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border-gray-100 dark:border-slate-700'
             }`}
             style={{ transformOrigin: 'bottom left' }}
           >
             {error 
               ? `Oops! ${error} 🙈`
-              : mode === 'signup' 
-                ? 'Hi there! 👋' 
-                : (mode === 'forgot-password' || mode === 'reset-password' || mode === 'verify')
-                  ? 'Check inbox or spam folder 📬'
-                  : 'Love to see you again! 👋'
+              : success
+                ? `${success} 🌟`
+                : mode === 'signup' 
+                  ? 'Hi there! 👋' 
+                  : (mode === 'forgot-password' || mode === 'reset-password' || mode === 'verify')
+                    ? 'Check inbox or spam folder 📬'
+                    : 'Love to see you again! 👋'
             }
           </motion.div>
         )}
@@ -307,6 +313,7 @@ export function AuthModal() {
   const [otp, setOtp] = useState('');
   const [otpVerified, setOtpVerified] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(60);
   const [activeField, setActiveField] = useState<'none' | 'name' | 'email' | 'password' | 'confirmPassword' | 'otp' | 'gender'>('none');
@@ -331,6 +338,7 @@ export function AuthModal() {
       setOtp('');
       setOtpVerified(false);
       setError('');
+      setSuccess('');
       setTimer(60);
       setShowPassword(false);
       setShowConfirmPassword(false);
@@ -369,6 +377,7 @@ export function AuthModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
     try {
@@ -400,6 +409,9 @@ export function AuthModal() {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.detail || 'Verification failed');
+        
+        setSuccess('Success!');
+        await new Promise(resolve => setTimeout(resolve, 1500));
         
         loginUser(data.name || email.split('@')[0], email);
         setShowAuthModal(false);
@@ -492,6 +504,7 @@ export function AuthModal() {
                  showConfirmPassword={showConfirmPassword} 
                  mode={mode}
                  error={error}
+                 success={success}
                  otpVerified={otpVerified}
                />
             </div>
