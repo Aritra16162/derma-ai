@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 
 export function proxy(request: NextRequest) {
   // Check if maintenance mode is enabled
-  const isMaintenanceMode = process.env.MAINTENANCE_MODE === 'true'
+  const isMaintenanceMode = process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true'
 
   // If in maintenance mode, and not already on the maintenance page, rewrite to it
   if (isMaintenanceMode && !request.nextUrl.pathname.startsWith('/maintenance')) {
