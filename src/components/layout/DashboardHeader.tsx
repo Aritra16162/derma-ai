@@ -46,6 +46,19 @@ export function DashboardHeader() {
           />
         )}
       </AnimatePresence>
+      <style>{`
+        @keyframes splashMove {
+          0% {
+            transform: translate3d(0, 42vh, 0) scale(3.5);
+          }
+          100% {
+            transform: translate3d(0, 0, 0) scale(1);
+          }
+        }
+        .animate-splash-move {
+          animation: splashMove 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+      `}</style>
 
       <div className={`flex-1 flex items-center justify-start gap-6 z-50 relative transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <button 
@@ -62,17 +75,13 @@ export function DashboardHeader() {
       <div className="flex-1 flex justify-center items-center pointer-events-none z-50 relative">
         <h1 
           className={`text-[15px] sm:text-base md:text-xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d ${
-            splashState === 'waiting' 
-              ? 'duration-0' 
-              : splashState === 'moving' 
-                ? 'transition-transform duration-[1500ms] ease-[cubic-bezier(0.22,1,0.36,1)]' 
-                : ''
+            splashState === 'moving' ? 'animate-splash-move' : ''
           }`}
           style={{ 
-             transform: splashState === 'waiting' ? 'translate3d(0, 42vh, 0) scale(3.5)' : 'translate3d(0, 0vh, 0) scale(1)',
+             transform: splashState === 'waiting' ? 'translate3d(0, 42vh, 0) scale(3.5)' : (splashState === 'done' ? 'translate3d(0, 0, 0) scale(1)' : undefined),
              willChange: 'transform'
           }}
-          onTransitionEnd={() => {
+          onAnimationEnd={() => {
             if (splashState === 'moving') {
               setSplashState('done');
             }
