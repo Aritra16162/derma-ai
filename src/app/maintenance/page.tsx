@@ -53,13 +53,7 @@ export default function MaintenancePage() {
             
 
 
-            <motion.div
-              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute -top-2 -right-2 text-purple-400"
-            >
-              <Sparkles size={24} />
-            </motion.div>
+
           </div>
 
           <motion.h1
