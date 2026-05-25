@@ -355,6 +355,16 @@ export function AuthModal() {
     return () => clearInterval(interval);
   }, [mode, timer]);
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (error) {
+      timeout = setTimeout(() => {
+        setError('');
+      }, 1500);
+    }
+    return () => clearTimeout(timeout);
+  }, [error]);
+
   const handleResend = async () => {
     setError('');
     try {
