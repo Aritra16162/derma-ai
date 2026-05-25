@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 };
 
 import MaintenancePage from "./maintenance/page";
+import { ENABLE_MAINTENANCE_MODE } from "@/lib/config";
 
 export default function RootLayout({
   children,
@@ -33,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   // If maintenance mode is active, override the entire layout with the maintenance screen
-  if (process.env.NEXT_PUBLIC_MAINTENANCE_MODE === 'true') {
+  if (ENABLE_MAINTENANCE_MODE) {
     return (
       <html
         lang="en"
