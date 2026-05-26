@@ -218,7 +218,8 @@ Feedback:
         "to": "dermaguide.ai@gmail.com",
         "subject": f"New Feedback from {name}",
         "body": body,
-        "htmlBody": html_body
+        "htmlBody": html_body,
+        "name": "FEEDBACK"
     }
     
     _send_http_email(payload)
