@@ -6,7 +6,8 @@ import { API_URL } from '@/lib/config';
 export function ProfileView() {
   const { user, setShowLogoutConfirm, setShowAuthModal, logoutUser, setCurrentView } = useStore();
   
-  const [deleteState, setDeleteState] = useState<'idle' | 'confirming' | 'verifying' | 'success'>('idle');
+  const [deleteState, setDeleteState] = useState<'idle' | 'confirming' | 'password' | 'verifying' | 'success'>('idle');
+  const [deletePassword, setDeletePassword] = useState('');
   const [deleteOtp, setDeleteOtp] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -30,7 +31,7 @@ export function ProfileView() {
       const res = await fetch(`${API_URL}/auth/request-delete-account`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: user?.email })
+        body: JSON.stringify({ email: user?.email, password: deletePassword })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || 'Failed to request deletion');
@@ -155,11 +156,43 @@ export function ProfileView() {
                           Cancel
                         </button>
                         <button 
-                          onClick={requestDelete}
-                          disabled={isDeleting}
+                          onClick={() => setDeleteState('password')}
                           className="px-6 py-2 rounded-full text-white bg-red-600 hover:bg-red-700 font-semibold text-sm transition-colors disabled:opacity-50"
                         >
-                          {isDeleting ? 'Sending...' : 'Yes, Delete Account'}
+                          Yes, Delete Account
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {deleteState === 'password' && (
+                    <div className="flex flex-col items-center w-full gap-3 p-4 bg-red-50/50 dark:bg-red-500/5 rounded-xl border border-red-100 dark:border-red-500/20">
+                      <p className="text-sm text-gray-700 dark:text-gray-300 font-medium text-center">Please enter your password to continue.</p>
+                      <div className="flex gap-3 items-center w-full max-w-sm">
+                        <div className="relative flex-1">
+                          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                          <input 
+                            type="password" 
+                            placeholder="Your Password" 
+                            value={deletePassword}
+                            onChange={(e) => setDeletePassword(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-red-500 text-gray-900 dark:text-white text-sm"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-3 justify-center w-full mt-2">
+                        <button 
+                          onClick={() => { setDeleteState('idle'); setDeletePassword(''); setDeleteError(''); }}
+                          className="px-6 py-2 rounded-full text-gray-600 dark:text-gray-300 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 hover:bg-gray-50 dark:hover:bg-slate-600 font-semibold text-sm transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button 
+                          onClick={requestDelete}
+                          disabled={isDeleting || !deletePassword}
+                          className="px-6 py-2 rounded-full text-white bg-red-600 hover:bg-red-700 font-semibold text-sm transition-colors disabled:opacity-50"
+                        >
+                          {isDeleting ? 'Verifying...' : 'Verify Password'}
                         </button>
                       </div>
                       {deleteError && <p className="text-xs text-red-500 text-center w-full mt-1">{deleteError}</p>}

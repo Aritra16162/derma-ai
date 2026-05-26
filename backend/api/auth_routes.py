@@ -208,10 +208,14 @@ def reset_password(req: ResetPasswordRequest, db: Session = Depends(get_db)):
     return {"message": "Password has been successfully reset."}
 
 @router.post("/request-delete-account")
-def request_delete_account(req: ResendRequest, db: Session = Depends(get_db)):
+def request_delete_account(req: AuthRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == req.email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+        
+    if not verify_password(req.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Incorrect password")
+
         
     otp = generate_otp()
     expires_at = datetime.utcnow() + timedelta(minutes=10)
