@@ -177,7 +177,7 @@ export function ProfileView() {
                             placeholder="Your Password" 
                             value={deletePassword}
                             onChange={(e) => setDeletePassword(e.target.value)}
-                            className="w-full pl-9 pr-10 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-red-500 text-gray-900 dark:text-white text-sm"
+                            className="w-full pl-9 pr-10 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-red-500 text-gray-900 dark:text-white text-base tracking-wider"
                           />
                           <button
                             type="button"

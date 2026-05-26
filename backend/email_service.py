@@ -54,30 +54,55 @@ Derma Guide Team"""
     
     _send_http_email(payload)
 
-def send_delete_account_email(to_email: str, otp: str):
+def send_delete_account_email(to_email: str, name: str, otp: str):
     if not SMTP_EMAIL:
         print(f"Mock Delete Account Email sent to {to_email}. OTP: {otp}")
         return
 
-    body = f"""Hello,
+    body = f"""Dear {name},
 
-We are very sorry that you are leaving us.
+We're sorry to see you leave Derma Guide.
 
-Your account deletion verification code is: {otp}
+Your presence has been an important part of our community, and we truly appreciate the trust you've placed in us. While we're sad to see you go, we respect your decision and want to ensure that your account deletion request is processed securely.
 
-This code will expire in 10 minutes.
+To confirm your account deletion, please use the One-Time Password (OTP) below:
 
-Derma AI - Empowering your skin health journey with AI.
+OTP: {otp}
 
-Feel free to reach out to us at any time.
+This OTP will expire in 10 minutes.
+
+If you did not request to delete your account, please ignore this email. Your account will remain safe and unchanged.
+
+Thank you for being a part of Derma Guide AI. We sincerely appreciate your support and the opportunity to assist you on your skincare journey.
+
+Before you go, we'd love to hear from you. Every user helps us grow, and your feedback can help us improve Derma Guide AI for others. If there's anything we could have done better, please let us know.
+
+We wish you all the best and hope to serve you again in the future.
 
 Warm regards,
 Derma Guide Team"""
 
+    html_body = f"""
+<div style="font-family: sans-serif; color: #333; line-height: 1.6; text-align: left;">
+    <p>Dear {name},</p>
+    <p>We're sorry to see you leave Derma Guide.</p>
+    <p>Your presence has been an important part of our community, and we truly appreciate the trust you've placed in us. While we're sad to see you go, we respect your decision and want to ensure that your account deletion request is processed securely.</p>
+    <p>To confirm your account deletion, please use the One-Time Password (OTP) below:</p>
+    <p style="font-size: 18px; margin: 20px 0;"><strong>OTP: {otp}</strong></p>
+    <p>This OTP will expire in <strong>10 minutes</strong>.</p>
+    <p>If you did not request to delete your account, please ignore this email. Your account will remain safe and unchanged.</p>
+    <p>Thank you for being a part of Derma Guide AI. We sincerely appreciate your support and the opportunity to assist you on your skincare journey.</p>
+    <p>Before you go, we'd love to hear from you. Every user helps us grow, and your feedback can help us improve Derma Guide AI for others. If there's anything we could have done better, please let us know.</p>
+    <p>We wish you all the best and hope to serve you again in the future.</p>
+    <p>Warm regards,<br>Derma Guide Team</p>
+</div>
+"""
+
     payload = {
         "to": to_email,
         "subject": "Account Deletion Confirmation",
-        "body": body
+        "body": body,
+        "htmlBody": html_body
     }
     
     _send_http_email(payload)

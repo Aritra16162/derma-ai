@@ -229,7 +229,7 @@ def request_delete_account(req: AuthRequest, db: Session = Depends(get_db)):
     db.add(code)
     db.commit()
     
-    send_delete_account_email(req.email, otp)
+    send_delete_account_email(req.email, user.name, otp)
     return {"message": "OTP sent to email for account deletion."}
 
 @router.post("/verify-delete-account")
