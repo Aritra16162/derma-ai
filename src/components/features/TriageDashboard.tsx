@@ -37,7 +37,7 @@ export function TriageDashboard() {
   const handleReloadInsights = async () => {
     setReloadingInsights(true);
     try {
-      const result = await submitToTriage(capturedImage, surveyData);
+      const result = await submitToTriage(capturedImage, surveyData, geaSummary);
       setTriageResult(result.status, result.conditionName, result.geaSummary, result.geaDetails);
     } catch (error: any) {
       alert("Failed to reload insights: " + error.message);

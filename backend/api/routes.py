@@ -64,7 +64,7 @@ async def classify_endpoint(req: ClassifyRequest):
 
         # Call GeA for advanced insights
         from ml.gea import get_advanced_insights
-        gea_summary, gea_details = get_advanced_insights(req.image, req.survey.dict(), predicted_class)
+        gea_summary, gea_details = get_advanced_insights(req.image, req.survey.dict(), predicted_class, req.previous_diagnosis)
 
         return ClassifyResponse(
             predicted_class=predicted_class,

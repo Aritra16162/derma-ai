@@ -14,6 +14,7 @@ class ClassifyRequest(BaseModel):
     """Incoming classification request containing a base64 image and survey answers."""
     image: str  # Base64-encoded image string
     survey: SurveyData
+    previous_diagnosis: str | None = None
 
 
 class ClassifyResponse(BaseModel):

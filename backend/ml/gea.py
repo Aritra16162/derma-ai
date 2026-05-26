@@ -52,7 +52,7 @@ def validate_image_with_gea(img_base64: str) -> bool:
         print(f"GeA validation error: {e}")
         return True # Fallback if API fails
 
-def get_advanced_insights(img_base64: str, survey_data: dict, predicted_class: str) -> tuple[str, str]:
+def get_advanced_insights(img_base64: str, survey_data: dict, predicted_class: str, previous_diagnosis: str = None) -> tuple[str, str]:
     """
     Asks GeA for a diagnosis based on image and survey.
     Returns (summary_word, details_paragraph).
@@ -83,6 +83,9 @@ Your response must be exactly two lines separated by a newline.
 Line 1: [SINGLE WORD AI DIAGNOSIS]
 Line 2: Given the uploaded photo its shows...
 """
+        
+        if previous_diagnosis:
+            prompt += f"\nIMPORTANT: You previously diagnosed this as {previous_diagnosis}. Do not change your decisions from the previous one. Maintain consistency with your previous diagnosis.\n"
         
         response = client.models.generate_content(
             model=os.environ.get('GEA_MODEL_NAME', 'gea-2.5-flash'),

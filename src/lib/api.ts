@@ -3,7 +3,8 @@ import { API_URL } from '@/lib/config';
 
 export async function submitToTriage(
   image: string | null,
-  survey: SurveyData
+  survey: SurveyData,
+  previousDiagnosis?: string
 ): Promise<{ status: TriageStatus; conditionName?: string; geaSummary?: string; geaDetails?: string }> {
   try {
     const response = await fetch(`${API_URL}/classify`, {
@@ -13,7 +14,8 @@ export async function submitToTriage(
       },
       body: JSON.stringify({
         image,
-        survey
+        survey,
+        previous_diagnosis: previousDiagnosis
       }),
     });
     
