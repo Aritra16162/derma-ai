@@ -1,13 +1,20 @@
 import { useStore } from '@/store/useStore';
 import { Sparkles, Activity, FileText, Calendar, AlertTriangle, Clock, CheckCircle, Info, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export function DashboardHome() {
   const { setCurrentView, historyLogs, user } = useStore();
   const [backendLogs, setBackendLogs] = useState<any[] | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.92; // Adjust speed to 92%
+    }
+  }, []);
 
   useEffect(() => {
     if (user?.email) {
@@ -57,6 +64,7 @@ export function DashboardHome() {
       {/* Full-screen Background Video */}
       <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
@@ -71,7 +79,7 @@ export function DashboardHome() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative w-full glass-card overflow-hidden p-6 md:p-12 flex flex-col items-center justify-center bg-white/40 dark:bg-slate-900/40 backdrop-blur-lg border border-white/40 dark:border-slate-700/50 transition-all duration-500 shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
+        className="relative w-full overflow-hidden p-6 md:p-12 flex flex-col items-center justify-center bg-white/50 dark:bg-slate-900/50 backdrop-blur-none rounded-2xl border border-white/40 dark:border-slate-700/50 transition-all duration-500 shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
       >
         {/* Dynamic mesh background for a premium feel */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl z-0">
