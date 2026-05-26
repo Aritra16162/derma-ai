@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore } from '@/store/useStore';
-import { UserCircle, Mail, Hash, LogOut, ArrowRight, ShieldCheck, Activity, Trash2, KeyRound, CheckCircle } from 'lucide-react';
+import { UserCircle, Mail, Hash, LogOut, ArrowRight, ShieldCheck, Activity, Trash2, KeyRound, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { API_URL } from '@/lib/config';
 
 export function ProfileView() {
@@ -8,6 +8,7 @@ export function ProfileView() {
   
   const [deleteState, setDeleteState] = useState<'idle' | 'confirming' | 'password' | 'verifying' | 'success'>('idle');
   const [deletePassword, setDeletePassword] = useState('');
+  const [showDeletePassword, setShowDeletePassword] = useState(false);
   const [deleteOtp, setDeleteOtp] = useState('');
   const [deleteError, setDeleteError] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
@@ -172,12 +173,19 @@ export function ProfileView() {
                         <div className="relative flex-1">
                           <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                           <input 
-                            type="password" 
+                            type={showDeletePassword ? "text" : "password"} 
                             placeholder="Your Password" 
                             value={deletePassword}
                             onChange={(e) => setDeletePassword(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-red-500 text-gray-900 dark:text-white text-sm"
+                            className="w-full pl-9 pr-10 py-2 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg outline-none focus:ring-2 focus:ring-red-500 text-gray-900 dark:text-white text-sm"
                           />
+                          <button
+                            type="button"
+                            onClick={() => setShowDeletePassword(!showDeletePassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                          >
+                            {showDeletePassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                          </button>
                         </div>
                       </div>
                       <div className="flex gap-3 justify-center w-full mt-2">
