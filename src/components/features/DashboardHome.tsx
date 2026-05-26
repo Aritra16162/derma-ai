@@ -55,16 +55,17 @@ export function DashboardHome() {
   return (
     <div className="w-full max-w-4xl mx-auto mt-8 px-4 flex flex-col items-center relative gap-8 pb-12">
       {/* Full-screen Background Video */}
-      <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden bg-slate-950">
         <video
           autoPlay
           muted
           loop
           playsInline
-          className="w-full h-full object-cover opacity-30 dark:opacity-20"
+          className="w-full h-full object-cover opacity-60"
         >
           <source src="/consultant.mp4" type="video/mp4" />
         </video>
+        <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px]"></div>
       </div>
 
       <motion.div 
