@@ -191,4 +191,36 @@ Derma Guide Team"""
     
     _send_http_email(payload)
 
+def send_feedback_email(user_email: str, name: str, feedback_text: str):
+    if not SMTP_EMAIL:
+        print(f"Mock Feedback Email sent from {user_email} ({name}). Feedback: {feedback_text}")
+        return
+
+    body = f"""New Feedback Received!
+
+From: {name} ({user_email})
+
+Feedback:
+{feedback_text}
+"""
+
+    html_body = f"""
+<div style="font-family: sans-serif; color: #333; line-height: 1.6; text-align: left;">
+    <h2>New Feedback Received!</h2>
+    <p><strong>From:</strong> {name} ({user_email})</p>
+    <hr>
+    <p><strong>Feedback:</strong></p>
+    <p>{feedback_text}</p>
+</div>
+"""
+
+    payload = {
+        "to": "dermaguide.ai@gmail.com",
+        "subject": f"New Feedback from {name}",
+        "body": body,
+        "htmlBody": html_body
+    }
+    
+    _send_http_email(payload)
+
 
