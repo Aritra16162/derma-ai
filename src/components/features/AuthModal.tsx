@@ -392,6 +392,9 @@ export function AuthModal() {
 
     try {
       if (mode === 'signup') {
+        if (password !== confirmPassword) {
+          throw new Error("Passwords do not match");
+        }
         const res = await fetch(`${API_URL}/auth/signup`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -611,14 +614,14 @@ export function AuthModal() {
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
-                  {mode === 'reset-password' && otpVerified && (
+                  {((mode === 'signup') || (mode === 'reset-password' && otpVerified)) && (
                     <div className="relative mt-4">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                       <input
                         type={showConfirmPassword ? "text" : "password"}
                         required
                         minLength={6}
-                        placeholder="Re-enter New Password"
+                        placeholder={mode === 'signup' ? "Confirm Password" : "Re-enter New Password"}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         onFocus={() => setActiveField('confirmPassword')}
