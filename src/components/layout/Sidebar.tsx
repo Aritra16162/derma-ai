@@ -161,7 +161,7 @@ export function Sidebar() {
                     >
                       <CheckCircle2 size={64} className="text-green-500 mb-4" />
                       <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Thank You!</h4>
-                      <p className="text-gray-600 dark:text-slate-300">Your feedback has been sent to dermaguide.ai@gmail.com.</p>
+                      <p className="text-gray-600 dark:text-slate-300">Your feedback has been sent to us.</p>
                     </motion.div>
                   ) : (
                     <>
