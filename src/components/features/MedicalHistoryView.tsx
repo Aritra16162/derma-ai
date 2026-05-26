@@ -94,7 +94,7 @@ export function MedicalHistoryView() {
   }, [user]);
 
   const localLogs = user ? historyLogs.filter(log => log.patientName === user.name) : [];
-  const allLogs = [...(backendLogs || []), ...localLogs];
+  const allLogs = [...localLogs, ...(backendLogs || [])];
   const userLogs = Array.from(new Map(allLogs.map(log => [
       log.conditionName + JSON.stringify(log.surveyData), 
       log

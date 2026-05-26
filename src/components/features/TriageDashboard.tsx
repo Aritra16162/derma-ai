@@ -39,6 +39,12 @@ export function TriageDashboard() {
     setReloadingInsights(true);
     try {
       const result = await submitToTriage(capturedImage, surveyData, geaSummary);
+      
+      if (result.geaSummary === "Error" || result.geaSummary === "Unavailable") {
+        alert("Failed to regenerate insights: " + result.geaDetails);
+        return;
+      }
+      
       setTriageResult(result.status, result.conditionName, result.geaSummary, result.geaDetails);
       
       if (dbReportId && user) {

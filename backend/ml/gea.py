@@ -84,8 +84,8 @@ Line 1: [SINGLE WORD AI DIAGNOSIS]
 Line 2: Given the uploaded photo its shows...
 """
         
-        if previous_diagnosis:
-            prompt += f"\nIMPORTANT: You previously diagnosed this as {previous_diagnosis}. Do not change your decisions from the previous one. Maintain consistency with your previous diagnosis.\n"
+        if previous_diagnosis and previous_diagnosis not in ["Error", "Unavailable", "Analysis"]:
+            prompt += f"\nNote: You previously diagnosed this case as {previous_diagnosis}. Please maintain clinical consistency with your previous diagnosis when generating this response.\n"
         
         response = client.models.generate_content(
             model=os.environ.get('GEA_MODEL_NAME', 'gea-2.5-flash'),
