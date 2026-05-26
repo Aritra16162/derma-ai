@@ -71,7 +71,7 @@ export function DashboardHome() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative w-full glass-card overflow-hidden p-6 md:p-12 flex flex-col items-center justify-center bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border border-white/40 dark:border-slate-700/50 transition-all duration-500 shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
+        className="relative w-full glass-card overflow-hidden p-6 md:p-12 flex flex-col items-center justify-center bg-white/40 dark:bg-slate-900/40 backdrop-blur-lg border border-white/40 dark:border-slate-700/50 transition-all duration-500 shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
       >
         {/* Dynamic mesh background for a premium feel */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl z-0">
