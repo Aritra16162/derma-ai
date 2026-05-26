@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from '@/store/useStore';
 import { API_URL } from '@/lib/config';
 import { motion } from 'framer-motion';
-import { FileDown, RefreshCcw, AlertTriangle, CheckCircle, Clock, Mail, Sparkles } from 'lucide-react';
+import { FileDown, RefreshCcw, AlertTriangle, CheckCircle, Clock, Mail, Sparkles, RefreshCw, Loader2 } from 'lucide-react';
+import { submitToTriage } from '@/lib/api';
 
 const renderHighlightedText = (text: string) => {
   if (!text) return null;
@@ -28,9 +29,22 @@ const renderHighlightedText = (text: string) => {
 
 export function TriageDashboard() {
   const { t } = useTranslation();
-  const { user, setShowAuthModal, triageResult, conditionName, geaSummary, geaDetails, surveyData, capturedImage, resetFlow } = useStore();
+  const { user, setShowAuthModal, triageResult, conditionName, geaSummary, geaDetails, surveyData, capturedImage, resetFlow, setTriageResult } = useStore();
   const [sending, setSending] = useState(false);
+  const [reloadingInsights, setReloadingInsights] = useState(false);
   const savedRef = useRef(false);
+
+  const handleReloadInsights = async () => {
+    setReloadingInsights(true);
+    try {
+      const result = await submitToTriage(capturedImage, surveyData);
+      setTriageResult(result.status, result.conditionName, result.geaSummary, result.geaDetails);
+    } catch (error: any) {
+      alert("Failed to reload insights: " + error.message);
+    } finally {
+      setReloadingInsights(false);
+    }
+  };
 
   useEffect(() => {
     if (user && triageResult && conditionName && !savedRef.current) {
@@ -148,10 +162,20 @@ export function TriageDashboard() {
         
         {/* Advanced AI Insights */}
         {geaSummary && geaDetails && (
-          <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 rounded-xl transition-colors">
-            <div className="flex items-center gap-2 mb-4">
-              <Sparkles size={16} className="text-blue-500 dark:text-blue-400" />
-              <h3 className="text-sm font-bold text-blue-900 dark:text-blue-300">Advanced AI Insights</h3>
+          <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/30 rounded-xl transition-colors relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} className="text-blue-500 dark:text-blue-400" />
+                <h3 className="text-sm font-bold text-blue-900 dark:text-blue-300">Advanced AI Insights</h3>
+              </div>
+              <button 
+                onClick={handleReloadInsights}
+                disabled={reloadingInsights}
+                title="Regenerate Insights"
+                className="p-1.5 rounded-md bg-white/50 dark:bg-blue-900/40 hover:bg-white dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 transition-colors shadow-sm border border-blue-200/50 dark:border-blue-700/50 disabled:opacity-50"
+              >
+                {reloadingInsights ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />}
+              </button>
             </div>
             <div className="flex flex-col gap-2">
               <span className="inline-block px-3 py-1 bg-white dark:bg-slate-800 rounded-lg text-sm font-bold text-gray-800 dark:text-gray-200 border dark:border-slate-600 self-start shadow-sm">
