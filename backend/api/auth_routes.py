@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from database import get_db
 from schemas.models_db import User, VerificationCode, MedicalReport
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from auth import get_password_hash, verify_password, create_access_token
 from email_service import generate_otp, send_otp_email, send_welcome_email, send_delete_account_email
 
@@ -20,32 +20,35 @@ def cleanup_old_otps(db: Session):
     except Exception as e:
         print(f"Error cleaning up OTPs: {e}")
 
-class AuthRequest(BaseModel):
+class BaseEmailRequest(BaseModel):
     email: str
+
+    @field_validator('email')
+    @classmethod
+    def email_to_lower(cls, v: str) -> str:
+        return v.lower()
+
+class AuthRequest(BaseEmailRequest):
     password: str
 
-class SignupRequest(BaseModel):
+class SignupRequest(BaseEmailRequest):
     name: str
-    email: str
     password: str = Field(..., min_length=6)
     gender: str = "Prefer not to say"
 
-class VerifyRequest(BaseModel):
-    email: str
+class VerifyRequest(BaseEmailRequest):
     otp: str
 
-class ResendRequest(BaseModel):
-    email: str
+class ResendRequest(BaseEmailRequest):
+    pass
 
-class ForgotPasswordRequest(BaseModel):
-    email: str
+class ForgotPasswordRequest(BaseEmailRequest):
+    pass
 
-class VerifyResetOtpRequest(BaseModel):
-    email: str
+class VerifyResetOtpRequest(BaseEmailRequest):
     otp: str
 
-class ResetPasswordRequest(BaseModel):
-    email: str
+class ResetPasswordRequest(BaseEmailRequest):
     otp: str
     new_password: str = Field(..., min_length=6)
 
