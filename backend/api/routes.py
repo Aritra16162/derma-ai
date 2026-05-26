@@ -129,7 +129,20 @@ def save_report(req: SaveReportRequest, db: Session = Depends(get_db)):
     )
     db.add(report)
     db.commit()
-    return {"message": "Report saved"}
+    db.refresh(report)
+    return {"message": "Report saved", "id": report.id}
+
+@router.put("/reports/{report_id}")
+def update_report(report_id: int, req: SaveReportRequest, db: Session = Depends(get_db)):
+    report = db.query(MedicalReport).filter(MedicalReport.id == report_id).first()
+    if not report:
+        raise HTTPException(status_code=404, detail="Report not found")
+    report.condition_name = req.condition_name
+    report.urgency = req.urgency
+    report.gea_summary = req.gea_summary
+    report.gea_details = req.gea_details
+    db.commit()
+    return {"message": "Report updated"}
 
 @router.get("/reports/{email}")
 def get_reports(email: str, db: Session = Depends(get_db)):

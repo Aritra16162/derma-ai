@@ -33,12 +33,28 @@ export function TriageDashboard() {
   const [sending, setSending] = useState(false);
   const [reloadingInsights, setReloadingInsights] = useState(false);
   const savedRef = useRef(false);
+  const [dbReportId, setDbReportId] = useState<number | null>(null);
 
   const handleReloadInsights = async () => {
     setReloadingInsights(true);
     try {
       const result = await submitToTriage(capturedImage, surveyData, geaSummary);
       setTriageResult(result.status, result.conditionName, result.geaSummary, result.geaDetails);
+      
+      if (dbReportId && user) {
+        await fetch(`${API_URL}/reports/${dbReportId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: user.email,
+            condition_name: result.conditionName || conditionName,
+            urgency: result.status || triageResult,
+            survey_data: surveyData,
+            gea_summary: result.geaSummary,
+            gea_details: result.geaDetails
+          })
+        }).catch(e => console.error("Failed to update DB:", e));
+      }
     } catch (error: any) {
       alert("Failed to reload insights: " + error.message);
     } finally {
@@ -61,7 +77,12 @@ export function TriageDashboard() {
           gea_summary: geaSummary,
           gea_details: geaDetails
         })
-      }).catch(err => console.error("Failed to save report automatically:", err));
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.id) setDbReportId(data.id);
+      })
+      .catch(err => console.error("Failed to save report automatically:", err));
     }
   }, [user, triageResult, conditionName, surveyData]);
 
