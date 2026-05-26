@@ -105,6 +105,16 @@ input[type="password"]::-ms-clear {
 }
 
 /* Force hide Vercel Toolbar injected on deployments */
-vercel-toolbar {
+#vercel-toolbar,
+vercel-toolbar,
+vercel-live-feedback,
+[data-vercel-toolbar],
+.vercel-toolbar {
   display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  z-index: -9999 !important;
 }
