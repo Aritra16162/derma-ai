@@ -42,8 +42,14 @@ export function DashboardHeader() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="fixed inset-0 z-40 bg-white pointer-events-auto"
-          />
+            className="fixed inset-0 z-40 bg-white dark:bg-slate-950 pointer-events-auto overflow-hidden"
+          >
+            <picture>
+              <source media="(max-width: 768px)" srcSet="/consultant-bg-mobile.jpg" />
+              <img src="/consultant-bg-desktop.jpg" alt="Consultant Background" className="w-full h-full object-cover opacity-80 dark:opacity-60" />
+            </picture>
+            <div className="absolute inset-0 bg-white/70 dark:bg-slate-950/70 backdrop-blur-[2px]"></div>
+          </motion.div>
         )}
       </AnimatePresence>
       <style>{`
