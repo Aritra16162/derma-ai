@@ -8,11 +8,6 @@ export function DashboardHome() {
   const [backendLogs, setBackendLogs] = useState<any[] | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    // Playback rate adjustment removed to prevent hardware decoding stutter
-  }, []);
 
   useEffect(() => {
     if (user?.email) {
@@ -59,22 +54,6 @@ export function DashboardHome() {
 
   return (
     <div className="w-full max-w-4xl mx-auto mt-8 px-4 flex flex-col items-center relative gap-8 pb-12 min-h-[60vh]">
-      {/* Full-screen Background Video */}
-      <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          className="w-full h-full object-cover opacity-30 dark:opacity-20"
-        >
-          {/* Serve 6MB compressed video to desktop devices */}
-          <source src="/new-video.mp4" type="video/mp4" />
-        </video>
-      </div>
-
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

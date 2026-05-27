@@ -56,6 +56,20 @@ export default function Home() {
             <div className="absolute inset-0 w-[200vw] h-[200vh] stars-bg" />
          </div>
 
+         {/* Global Background Video - Pre-loaded instantly behind the splash screen */}
+         <div className={`fixed inset-0 z-0 pointer-events-none overflow-hidden transition-opacity duration-700 ${(!currentView || currentView === 'home') ? 'opacity-100' : 'opacity-0'}`}>
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              className="w-full h-full object-cover opacity-30 dark:opacity-20"
+            >
+              <source src="/new-video.mp4" type="video/mp4" />
+            </video>
+         </div>
+
          {/* Decorative tech background elements */}
          <div className="absolute top-0 left-0 w-full h-[500px] bg-[radial-gradient(circle_at_50%_0%,rgba(32,86,179,0.05)_0%,transparent_70%)] pointer-events-none z-0" />
          
