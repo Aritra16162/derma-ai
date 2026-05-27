@@ -8,7 +8,16 @@ export function DashboardHome() {
   const [backendLogs, setBackendLogs] = useState<any[] | null>(null);
   const [isFetching, setIsFetching] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Fallback to show dashboard if video takes too long to load (e.g. slow connection)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVideoLoaded(true);
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -60,26 +69,34 @@ export function DashboardHome() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-8 px-4 flex flex-col items-center relative gap-8 pb-12">
+    <div className="w-full max-w-4xl mx-auto mt-8 px-4 flex flex-col items-center relative gap-8 pb-12 min-h-[60vh]">
       {/* Full-screen Background Video */}
-      <div className="fixed inset-0 z-[-1] pointer-events-none overflow-hidden">
+      <div className={`fixed inset-0 z-[-1] pointer-events-none overflow-hidden transition-opacity duration-1000 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <video
           ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
+          onLoadedData={() => setIsVideoLoaded(true)}
           className="w-full h-full object-cover opacity-30 dark:opacity-20"
         >
           <source src="/consultant.mp4" type="video/mp4" />
         </video>
       </div>
 
+      {!isVideoLoaded && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center mt-32 z-50">
+           <span className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-600 rounded-full animate-spin mb-4"></span>
+           <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 animate-pulse">Loading AI Interface...</span>
+        </div>
+      )}
+
       <motion.div 
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="relative w-full overflow-hidden p-6 md:p-12 flex flex-col items-center justify-center bg-white/50 dark:bg-slate-900/50 backdrop-blur-none rounded-2xl border border-white/40 dark:border-slate-700/50 transition-all duration-500 shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
+        animate={{ opacity: isVideoLoaded ? 1 : 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className={`relative w-full overflow-hidden p-6 md:p-12 flex flex-col items-center justify-center bg-white/50 dark:bg-slate-900/50 backdrop-blur-none rounded-2xl border border-white/40 dark:border-slate-700/50 transition-all duration-500 shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] ${!isVideoLoaded ? 'pointer-events-none' : ''}`}
       >
         {/* Dynamic mesh background for a premium feel */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl z-0">
@@ -143,7 +160,12 @@ export function DashboardHome() {
         </motion.button>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isVideoLoaded ? 1 : 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+        className={`grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2 ${!isVideoLoaded ? 'pointer-events-none' : ''}`}
+      >
          <div className="glass-card p-6 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700 transition-colors duration-300">
             <h3 className="font-semibold text-gray-700 dark:text-slate-200 flex items-center gap-2 mb-4">
                <FileText size={18}/> Recent Consultations
@@ -188,7 +210,7 @@ export function DashboardHome() {
            <h3 className="font-bold text-gray-800 dark:text-slate-200 mb-2">About Section</h3>
            <p className="text-xs text-gray-500 dark:text-slate-400 max-w-xs">Click here to learn more about DermaGuide&apos;s AI analysis system and capabilities.</p>
          </div>
-      </div>
+      </motion.div>
 
       <AnimatePresence>
         {isAboutOpen && (
