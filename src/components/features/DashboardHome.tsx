@@ -68,7 +68,6 @@ export function DashboardHome() {
           loop
           playsInline
           preload="auto"
-          poster="/consultant-bg-desktop.jpg"
           className="w-full h-full object-cover opacity-30 dark:opacity-20"
         >
           {/* Serve 6MB compressed video to desktop devices */}
