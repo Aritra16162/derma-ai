@@ -112,15 +112,15 @@ export function ProfileView() {
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
-                  <div className="bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 p-4 rounded-xl flex flex-col transition-colors duration-300">
+                  <div className="bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 p-4 rounded-xl flex flex-col text-left transition-colors duration-300">
                      <span className="text-xs text-gray-400 dark:text-gray-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1"><Hash size={14}/> Patient ID</span>
                      <span className="font-mono text-gray-800 dark:text-slate-200 font-medium">{user.patientId}</span>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 p-4 rounded-xl flex flex-col transition-colors duration-300">
+                  <div className="bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 p-4 rounded-xl flex flex-col text-left transition-colors duration-300">
                      <span className="text-xs text-gray-400 dark:text-gray-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1"><UserCircle size={14}/> Gender</span>
                      <span className="text-gray-800 dark:text-slate-200 font-medium capitalize">{user.gender || 'Prefer not to say'}</span>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 p-4 rounded-xl flex flex-col transition-colors duration-300">
+                  <div className="bg-slate-50 dark:bg-slate-700 border border-slate-100 dark:border-slate-600 p-4 rounded-xl flex flex-col text-left transition-colors duration-300">
                      <span className="text-xs text-gray-400 dark:text-gray-400 font-bold uppercase tracking-wider mb-1 flex items-center gap-1"><Activity size={14}/> Status</span>
                      <span className="text-trust-blue dark:text-blue-400 font-bold">Active</span>
                   </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, Lock, KeyRound, UserCircle, Eye, EyeOff } from 'lucide-react';
+import { X, Mail, Lock, KeyRound, UserCircle, Eye, EyeOff, Loader } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { API_URL } from '@/lib/config';
 
@@ -120,17 +120,16 @@ const InteractiveMonkey = ({
         {isBubbleVisible && (
           <motion.div
             key={error || mode}
-            initial={{ opacity: 0, scale: 0.8, y: -10, x: -10 }}
-            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: -10, x: -10 }}
-            className={`absolute top-4 left-[90%] z-20 px-3 py-1.5 rounded-2xl rounded-bl-none shadow-[0_4px_15px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_15px_rgba(0,0,0,0.5)] text-sm font-bold border whitespace-nowrap ${
+            initial={{ opacity: 0, scale: 0.8, y: -10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -10 }}
+            className={`absolute -top-8 left-1/2 -translate-x-1/2 md:top-4 md:left-[90%] md:-translate-x-0 z-20 px-3 py-1.5 rounded-2xl md:rounded-bl-none shadow-[0_4px_15px_rgba(0,0,0,0.15)] dark:shadow-[0_4px_15px_rgba(0,0,0,0.5)] text-sm font-bold border whitespace-nowrap origin-bottom md:origin-bottom-left ${
               error 
                 ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800' 
                 : success
                   ? 'bg-green-50 dark:bg-green-900/30 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800'
                   : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border-gray-100 dark:border-slate-700'
             }`}
-            style={{ transformOrigin: 'bottom left' }}
           >
             {error 
               ? `Oops! ${error} 🙈`
@@ -509,7 +508,7 @@ export function AuthModal() {
                 : 'Secure access to your AI symptom analysis and history.'}
             </p>
 
-            <div className="flex justify-center mb-6 h-24 items-center">
+            <div className="flex justify-center mb-6 mt-4 h-28 items-end">
                <InteractiveMonkey 
                  activeField={activeField} 
                  inputValue={getInputValue()} 
@@ -681,9 +680,11 @@ export function AuthModal() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-2.5 bg-trust-blue hover:bg-blue-700 text-white font-medium rounded-xl transition-colors mt-2"
+                className="w-full py-2.5 bg-trust-blue hover:bg-blue-700 text-white font-medium rounded-xl transition-colors mt-2 flex items-center justify-center gap-2"
               >
-                {loading ? 'Processing...' : mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : mode === 'forgot-password' ? 'Send Reset Code' : mode === 'reset-password' && !otpVerified ? 'Verify Code' : mode === 'reset-password' && otpVerified ? 'Reset Password' : 'Verify Code'}
+                {loading ? (
+                  <>Processing <Loader size={18} className="animate-spin" /></>
+                ) : mode === 'signin' ? 'Sign In' : mode === 'signup' ? 'Create Account' : mode === 'forgot-password' ? 'Send Reset Code' : mode === 'reset-password' && !otpVerified ? 'Verify Code' : mode === 'reset-password' && otpVerified ? 'Reset Password' : 'Verify Code'}
               </button>
             </form>
 

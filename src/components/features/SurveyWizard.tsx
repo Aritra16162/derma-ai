@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useStore, SurveyData } from '@/store/useStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, ChevronLeft, Send, Loader2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Send, Loader } from 'lucide-react';
 import { submitToTriage } from '@/lib/api';
 
 const questions: { id: keyof SurveyData; i18nKey: string }[] = [
@@ -127,7 +127,7 @@ export function SurveyWizard() {
           className="flex-1 min-h-[48px] bg-[#2056b3] hover:opacity-90 text-white font-semibold rounded-full flex items-center justify-center gap-2 transition-all disabled:opacity-50 shadow-md"
         >
           {isProcessing ? (
-            <Loader2 size={20} className="animate-spin" />
+            <>Processing <Loader size={20} className="animate-spin" /></>
           ) : currentQIndex === questions.length - 1 ? (
             <>
               {t('survey.submit')}

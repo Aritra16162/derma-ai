@@ -66,7 +66,7 @@ export function DashboardHeader() {
         }
       `}</style>
 
-      <div className={`flex-1 flex items-center justify-start gap-6 z-50 relative transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`flex items-center justify-start gap-6 z-50 relative transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <button 
           onClick={toggleSidebar} 
           className="text-gray-600 dark:text-slate-300 font-medium text-sm flex items-center gap-2 hover:opacity-80 transition-opacity"
@@ -78,9 +78,9 @@ export function DashboardHeader() {
       </div>
 
       {/* Central Title Area */}
-      <div className="flex-1 flex justify-center items-center pointer-events-none z-50 relative">
+      <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-50">
         <h1 
-          className={`text-xl sm:text-2xl md:text-3xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d ${
+          className={`text-xl sm:text-2xl md:text-3xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d whitespace-nowrap ${
             splashState === 'moving' ? 'animate-splash-move' : ''
           }`}
           style={{ 
@@ -104,7 +104,7 @@ export function DashboardHeader() {
               transition={{ duration: 0.8 }}
               className="absolute top-full left-0 right-0 mt-[45px] pointer-events-none flex justify-center"
             >
-              <p className="text-slate-400 font-semibold tracking-[0.2em] text-lg md:text-xl uppercase opacity-80 whitespace-nowrap">
+              <p className="text-slate-400 font-semibold tracking-widest md:tracking-[0.2em] text-[10px] sm:text-xs md:text-base uppercase opacity-80 whitespace-nowrap">
                 See Beyond the Surface
               </p>
             </motion.div>
@@ -112,7 +112,7 @@ export function DashboardHeader() {
         </AnimatePresence>
       </div>
       {/* User Actions */}
-      <div className={`flex-1 flex items-center justify-end gap-4 relative z-50 transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} ref={dropdownRef}>
+      <div className={`flex items-center justify-end gap-4 relative z-50 transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} ref={dropdownRef}>
         <button 
           type="button"
           className="flex items-center gap-3 cursor-pointer p-2 -mr-2 relative z-20 focus:outline-none appearance-none bg-transparent border-none text-left touch-manipulation"
