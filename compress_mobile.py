@@ -4,8 +4,8 @@ import sys
 import os
 
 ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
-input_file = "public/consultant.mp4"
-output_file = "public/consultant-mobile.mp4"
+input_file = "public/mobile-video.mp4"
+output_file = "public/mobile-video-compressed.mp4"
 
 command = [
     ffmpeg_exe,

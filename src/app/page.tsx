@@ -75,6 +75,9 @@ export default function Home() {
               preload="auto"
               className="w-full h-full object-cover opacity-30 dark:opacity-20"
             >
+              {/* Load mobile-optimized video strictly on mobile phones (under 640px) */}
+              <source src="/mobile-video.mp4" type="video/mp4" media="(max-width: 639px)" />
+              {/* Fallback to desktop video on tablets and larger screens */}
               <source src="/new-video.mp4" type="video/mp4" />
             </video>
          </div>
