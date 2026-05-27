@@ -13,9 +13,17 @@ import { AuthModal } from '@/components/features/AuthModal';
 import { ConfirmLogoutModal } from '@/components/features/ConfirmLogoutModal';
 import { useStore } from '@/store/useStore';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 
 export default function Home() {
   const { currentStep, currentView, isSidebarOpen } = useStore();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.92;
+    }
+  }, []);
 
   return (
     <div className="h-[100dvh] print:h-auto print:block w-full flex overflow-hidden print:overflow-visible bg-gradient-to-b from-blue-50/50 via-slate-50 to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-900 transition-colors duration-500">
@@ -59,6 +67,7 @@ export default function Home() {
          {/* Global Background Video - Pre-loaded instantly behind the splash screen */}
          <div className={`fixed inset-0 z-0 pointer-events-none overflow-hidden transition-opacity duration-700 ${(!currentView || currentView === 'dashboard') ? 'opacity-100' : 'opacity-0'}`}>
             <video
+              ref={videoRef}
               autoPlay
               muted
               loop
