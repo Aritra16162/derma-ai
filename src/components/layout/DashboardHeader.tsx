@@ -80,7 +80,7 @@ export function DashboardHeader() {
       {/* Central Title Area */}
       <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-50">
         <h1 
-          className={`text-xl sm:text-2xl md:text-3xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d whitespace-nowrap ${
+          className={`text-[1.1rem] sm:text-2xl md:text-3xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d whitespace-nowrap ${
             splashState === 'moving' ? 'animate-splash-move' : ''
           }`}
           style={{ 
