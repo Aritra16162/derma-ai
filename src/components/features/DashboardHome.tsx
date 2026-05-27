@@ -11,9 +11,7 @@ export function DashboardHome() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 0.92; // Adjust speed to 92%
-    }
+    // Playback rate adjustment removed to prevent hardware decoding stutter
   }, []);
 
   useEffect(() => {
@@ -69,6 +67,8 @@ export function DashboardHome() {
           muted
           loop
           playsInline
+          preload="auto"
+          poster="/consultant-bg-desktop.jpg"
           className="w-full h-full object-cover opacity-30 dark:opacity-20"
         >
           {/* Serve 6MB compressed video to desktop devices */}

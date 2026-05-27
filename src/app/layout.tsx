@@ -54,6 +54,9 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${montserrat.variable} ${openSans.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="preload" as="video" href="/new-video.mp4" type="video/mp4" />
+      </head>
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
       </body>
