@@ -71,10 +71,8 @@ export function DashboardHome() {
           playsInline
           className="w-full h-full object-cover opacity-30 dark:opacity-20"
         >
-          {/* Serve 1.8MB ultra-compressed video to mobile devices for instant loading */}
-          <source src="/consultant-mobile.mp4" media="(max-width: 767px)" type="video/mp4" />
-          {/* Serve 7MB high-quality video to desktop devices */}
-          <source src="/consultant.mp4" type="video/mp4" />
+          {/* Serve 6MB compressed video to desktop devices */}
+          <source src="/new-video.mp4" type="video/mp4" />
         </video>
       </div>
 
