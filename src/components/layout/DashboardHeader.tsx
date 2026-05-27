@@ -102,9 +102,9 @@ export function DashboardHeader() {
               animate={{ opacity: 1, y: "42dvh" }}
               exit={{ opacity: 0, y: "42dvh" }}
               transition={{ duration: 0.8 }}
-              className="absolute top-full left-0 right-0 mt-[45px] pointer-events-none flex justify-center"
+              className="absolute top-full left-0 right-0 mt-[28px] pointer-events-none flex justify-center"
             >
-              <p className="text-slate-400 font-semibold tracking-widest md:tracking-[0.2em] text-[10px] sm:text-xs md:text-base uppercase opacity-80 whitespace-nowrap">
+              <p className="text-slate-400 font-semibold tracking-widest md:tracking-[0.2em] text-sm md:text-xl uppercase opacity-80 whitespace-nowrap">
                 See Beyond the Surface
               </p>
             </motion.div>

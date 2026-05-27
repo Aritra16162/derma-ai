@@ -508,7 +508,7 @@ export function AuthModal() {
                 : 'Secure access to your AI symptom analysis and history.'}
             </p>
 
-            <div className="flex justify-center mb-6 mt-4 h-28 items-end">
+            <div className="flex justify-center mb-6 mt-14 md:mt-4 h-32 items-center">
                <InteractiveMonkey 
                  activeField={activeField} 
                  inputValue={getInputValue()} 
