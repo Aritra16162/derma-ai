@@ -277,6 +277,11 @@ export function ProfileView() {
           </button>
         </div>
       </div>
+      
+      <div className="mt-6 flex items-center justify-center gap-2 text-xs font-medium text-gray-500 dark:text-slate-400 px-4 text-center">
+        <ShieldCheck size={14} className="shrink-0 text-success-green dark:text-green-500" />
+        <p>Your privacy, our responsibility. Your account and data is completely safe and secure.</p>
+      </div>
     </div>
   );
 }
