@@ -57,7 +57,7 @@ export default function Home() {
          </div>
 
          {/* Global Background Video - Pre-loaded instantly behind the splash screen */}
-         <div className={`fixed inset-0 z-0 pointer-events-none overflow-hidden transition-opacity duration-700 ${(!currentView || currentView === 'home') ? 'opacity-100' : 'opacity-0'}`}>
+         <div className={`fixed inset-0 z-0 pointer-events-none overflow-hidden transition-opacity duration-700 ${(!currentView || currentView === 'dashboard') ? 'opacity-100' : 'opacity-0'}`}>
             <video
               autoPlay
               muted
