@@ -59,6 +59,10 @@ export interface AppState {
   geaDetails: string | null;
   isProcessing: boolean;
   
+  // Global Modals
+  isFeedbackModalOpen: boolean;
+  setFeedbackModalOpen: (open: boolean) => void;
+  
   // Actions
   setStep: (step: number) => void;
   nextStep: () => void;
@@ -113,6 +117,8 @@ export const useStore = create<AppState>()(
       geaSummary: null,
       geaDetails: null,
       isProcessing: false,
+      isFeedbackModalOpen: false,
+      setFeedbackModalOpen: (open) => set({ isFeedbackModalOpen: open }),
 
       // Analysis Actions
       setStep: (step) => set({ currentStep: step }),

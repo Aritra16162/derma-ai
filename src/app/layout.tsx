@@ -33,7 +33,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // If maintenance mode is active, override the entire layout with the maintenance screen
   if (ENABLE_MAINTENANCE_MODE) {
     return (
       <html
@@ -41,6 +40,9 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${montserrat.variable} ${openSans.variable} h-full antialiased`}
       >
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
+        </head>
         <body className="min-h-full flex flex-col m-0 p-0">
           <MaintenancePage />
         </body>

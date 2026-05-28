@@ -5,7 +5,7 @@ import { Settings, Clock, Sparkles } from "lucide-react";
 
 export default function MaintenancePage() {
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-6 relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-slate-900 flex items-center justify-center p-6 relative overflow-hidden">
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
