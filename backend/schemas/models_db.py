@@ -8,6 +8,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, default="User")
     email = Column(String, unique=True, index=True, nullable=False)
+    patient_id = Column(String, unique=True, index=True, nullable=True)
     hashed_password = Column(String, nullable=False)
     is_verified = Column(Boolean, default=False)
     gender = Column(String, nullable=True)

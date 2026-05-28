@@ -425,7 +425,7 @@ export function AuthModal() {
         setSuccess('Success!');
         await new Promise(resolve => setTimeout(resolve, 1500));
         
-        loginUser(data.name || email.split('@')[0], email, data.gender);
+        loginUser(data.name || email.split('@')[0], email, data.gender, data.patientId);
         setShowAuthModal(false);
       } else if (mode === 'forgot-password') {
         const res = await fetch(`${API_URL}/auth/forgot-password`, {

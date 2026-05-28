@@ -29,7 +29,7 @@ export function GlobalFeedback() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email: user.email, feedback: feedbackText })
+        body: JSON.stringify({ email: user.email, name: user.name, feedback: feedbackText })
       });
       if (res.ok) {
         setFeedbackSuccess(true);

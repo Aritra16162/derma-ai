@@ -164,6 +164,7 @@ def get_reports(email: str, db: Session = Depends(get_db)):
 
 class FeedbackRequest(BaseModel):
     email: str
+    name: Optional[str] = "User"
     feedback: str
 
 @router.post("/feedback")
@@ -172,11 +173,10 @@ def submit_feedback(req: FeedbackRequest, db: Session = Depends(get_db)):
     from email_service import send_feedback_email
     
     user = db.query(User).filter(User.email == req.email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+    name = user.name if user else req.name
         
     try:
-        send_feedback_email(req.email, user.name, req.feedback)
+        send_feedback_email(req.email, name, req.feedback)
         return {"message": "Feedback sent successfully"}
     except Exception as e:
         print(f"Error sending feedback email: {e}")

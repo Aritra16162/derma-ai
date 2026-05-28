@@ -45,7 +45,7 @@ export interface AppState {
   setCurrentView: (view: ViewState) => void;
   setShowAuthModal: (show: boolean, mode?: 'signin' | 'signup') => void;
   setShowLogoutConfirm: (show: boolean) => void;
-  loginUser: (name: string, email: string, gender?: string) => void;
+  loginUser: (name: string, email: string, gender?: string, patientId?: string) => void;
   logoutUser: () => void;
   toggleSidebar: () => void;
 
@@ -96,14 +96,21 @@ export const useStore = create<AppState>()(
       setCurrentView: (view) => set({ currentView: view }),
       setShowAuthModal: (show, mode = 'signin') => set({ showAuthModal: show, authMode: mode }),
       setShowLogoutConfirm: (show) => set({ showLogoutConfirm: show }),
-      loginUser: (name, email, gender) => {
-        let hash = 0;
-        for (let i = 0; i < email.length; i++) {
-          hash = ((hash << 5) - hash) + email.charCodeAt(i);
-          hash = hash & hash;
+      loginUser: (name, email, gender, patientId) => {
+        const normalizedEmail = email.toLowerCase().trim();
+        let finalPatientId = patientId;
+        
+        // Fallback for legacy persisted state or users who don't have a backend patientId yet
+        if (!finalPatientId) {
+          let hash = 0;
+          for (let i = 0; i < normalizedEmail.length; i++) {
+            hash = ((hash << 5) - hash) + normalizedEmail.charCodeAt(i);
+            hash = hash & hash;
+          }
+          finalPatientId = `PT-${(Math.abs(hash) % 900000) + 100000}`;
         }
-        const patientId = `PT-${(Math.abs(hash) % 900000) + 100000}`;
-        set({ user: { name, email, patientId, gender: gender || 'Prefer not to say' } });
+        
+        set({ user: { name, email: normalizedEmail, patientId: finalPatientId, gender: gender || 'Prefer not to say' } });
       },
       logoutUser: () => set({ user: null }),
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),

@@ -6,6 +6,7 @@ from schemas.models_db import User, VerificationCode, MedicalReport
 from pydantic import BaseModel, Field, field_validator
 from auth import get_password_hash, verify_password, create_access_token
 from email_service import generate_otp, send_otp_email, send_welcome_email, send_delete_account_email
+import random
 
 router = APIRouter()
 
@@ -66,9 +67,12 @@ def signup(req: SignupRequest, db: Session = Depends(get_db)):
             user.name = req.name
             user.hashed_password = hashed_password
             user.gender = req.gender
+            if not user.patient_id:
+                user.patient_id = f"PT-{random.randint(100000, 999999)}"
             db.commit()
     else:
-        new_user = User(name=req.name, email=req.email, hashed_password=hashed_password, gender=req.gender)
+        patient_id = f"PT-{random.randint(100000, 999999)}"
+        new_user = User(name=req.name, email=req.email, hashed_password=hashed_password, gender=req.gender, patient_id=patient_id)
         db.add(new_user)
         db.commit()
     
@@ -135,7 +139,14 @@ def verify_otp(req: VerifyRequest, db: Session = Depends(get_db)):
         send_welcome_email(user.email, user.name)
     
     access_token = create_access_token(data={"sub": req.email})
-    return {"access_token": access_token, "token_type": "bearer", "email": req.email, "name": user.name if user else "User", "gender": user.gender if user else "Prefer not to say"}
+    return {
+        "access_token": access_token, 
+        "token_type": "bearer", 
+        "email": req.email, 
+        "name": user.name if user else "User", 
+        "gender": user.gender if user else "Prefer not to say",
+        "patientId": user.patient_id if user else None
+    }
 
 @router.post("/resend-otp")
 def resend_otp(req: ResendRequest, db: Session = Depends(get_db)):
