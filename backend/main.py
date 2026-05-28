@@ -76,7 +76,16 @@ app.add_middleware(
 app.include_router(classify_router)
 app.include_router(auth_router, prefix="/auth")
 
+from fastapi import Depends
+from sqlalchemy.orm import Session
+from database import get_db
+
 @app.get("/health")
-def health_check():
-    """Endpoint for uptime monitoring to prevent Render from sleeping."""
-    return {"status": "active", "message": "Derma Guide Backend is running."}
+def health_check(db: Session = Depends(get_db)):
+    """Endpoint for uptime monitoring to prevent Render from sleeping and Database from pausing."""
+    try:
+        # Execute a simple query to keep the database awake (prevents 7-day pause on free tiers like Supabase)
+        db.execute(sa.text("SELECT 1"))
+        return {"status": "active", "message": "Derma Guide Backend and Database are running."}
+    except Exception as e:
+        return {"status": "error", "message": f"Backend is running but Database connection failed: {e}"}
