@@ -63,19 +63,30 @@ def get_advanced_insights(img_base64: str, survey_data: dict, predicted_class: s
         
     try:
         image_part = _prepare_image_part(img_base64)
+        symptoms_str = f"""
+Patient Reported Symptoms:
+- Duration: {survey_data.get('duration', 'N/A')}
+- Pain/Itchiness: {survey_data.get('pain', 'N/A')}
+- Spreading: {survey_data.get('spreading', 'N/A')}
+- Prior Occurrence: {survey_data.get('history', 'N/A')}
+- Fever/Other Symptoms: {survey_data.get('fever', 'N/A')}
+"""
+
         prompt = f"""
 Act as a dermatologist. Analyze the clinical image.
 
 The primary AI model predicted this condition as: {predicted_class}.
+{symptoms_str}
 
 Instructions:
 1. First, provide a SINGLE WORD summary of the most likely diagnosis (e.g., "Infection", "Erythema", "Benign", "Rash"). Do not add any punctuation to this word.
 2. Then, start a new paragraph exactly with the phrase "Given the uploaded photo its shows". In this paragraph (max 4 sentences), you must do the following:
-   - Think independently and use your high thinking capabilities to analyze the visual evidence in the photo.
+   - Think independently and use your high thinking capabilities to analyze the visual evidence in the photo, taking into account the patient's symptoms.
    - You MUST provide ONLY ONE single most probable disease name as your diagnosis. Do not list multiple potential names or differentials.
    - You MUST wrap that single disease name in double asterisks so it can be highlighted (e.g., **Erythema Nodosum**).
-   - You MUST mention and support the primary AI model's prediction ({predicted_class}), but smoothly transition to emphasize your own independent visual diagnosis as the more precise interpretation. For example: "While it supports the initial prediction of {predicted_class}, the visual presentation is more precisely suggestive of **Erythema Nodosum**..."
-   - DO NOT give any negative or dismissive comments about the primary model's prediction. DO NOT explicitly quote or list patient symptoms, rely entirely on the visual features of the image.
+   - You MUST mention and support the primary AI model's prediction ({predicted_class}), but smoothly transition to emphasize your own independent clinical diagnosis as the more precise interpretation.
+   - DO NOT give any negative or dismissive comments about the primary model's prediction.
+   - DO NOT explicitly quote or list the exact answers from the patient symptoms. Instead, factor them into your diagnosis by mentioning the "problems faced by the patient" (e.g., "Considering the visual presentation alongside the problems faced by the patient, this is suggestive of...").
    - DO NOT use first-person pronouns (do NOT say "I", "my AI", etc.); speak objectively.
    - Finally, you MUST conclude the paragraph with medical advice recommending a visit to a doctor for a formal evaluation and noting that appropriate medication may be helpful.
 
