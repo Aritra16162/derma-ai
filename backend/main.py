@@ -15,8 +15,26 @@ from api.routes import router as classify_router
 from api.auth_routes import router as auth_router
 from database import engine, Base
 
+import sqlalchemy as sa
+from sqlalchemy.engine import reflection
+
 Base.metadata.create_all(bind=engine)
 
+def upgrade_db(engine):
+    inspector = reflection.Inspector.from_engine(engine)
+    if 'users' in inspector.get_table_names():
+        columns = [col['name'] for col in inspector.get_columns('users')]
+        if 'patient_id' not in columns:
+            print("Running database migration: Adding patient_id column to users table")
+            with engine.begin() as conn:
+                conn.execute(sa.text("ALTER TABLE users ADD COLUMN patient_id VARCHAR;"))
+                if engine.dialect.name != 'sqlite':
+                    conn.execute(sa.text("CREATE UNIQUE INDEX ix_users_patient_id ON users (patient_id);"))
+                else:
+                    # SQLite supports CREATE INDEX
+                    conn.execute(sa.text("CREATE UNIQUE INDEX ix_users_patient_id ON users (patient_id);"))
+
+upgrade_db(engine)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
