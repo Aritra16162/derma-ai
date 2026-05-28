@@ -79,10 +79,13 @@ export function Sidebar() {
             }
             setFeedbackModalOpen(true);
           }}
-          className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all text-sm w-full text-left text-slate-700 dark:text-slate-300 hover:bg-[#9db2c6] dark:hover:bg-slate-800 dark:hover:text-white hover:text-slate-900"
+          className="p-4 bg-trust-blue hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center group"
+          aria-label="Send Feedback"
         >
-          <MessageSquare size={18} />
-          Feedback
+          <MessageSquare size={24} />
+          <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 ease-in-out font-medium text-sm">
+            Feedback
+          </span>
         </button>
       </div>
 

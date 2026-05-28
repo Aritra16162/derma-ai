@@ -61,18 +61,6 @@ export function GlobalFeedback() {
 
   return (
     <>
-      {/* Floating Action Button */}
-      <button
-        onClick={handleOpen}
-        className="fixed bottom-6 right-6 z-[9000] p-4 bg-trust-blue hover:bg-blue-600 text-white rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center group"
-        aria-label="Send Feedback"
-      >
-        <MessageSquare size={24} />
-        <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs group-hover:ml-2 transition-all duration-300 ease-in-out font-medium text-sm">
-          Feedback
-        </span>
-      </button>
-
       {/* Feedback Modal Portal */}
       {createPortal(
         <AnimatePresence>
