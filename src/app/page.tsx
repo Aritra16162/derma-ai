@@ -97,7 +97,7 @@ export default function Home() {
                 useStore.getState().toggleSidebar();
               }
             }}
-            className="flex-1 p-4 md:p-6 pb-24 md:pb-6 relative print:p-0 print:bg-white overflow-x-hidden print:overflow-visible print:block"
+            className="grow shrink-0 p-4 md:p-6 pb-24 md:pb-6 relative print:p-0 print:bg-white overflow-x-hidden print:overflow-visible print:block"
          >
             <AnimatePresence mode="wait">
               {currentView === 'analysis' ? (
