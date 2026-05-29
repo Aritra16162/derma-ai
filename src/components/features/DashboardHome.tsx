@@ -66,14 +66,14 @@ export function DashboardHome() {
             animate={{ 
               opacity: [0.3, 0.5, 0.3] 
             }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 3.8 }}
             className="absolute top-[-20%] left-[-10%] w-[60%] h-[120%] rounded-full bg-blue-400/20 dark:bg-blue-600/20 blur-[80px]"
           />
           <motion.div 
             animate={{ 
               opacity: [0.2, 0.4, 0.2] 
             }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 4.5 }}
             className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[120%] rounded-full bg-indigo-400/20 dark:bg-purple-600/20 blur-[80px]"
           />
         </div>
@@ -83,17 +83,17 @@ export function DashboardHome() {
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-blue-400/60 dark:border-blue-500/60"
             animate={{ scale: [1, 1.3, 1.6], opacity: [0, 0.5, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 3.8 }}
           />
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-blue-400/60 dark:border-blue-500/60"
             animate={{ scale: [1, 1.3, 1.6], opacity: [0, 0.5, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 0.66 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 4.46 }}
           />
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-blue-400/60 dark:border-blue-500/60"
             animate={{ scale: [1, 1.3, 1.6], opacity: [0, 0.5, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 1.33 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear", delay: 5.13 }}
           />
           
           {/* Main Logo Container */}

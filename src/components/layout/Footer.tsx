@@ -15,6 +15,8 @@ export function Footer() {
         }
         .animate-marquee {
           animation: marquee 15s linear infinite;
+          animation-delay: 4s;
+          will-change: transform;
         }
         .pause-on-hover:hover {
           animation-play-state: paused;
