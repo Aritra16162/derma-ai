@@ -1,4 +1,4 @@
-import { Activity, User, History, Settings, MapPin, Moon, Sun, MessageSquare, X, Send, CheckCircle2, Loader2 } from 'lucide-react';
+import { Activity, Home, User, History, Settings, MapPin, Moon, Sun, MessageSquare, X, Send, CheckCircle2, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useStore } from '@/store/useStore';
 import { useTheme } from 'next-themes';
@@ -29,7 +29,7 @@ export function Sidebar() {
   const isDark = mounted ? theme === 'dark' : false;
 
   const navItems = [
-    { icon: Activity, label: 'New Symptom Check', active: currentView === 'dashboard' || currentView === 'analysis', onClick: handleStartAnalysis },
+    { icon: Home, label: 'Home', active: currentView === 'dashboard' || currentView === 'analysis', onClick: handleStartAnalysis },
     { icon: MapPin, label: 'Hospitals Near Me', active: false, onClick: handleHospitalsNearMe },
     { icon: User, label: 'My Profile', active: currentView === 'profile', onClick: () => setCurrentView('profile') },
     { icon: History, label: 'Medical History', active: currentView === 'history', onClick: () => setCurrentView('history') },
