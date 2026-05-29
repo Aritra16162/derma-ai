@@ -363,10 +363,10 @@ export function MedicalHistoryView() {
                <div className="print-page">
                  <div className="w-full h-full p-[3px] border-[4px] border-slate-900">
                    <div className="w-full h-full border border-slate-900 p-8 flex flex-col">
-                     {/* DERMA AI CORE Box */}
+                     {/* DERMA-GUIDE CORE Box */}
                      <div className="mb-6 mt-4">
                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
-                         <h3 className="text-lg font-bold text-blue-900 mb-1">DERMA AI CORE</h3>
+                         <h3 className="text-lg font-bold text-blue-900 mb-1">DERMA-GUIDE CORE</h3>
                          <p className="text-xs text-blue-700 mb-4 italic">Fast and reliable AI-powered skin analysis for accurate everyday assessments.</p>
                          <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100 flex justify-between items-center">
                            <div>
@@ -383,12 +383,12 @@ export function MedicalHistoryView() {
                        </div>
                      </div>
 
-                  {/* DERMA AI ADVANCED Box */}
+                  {/* DERMA-GUIDE ADVANCED Box */}
                   {(log.gea_summary || log.geaSummary) && (log.gea_details || log.geaDetails) && (
                     <>
                       <div className="mb-6">
                         <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
-                          <h3 className="text-lg font-bold text-purple-900 mb-1">DERMA AI ADVANCED</h3>
+                          <h3 className="text-lg font-bold text-purple-900 mb-1">DERMA-GUIDE ADVANCED</h3>
                           <p className="text-xs text-purple-700 mb-4 italic">Advanced AI-driven skin analysis with deeper insights, enhanced accuracy, and comprehensive condition evaluation.</p>
                           <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
                              <div className="mb-3">
@@ -405,11 +405,11 @@ export function MedicalHistoryView() {
 
                       <div className="flex gap-4 mb-6">
                         <div className="flex-1 bg-white border-2 border-slate-200 rounded-xl p-4 text-center shadow-sm">
-                          <span className="block text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">BASE MODEL</span>
+                          <span className="block text-xs font-bold text-slate-500 tracking-widest uppercase mb-1">CORE MODEL</span>
                           <span className="text-lg font-black text-slate-800">{log.conditionName || 'Unknown'}</span>
                         </div>
                         <div className="flex-1 bg-white border-2 border-slate-200 rounded-xl p-4 text-center shadow-sm">
-                          <span className="block text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">ADVANCED MODEL</span>
+                          <span className="block text-xs font-bold text-slate-500 tracking-widest uppercase mb-1">ADVANCED MODEL</span>
                           <span className="text-lg font-black text-slate-800">
                             {(() => {
                               const match = (log.gea_details || log.geaDetails).match(/\*\*(.*?)\*\*/);

@@ -31,6 +31,7 @@ const InteractiveMonkey = ({
     mode === 'signin' || 
     mode === 'signup' || 
     mode === 'verify' || 
+    mode === 'forgot-password' ||
     (mode === 'reset-password' && !otpVerified)
   ));
 
@@ -137,7 +138,9 @@ const InteractiveMonkey = ({
                 ? `${success} 🌟`
                 : mode === 'signup' 
                   ? 'Hi there! 👋' 
-                  : (mode === 'forgot-password' || mode === 'reset-password' || mode === 'verify')
+                  : mode === 'forgot-password'
+                    ? "Don't worry, it can be restored! 🔑"
+                  : (mode === 'reset-password' || mode === 'verify')
                     ? 'Check inbox or spam folder 📬'
                     : 'Love to see you again! 👋'
             }

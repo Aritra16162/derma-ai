@@ -229,7 +229,7 @@ def create_report_pdf(triage_data: dict, output_path: str):
     pdf.set_xy(20, pdf.get_y() + 4)
     pdf.set_font("helvetica", "B", 12)
     pdf.set_text_color(30, 58, 138) # blue-900
-    pdf.cell(0, 6, "DERMA AI CORE", ln=1)
+    pdf.cell(0, 6, "DERMA-GUIDE CORE", ln=1)
     
     # Subtitle
     pdf.set_x(20)
@@ -276,7 +276,7 @@ def create_report_pdf(triage_data: dict, output_path: str):
         pdf.set_x(15)
         pdf.set_font("helvetica", "B", 12)
         pdf.set_text_color(88, 28, 135) # purple-900
-        pdf.cell(0, 6, "DERMA AI ADVANCED", ln=1)
+        pdf.cell(0, 6, "DERMA-GUIDE ADVANCED", ln=1)
         
         pdf.set_x(15)
         pdf.set_font("helvetica", "I", 9)
@@ -314,9 +314,9 @@ def create_report_pdf(triage_data: dict, output_path: str):
         pdf.rect(15, y, box_w, 18, style="DF")
         
         pdf.set_xy(15, y + 4)
-        pdf.set_font("helvetica", "B", 7)
-        pdf.set_text_color(148, 163, 184) # slate-400
-        pdf.cell(box_w, 4, "BASE MODEL", align="C", ln=1)
+        pdf.set_font("helvetica", "B", 9)
+        pdf.set_text_color(100, 116, 139) # slate-500
+        pdf.cell(box_w, 4, "CORE MODEL", align="C", ln=1)
         
         pdf.set_xy(15, y + 9)
         pdf.set_font("helvetica", "B", 11)
@@ -327,8 +327,8 @@ def create_report_pdf(triage_data: dict, output_path: str):
         pdf.rect(15 + box_w + 6, y, box_w, 18, style="DF")
         
         pdf.set_xy(15 + box_w + 6, y + 4)
-        pdf.set_font("helvetica", "B", 7)
-        pdf.set_text_color(148, 163, 184)
+        pdf.set_font("helvetica", "B", 9)
+        pdf.set_text_color(100, 116, 139)
         pdf.cell(box_w, 4, "ADVANCED MODEL", align="C", ln=1)
         
         pdf.set_xy(15 + box_w + 6, y + 9)
