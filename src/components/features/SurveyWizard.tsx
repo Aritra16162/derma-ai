@@ -47,6 +47,19 @@ export function SurveyWizard() {
     setIsProcessing(true);
     try {
       const result = await submitToTriage(capturedImage, surveyData);
+      
+      // Compress the image AFTER analysis but before saving to state/database
+      let finalImageToStore = capturedImage;
+      if (capturedImage) {
+        try {
+          const { compressImage } = await import('@/lib/imageUtils');
+          finalImageToStore = await compressImage(capturedImage);
+        } catch(e) {
+          console.error("Failed to compress image for storage", e);
+        }
+      }
+      useStore.getState().setCapturedImage(finalImageToStore);
+      
       setTriageResult(result.status, result.conditionName, result.geaSummary, result.geaDetails);
       nextStep();
     } catch (error: any) {
