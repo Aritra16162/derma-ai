@@ -112,7 +112,13 @@ export function DashboardHome() {
         <motion.button 
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => setCurrentView('analysis')}
+          onClick={() => {
+            if (!user?.email) {
+              alert("Please log in to start the analysis.");
+              return;
+            }
+            setCurrentView('analysis');
+          }}
           className="relative z-10 overflow-hidden group px-6 py-3 md:px-8 md:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-full flex items-center justify-center gap-3 shadow-[0_0_40px_-10px_rgba(37,99,235,0.5)] hover:shadow-[0_0_60px_-15px_rgba(37,99,235,0.8)] transition-all text-base md:text-lg border border-blue-400/30"
         >
           {/* Shimmer effect strip */}
