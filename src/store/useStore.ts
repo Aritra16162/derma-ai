@@ -112,7 +112,18 @@ export const useStore = create<AppState>()(
         
         set({ user: { name, email: normalizedEmail, patientId: finalPatientId, gender: gender || 'Prefer not to say' } });
       },
-      logoutUser: () => set({ user: null }),
+      logoutUser: () => set({ 
+        user: null, 
+        historyLogs: [],
+        currentStep: 0,
+        capturedImage: null,
+        surveyData: initialSurveyData,
+        triageResult: null,
+        conditionName: null,
+        geaSummary: null,
+        geaDetails: null,
+        isProcessing: false
+      }),
       toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
 
       // Analysis Initial State
