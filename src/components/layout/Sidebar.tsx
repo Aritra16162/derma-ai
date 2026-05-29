@@ -16,10 +16,6 @@ export function Sidebar() {
   }, []);
 
   const handleStartAnalysis = () => {
-    if (!user?.email) {
-      alert("Please log in to start the analysis.");
-      return;
-    }
     resetFlow();
     setCurrentView('dashboard');
   };
