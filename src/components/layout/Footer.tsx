@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export function Footer() {
   return (
-    <footer className="w-full mt-auto relative z-10 print:hidden px-6 py-6 border-t border-blue-500/10 bg-gradient-to-t from-slate-100/50 to-transparent dark:from-slate-900/50 shadow-[0_-10px_30px_rgba(59,130,246,0.03)] transition-colors duration-500 backdrop-blur-sm">
+    <footer className="w-full mt-auto relative z-10 print:hidden px-6 py-6 bg-gradient-to-t from-slate-100/50 to-transparent dark:from-slate-900/50 shadow-[0_-10px_30px_rgba(59,130,246,0.03)] transition-colors duration-500 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4">
         
         {/* Left - Credits */}
