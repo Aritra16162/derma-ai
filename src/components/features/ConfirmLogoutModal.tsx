@@ -4,7 +4,7 @@ import { X, LogOut } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 
 export function ConfirmLogoutModal() {
-  const { showLogoutConfirm, setShowLogoutConfirm, logoutUser, setCurrentView } = useStore();
+  const { showLogoutConfirm, setShowLogoutConfirm, logoutUser, setCurrentView, setToastMessage } = useStore();
 
   if (!showLogoutConfirm) return null;
 
@@ -12,6 +12,7 @@ export function ConfirmLogoutModal() {
     logoutUser();
     setCurrentView('dashboard');
     setShowLogoutConfirm(false);
+    setToastMessage('Logged out successfully');
   };
 
   return (
