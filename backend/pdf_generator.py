@@ -273,32 +273,72 @@ def create_report_pdf(triage_data: dict, output_path: str):
     if gea_summary and gea_details:
         pdf.set_y(pdf.get_y() + 5)
         
-        pdf.set_x(15)
+        formatted_details = gea_details.replace('\n', '\n\n')
+        
+        # Calculate dynamic height using a dummy PDF
+        dummy = PDF(orientation='P', unit='mm', format='A4')
+        dummy.add_page()
+        dummy.set_font("helvetica", "", 10)
+        dummy.set_xy(23, 10)
+        start_y_dummy = dummy.get_y()
+        dummy.multi_cell(w - 16, 6, formatted_details, markdown=True)
+        details_height = dummy.get_y() - start_y_dummy
+        
+        # Calculate boxes height
+        inner_box_height = 4 + 8 + 4 + details_height + 4 # top pad + badge + gap + text + bottom pad
+        outer_box_height = 4 + 6 + 5 + 4 + inner_box_height + 5 # top pad + title + subtitle + gap + inner + bottom pad
+        
+        start_outer_y = pdf.get_y()
+        
+        # Add page if it overflows
+        if start_outer_y + outer_box_height > 275:
+            pdf.add_page()
+            # Double Black Border for new page
+            pdf.set_draw_color(0, 0, 0)
+            pdf.set_line_width(0.6)
+            pdf.rect(5, 5, 200, 287)
+            pdf.set_line_width(0.2)
+            pdf.rect(6.5, 6.5, 197, 284)
+            start_outer_y = 15
+            
+        # Draw outer box
+        pdf.set_fill_color(250, 245, 255) # purple-50
+        pdf.set_draw_color(233, 213, 255) # purple-200
+        pdf.rect(15, start_outer_y, w, outer_box_height, style="DF")
+        
+        # Title
+        pdf.set_xy(20, start_outer_y + 4)
         pdf.set_font("helvetica", "B", 12)
         pdf.set_text_color(88, 28, 135) # purple-900
         pdf.cell(0, 6, "DERMA-GUIDE ADVANCED", ln=1)
         
-        pdf.set_x(15)
+        # Subtitle
+        pdf.set_x(20)
         pdf.set_font("helvetica", "I", 9)
         pdf.set_text_color(126, 34, 206) # purple-700
-        pdf.multi_cell(0, 5, "Advanced AI-driven skin analysis with deeper insights, enhanced accuracy, and comprehensive condition evaluation.")
+        pdf.multi_cell(w - 10, 5, "Advanced AI-driven skin analysis with deeper insights, enhanced accuracy, and comprehensive condition evaluation.")
         
-        pdf.ln(4)
+        # Inner Box
+        inner_y = pdf.get_y() + 4
+        pdf.set_fill_color(255, 255, 255)
+        pdf.set_draw_color(243, 232, 255) # purple-100
+        pdf.rect(20, inner_y, w - 10, inner_box_height, style="DF")
         
-        pdf.set_x(15)
+        # Badge
+        pdf.set_xy(23, inner_y + 4)
         pdf.set_font("helvetica", "B", 10)
         pdf.set_text_color(88, 28, 135)
-        pdf.set_fill_color(243, 232, 255)
+        pdf.set_fill_color(243, 232, 255) # purple-100
         summary_w = pdf.get_string_width(gea_summary) + 6
         pdf.cell(summary_w, 8, gea_summary, fill=True, border=1, align="C", ln=1)
-        pdf.ln(3)
         
-        pdf.set_x(15)
+        # Details
+        pdf.set_xy(23, pdf.get_y() + 4)
         pdf.set_font("helvetica", "", 10)
         pdf.set_text_color(51, 65, 85)
-        formatted_details = gea_details.replace('\n', '\n\n')
-        pdf.multi_cell(0, 6, formatted_details, markdown=True)
-        pdf.ln(12)
+        pdf.multi_cell(w - 16, 6, formatted_details, markdown=True)
+        
+        pdf.set_y(start_outer_y + outer_box_height + 12)
         
         # ---------------- Final Conclusion Boxes ----------------
         import re
