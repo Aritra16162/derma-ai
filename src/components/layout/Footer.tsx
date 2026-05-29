@@ -3,16 +3,40 @@ import Link from 'next/link';
 export function Footer() {
   return (
     <footer className="w-full mt-auto relative z-10 print:hidden px-6 py-6 bg-gradient-to-t from-slate-100/50 to-transparent dark:from-slate-900/50 shadow-[0_-10px_30px_rgba(59,130,246,0.03)] transition-colors duration-500 backdrop-blur-sm">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4">
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 15s linear infinite;
+        }
+        .pause-on-hover:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 overflow-hidden">
         
-        {/* Left - Credits */}
-        <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left gap-1">
-          <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
-            Developed by Agnish Mondal &amp; Aritra Dasgupta
-          </p>
-          <span className="text-xs font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 drop-shadow-sm opacity-90 transition-opacity hover:opacity-100">
-            Syntaxx Brothers
-          </span>
+        {/* Left - Credits (Scrollable Marquee) */}
+        <div 
+          className="flex-1 overflow-hidden w-full max-w-full md:max-w-[50%]" 
+          style={{ 
+            maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' 
+          }}
+        >
+          <div className="flex w-max animate-marquee pause-on-hover cursor-default items-center">
+            {[...Array(2)].map((_, i) => (
+              <div key={i} className="flex items-center gap-2 px-8">
+                <p className="text-sm font-semibold text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                  Developed by Agnish Mondal &amp; Aritra Dasgupta
+                </p>
+                <span className="text-xs font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 drop-shadow-sm opacity-90 transition-opacity hover:opacity-100 whitespace-nowrap">
+                  Syntaxx Brothers
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Right - Contact */}
