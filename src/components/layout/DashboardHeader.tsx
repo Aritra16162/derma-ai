@@ -43,29 +43,16 @@ export function DashboardHeader() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="fixed inset-0 z-40 bg-slate-950 pointer-events-auto overflow-hidden"
+            style={{ willChange: 'opacity' }}
           >
             <picture>
               <source media="(max-width: 768px)" srcSet="/consultant-bg-mobile.jpg" />
               <img src="/consultant-bg-desktop.jpg" alt="Consultant Background" className="w-full h-full object-cover opacity-60" />
             </picture>
-            <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-[2px]"></div>
+            <div className="absolute inset-0 bg-slate-950/70"></div>
           </motion.div>
         )}
       </AnimatePresence>
-      <style>{`
-        @keyframes splashMove {
-          0% {
-            transform: translate3d(0, 42vh, 0) scale(2.33);
-          }
-          100% {
-            transform: translate3d(0, 0, 0) scale(1);
-          }
-        }
-        .animate-splash-move {
-          animation: splashMove 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-      `}</style>
-
       <div className={`flex items-center justify-start gap-6 z-50 relative transition-opacity duration-1000 ${splashState === 'done' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <button 
           onClick={toggleSidebar} 
@@ -79,28 +66,32 @@ export function DashboardHeader() {
 
       {/* Central Title Area */}
       <div className="absolute inset-0 flex justify-center items-center pointer-events-none z-50">
-        <h1 
-          className={`text-[1.1rem] sm:text-2xl md:text-3xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight origin-center style-preserve-3d whitespace-nowrap ${
-            splashState === 'moving' ? 'animate-splash-move' : ''
-          }`}
-          style={{ 
-             transform: splashState === 'waiting' ? 'translate3d(0, 42vh, 0) scale(2.33)' : (splashState === 'done' ? 'translate3d(0, 0, 0) scale(1)' : undefined),
-             willChange: 'transform'
+        <motion.h1 
+          className="text-[1.1rem] sm:text-2xl md:text-3xl px-1.5 font-bold bg-clip-text text-transparent bg-gradient-to-r from-trust-blue to-blue-400 tracking-tight whitespace-nowrap"
+          initial={{ y: "42vh", scale: 2.33 }}
+          animate={{
+             y: splashState === 'waiting' ? "42vh" : 0,
+             scale: splashState === 'waiting' ? 2.33 : 1,
           }}
-          onAnimationEnd={() => {
+          transition={{
+             duration: splashState === 'waiting' ? 0 : 1.5,
+             ease: [0.22, 1, 0.36, 1]
+          }}
+          onAnimationComplete={() => {
             if (splashState === 'moving') {
               setSplashState('done');
             }
           }}
+          style={{ originX: 0.5, originY: 0.5, willChange: 'transform', transformStyle: 'preserve-3d', WebkitFontSmoothing: 'antialiased' }}
         >
           Derma-Guide AI
-        </h1>
+        </motion.h1>
         <AnimatePresence>
           {splashState === 'waiting' && (
             <motion.div
-              initial={{ opacity: 0, y: "42dvh" }}
-              animate={{ opacity: 1, y: "42dvh" }}
-              exit={{ opacity: 0, y: "42dvh" }}
+              initial={{ opacity: 0, y: "42vh" }}
+              animate={{ opacity: 1, y: "42vh" }}
+              exit={{ opacity: 0, y: "42vh" }}
               transition={{ duration: 0.8 }}
               className="absolute top-full left-0 right-0 mt-[28px] pointer-events-none flex justify-center"
             >
