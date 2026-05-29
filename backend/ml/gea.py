@@ -153,4 +153,5 @@ Line 2: Given the uploaded photo its shows...
             
         return (summary, details)
     except Exception as e:
-        return ("Error", "Failed to generate advanced AI insights. Contact admin.")
+        print(f"GeA advanced insights error: {e}")
+        return ("Error", f"Failed to generate advanced AI insights. Contact admin. Error: {str(e)}")
