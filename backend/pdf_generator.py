@@ -300,6 +300,44 @@ def create_report_pdf(triage_data: dict, output_path: str):
         pdf.multi_cell(0, 6, formatted_details, markdown=True)
         pdf.ln(12)
         
+        # ---------------- Final Conclusion Boxes ----------------
+        import re
+        match = re.search(r'\*\*(.*?)\*\*', gea_details)
+        adv_ans = match.group(1) if match else gea_summary
+        
+        y = pdf.get_y()
+        # Base Model Box
+        pdf.set_fill_color(255, 255, 255)
+        pdf.set_draw_color(226, 232, 240) # slate-200
+        pdf.set_line_width(0.5)
+        box_w = (w / 2) - 3
+        pdf.rect(15, y, box_w, 18, style="DF")
+        
+        pdf.set_xy(15, y + 4)
+        pdf.set_font("helvetica", "B", 7)
+        pdf.set_text_color(148, 163, 184) # slate-400
+        pdf.cell(box_w, 4, "BASE MODEL", align="C", ln=1)
+        
+        pdf.set_xy(15, y + 9)
+        pdf.set_font("helvetica", "B", 11)
+        pdf.set_text_color(30, 41, 59) # slate-800
+        pdf.cell(box_w, 6, condition, align="C", ln=1)
+        
+        # Advanced Model Box
+        pdf.rect(15 + box_w + 6, y, box_w, 18, style="DF")
+        
+        pdf.set_xy(15 + box_w + 6, y + 4)
+        pdf.set_font("helvetica", "B", 7)
+        pdf.set_text_color(148, 163, 184)
+        pdf.cell(box_w, 4, "ADVANCED MODEL", align="C", ln=1)
+        
+        pdf.set_xy(15 + box_w + 6, y + 9)
+        pdf.set_font("helvetica", "B", 11)
+        pdf.set_text_color(30, 41, 59)
+        pdf.cell(box_w, 6, adv_ans, align="C", ln=1)
+        
+        pdf.ln(15)
+        
     try:
         pdf.output(output_path)
     finally:

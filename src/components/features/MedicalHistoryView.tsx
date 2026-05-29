@@ -385,22 +385,40 @@ export function MedicalHistoryView() {
 
                   {/* DERMA AI ADVANCED Box */}
                   {(log.gea_summary || log.geaSummary) && (log.gea_details || log.geaDetails) && (
-                    <div className="mb-8">
-                      <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
-                        <h3 className="text-lg font-bold text-purple-900 mb-1">DERMA AI ADVANCED</h3>
-                        <p className="text-xs text-purple-700 mb-4 italic">Advanced AI-driven skin analysis with deeper insights, enhanced accuracy, and comprehensive condition evaluation.</p>
-                        <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
-                           <div className="mb-3">
-                             <span className="bg-purple-100 border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm">
-                               {log.gea_summary || log.geaSummary}
-                             </span>
-                           </div>
-                           <p className="text-sm text-slate-700 leading-relaxed">
-                             {renderHighlightedText(log.gea_details || log.geaDetails)}
-                           </p>
+                    <>
+                      <div className="mb-6">
+                        <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
+                          <h3 className="text-lg font-bold text-purple-900 mb-1">DERMA AI ADVANCED</h3>
+                          <p className="text-xs text-purple-700 mb-4 italic">Advanced AI-driven skin analysis with deeper insights, enhanced accuracy, and comprehensive condition evaluation.</p>
+                          <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
+                             <div className="mb-3">
+                               <span className="bg-purple-100 border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm">
+                                 {log.gea_summary || log.geaSummary}
+                               </span>
+                             </div>
+                             <p className="text-sm text-slate-700 leading-relaxed">
+                               {renderHighlightedText(log.gea_details || log.geaDetails)}
+                             </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
+
+                      <div className="flex gap-4 mb-6">
+                        <div className="flex-1 bg-white border-2 border-slate-200 rounded-xl p-4 text-center shadow-sm">
+                          <span className="block text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">BASE MODEL</span>
+                          <span className="text-lg font-black text-slate-800">{log.conditionName || 'Unknown'}</span>
+                        </div>
+                        <div className="flex-1 bg-white border-2 border-slate-200 rounded-xl p-4 text-center shadow-sm">
+                          <span className="block text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">ADVANCED MODEL</span>
+                          <span className="text-lg font-black text-slate-800">
+                            {(() => {
+                              const match = (log.gea_details || log.geaDetails).match(/\*\*(.*?)\*\*/);
+                              return match ? match[1] : (log.gea_summary || log.geaSummary);
+                            })()}
+                          </span>
+                        </div>
+                      </div>
+                    </>
                   )}
 
                   {/* Footer Note */}
