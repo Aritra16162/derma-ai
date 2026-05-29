@@ -354,41 +354,42 @@ export function TriageDashboard() {
         <div className="print-page">
           <div className="w-full h-full p-[3px] border-[4px] border-slate-900">
             <div className="w-full h-full border border-slate-900 p-8 flex flex-col">
-               <h3 className="text-lg font-bold text-slate-800 border-l-4 border-blue-500 pl-3 mb-4 mt-4">Model Classification Results</h3>
-           <table className="w-full text-sm text-left border-collapse">
-              <thead className="bg-slate-800 text-white">
-                 <tr>
-                    <th className="px-4 py-3 font-semibold">Diagnostic Category</th>
-                    <th className="px-4 py-3 font-semibold">Triage Recommendation</th>
-                 </tr>
-              </thead>
-              <tbody>
-                 <tr className="border-b border-slate-200 bg-white">
-                    <td className="px-4 py-4 font-bold text-slate-900">{conditionName || 'Unknown'}</td>
-                    <td className="px-4 py-4">
-                       <span className={`inline-flex items-center font-bold ${triageResult === 'Seek Care Today' ? 'text-red-700' : triageResult === 'See Doctor' ? 'text-yellow-700' : 'text-green-700'}`}>
-                         {config.label}
-                       </span>
-                    </td>
-                 </tr>
-              </tbody>
-           </table>
+        {/* DERMA AI CORE Box */}
+        <div className="mb-6 mt-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+            <h3 className="text-lg font-bold text-blue-900 mb-1">DERMA AI CORE</h3>
+            <p className="text-xs text-blue-700 mb-4 italic">Fast and reliable AI-powered skin analysis for accurate everyday assessments.</p>
+            <div className="bg-white p-4 rounded-lg shadow-sm border border-blue-100 flex justify-between items-center">
+              <div>
+                <span className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-1">Diagnostic Category</span>
+                <span className="text-base font-bold text-gray-900">{conditionName || 'Unknown'}</span>
+              </div>
+              <div className="text-right">
+                <span className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-1">Triage Recommendation</span>
+                <span className={`font-bold ${triageResult === 'Seek Care Today' ? 'text-red-700' : triageResult === 'See Doctor' ? 'text-yellow-700' : 'text-green-700'}`}>
+                  {config.label}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        {/* GeA Insights (Print) */}
+        {/* DERMA AI ADVANCED Box */}
         {geaSummary && geaDetails && (
-          <div className="mb-8 mt-6">
-            <h3 className="text-lg font-bold text-slate-800 border-l-4 border-purple-500 pl-3 mb-4 flex items-center gap-2">
-               Advanced AI Insights
-            </h3>
-            <div className="bg-white border border-purple-200 rounded-xl p-5 mt-4">
-               <div className="mb-3">
-                 <span className="bg-white border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm">
-                   {geaSummary}
-                 </span>
-               </div>
-               <p className="text-sm text-slate-700 leading-relaxed">
-                 {renderHighlightedText(geaDetails)}
-               </p>
+          <div className="mb-8">
+            <div className="bg-purple-50 border border-purple-200 rounded-xl p-5">
+              <h3 className="text-lg font-bold text-purple-900 mb-1">DERMA AI ADVANCED</h3>
+              <p className="text-xs text-purple-700 mb-4 italic">Advanced AI-driven skin analysis with deeper insights, enhanced accuracy, and comprehensive condition evaluation.</p>
+              <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
+                <div className="mb-3">
+                  <span className="bg-purple-100 border border-purple-200 text-purple-900 font-bold px-3 py-1 rounded-lg text-sm">
+                    {geaSummary}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-700 leading-relaxed">
+                  {renderHighlightedText(geaDetails)}
+                </p>
+              </div>
             </div>
           </div>
         )}

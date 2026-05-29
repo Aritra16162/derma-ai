@@ -216,29 +216,44 @@ def create_report_pdf(triage_data: dict, output_path: str):
     pdf.set_line_width(0.2)
     pdf.rect(6.5, 6.5, 197, 284)
 
-    # ---------------- Model Classification Results ----------------
-    pdf.set_font("helvetica", "B", 14)
-    pdf.set_text_color(30, 41, 59)
-    pdf.set_fill_color(59, 130, 246)
-    pdf.rect(15, pdf.get_y()+1, 1.5, 5, style="F")
-    pdf.set_x(18)
-    pdf.cell(0, 7, "Model Classification Results", ln=1)
-    pdf.ln(8) # Space before table
-    
-    pdf.set_fill_color(30, 41, 59)
-    pdf.set_text_color(255, 255, 255)
-    pdf.set_font("helvetica", "B", 10)
-    pdf.cell(w/2, 10, " Diagnostic Category", fill=True, ln=0)
-    pdf.cell(w/2, 10, " Triage Recommendation", fill=True, ln=1)
-    
-    pdf.set_fill_color(248, 250, 252)
-    pdf.set_text_color(15, 23, 42)
-    pdf.set_font("helvetica", "B", 10)
-    
+    # ---------------- DERMA AI CORE ----------------
     condition = str(triage_data.get('predicted_class', 'Unknown'))
     urgency = str(triage_data.get('danger_level', 'Routine'))
     
-    pdf.cell(w/2, 12, f" {condition}", border="B", fill=True, ln=0)
+    pdf.set_y(pdf.get_y() + 5)
+    pdf.set_fill_color(239, 246, 255) # blue-50
+    pdf.set_draw_color(191, 219, 254) # blue-200
+    pdf.rect(15, pdf.get_y(), w, 32, style="DF")
+    
+    # Title
+    pdf.set_xy(20, pdf.get_y() + 4)
+    pdf.set_font("helvetica", "B", 12)
+    pdf.set_text_color(30, 58, 138) # blue-900
+    pdf.cell(0, 6, "DERMA AI CORE", ln=1)
+    
+    # Subtitle
+    pdf.set_x(20)
+    pdf.set_font("helvetica", "I", 9)
+    pdf.set_text_color(29, 78, 216) # blue-700
+    pdf.cell(0, 4, "Fast and reliable AI-powered skin analysis for accurate everyday assessments.", ln=1)
+    
+    # Inner Box
+    inner_y = pdf.get_y() + 3
+    pdf.set_fill_color(255, 255, 255)
+    pdf.set_draw_color(219, 234, 254) # blue-100
+    pdf.rect(20, inner_y, w - 10, 12, style="DF")
+    
+    # Inner text
+    pdf.set_xy(23, inner_y + 1)
+    pdf.set_font("helvetica", "B", 7)
+    pdf.set_text_color(148, 163, 184)
+    pdf.cell(w/2 - 10, 4, "DIAGNOSTIC CATEGORY", ln=0)
+    pdf.cell(w/2 - 10, 4, "TRIAGE RECOMMENDATION", align="R", ln=1)
+    
+    pdf.set_x(23)
+    pdf.set_font("helvetica", "B", 10)
+    pdf.set_text_color(15, 23, 42)
+    pdf.cell(w/2 - 10, 6, condition, ln=0)
     
     if urgency == "Seek Care Today":
         pdf.set_text_color(185, 28, 28)
@@ -247,33 +262,42 @@ def create_report_pdf(triage_data: dict, output_path: str):
     else:
         pdf.set_text_color(21, 128, 61)
         
-    pdf.cell(w/2, 12, f" {urgency}", border="B", fill=True, ln=1)
-    pdf.ln(15) # Space after table
+    pdf.cell(w/2 - 10, 6, urgency, align="R", ln=1)
     
-    # ---------------- Advanced AI Insights ----------------
+    pdf.set_y(inner_y + 16) # space below core block
+    
+    # ---------------- DERMA AI ADVANCED ----------------
     gea_summary = triage_data.get('gea_summary')
     gea_details = triage_data.get('gea_details')
     
     if gea_summary and gea_details:
-        pdf.set_font("helvetica", "B", 14)
-        pdf.set_text_color(30, 41, 59)
-        pdf.set_fill_color(168, 85, 247)
-        pdf.rect(15, pdf.get_y()+1, 1.5, 5, style="F")
-        pdf.set_x(18)
-        pdf.cell(0, 7, "Advanced AI Insights", ln=1)
-        pdf.ln(6)
+        pdf.set_y(pdf.get_y() + 5)
         
+        pdf.set_x(15)
+        pdf.set_font("helvetica", "B", 12)
+        pdf.set_text_color(88, 28, 135) # purple-900
+        pdf.cell(0, 6, "DERMA AI ADVANCED", ln=1)
+        
+        pdf.set_x(15)
+        pdf.set_font("helvetica", "I", 9)
+        pdf.set_text_color(126, 34, 206) # purple-700
+        pdf.multi_cell(0, 5, "Advanced AI-driven skin analysis with deeper insights, enhanced accuracy, and comprehensive condition evaluation.")
+        
+        pdf.ln(4)
+        
+        pdf.set_x(15)
         pdf.set_font("helvetica", "B", 10)
         pdf.set_text_color(88, 28, 135)
         pdf.set_fill_color(243, 232, 255)
         summary_w = pdf.get_string_width(gea_summary) + 6
-        pdf.cell(summary_w, 10, gea_summary, fill=True, border=1, align="C", ln=1)
-        pdf.ln(3) # Minimal space before text, matching paragraph line height
+        pdf.cell(summary_w, 8, gea_summary, fill=True, border=1, align="C", ln=1)
+        pdf.ln(3)
         
-        pdf.set_font("helvetica", "", 12) # Larger font
+        pdf.set_x(15)
+        pdf.set_font("helvetica", "", 10)
         pdf.set_text_color(51, 65, 85)
         formatted_details = gea_details.replace('\n', '\n\n')
-        pdf.multi_cell(0, 7, formatted_details, markdown=True)
+        pdf.multi_cell(0, 6, formatted_details, markdown=True)
         pdf.ln(12)
         
     try:
