@@ -53,8 +53,8 @@ def generate_content_with_fallback(prompt: str, image_part):
                 last_exception = e
                 print(f"Error with key index {_current_key_index} on model {model}: {e}")
                 
-                if "429" in err_str or "quota" in err_str or "exhausted" in err_str:
-                    print(f"Rate limit/Quota hit. Rotating API key.")
+                if any(x in err_str for x in ["429", "quota", "exhausted", "400", "invalid", "403"]):
+                    print(f"API error or Quota hit (Error: {err_str[:30]}). Rotating API key.")
                     _current_key_index = (_current_key_index + 1) % len(keys)
                     break 
                 
