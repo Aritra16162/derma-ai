@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from '@/store/useStore';
 import { validateImage } from '@/lib/api';
 
+import { compressImage } from '@/lib/imageUtils';
+
 export function CameraView() {
   const { t } = useTranslation();
   const webcamRef = useRef<Webcam>(null);
@@ -22,10 +24,16 @@ export function CameraView() {
   const capture = useCallback(() => {
     setIsScanning(true);
     // Simulate holographic scanning wait before capture
-    setTimeout(() => {
+    setTimeout(async () => {
       const imageSrc = webcamRef.current?.getScreenshot();
       if (imageSrc) {
-        setLocalImage(imageSrc);
+        try {
+          const compressed = await compressImage(imageSrc);
+          setLocalImage(compressed);
+        } catch (error) {
+          console.error("Compression failed:", error);
+          setLocalImage(imageSrc);
+        }
       }
       setIsScanning(false);
     }, 1500);
@@ -54,8 +62,15 @@ export function CameraView() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setLocalImage(reader.result as string);
+      reader.onloadend = async () => {
+        try {
+          const original = reader.result as string;
+          const compressed = await compressImage(original);
+          setLocalImage(compressed);
+        } catch (error) {
+          console.error("Compression failed:", error);
+          setLocalImage(reader.result as string);
+        }
       };
       reader.readAsDataURL(file);
     }
