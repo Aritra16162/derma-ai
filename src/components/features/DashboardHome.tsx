@@ -134,7 +134,7 @@ export function DashboardHome() {
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2"
       >
-         <div className="glass-card p-6 bg-white/50 dark:bg-slate-900/50 dark:border-slate-700/50 transition-colors duration-300">
+         <div className="p-6 bg-white/50 dark:bg-slate-900/50 backdrop-blur-none rounded-2xl border border-white/40 dark:border-slate-700/50 transition-all duration-500 shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]">
             <h3 className="font-semibold text-gray-700 dark:text-slate-200 flex items-center gap-2 mb-4">
                <FileText size={18}/> Recent Consultations
             </h3>
@@ -170,12 +170,12 @@ export function DashboardHome() {
          
          <div 
            onClick={() => setIsAboutOpen(true)}
-           className="glass-card p-6 bg-white/50 dark:bg-slate-900/50 dark:border-slate-700/50 hover:bg-white/70 dark:hover:bg-slate-900/80 transition-colors duration-300 cursor-pointer flex flex-col items-center justify-center text-center group"
+           className="p-6 bg-white/50 dark:bg-slate-900/50 backdrop-blur-none rounded-2xl border border-white/40 dark:border-slate-700/50 hover:bg-white/70 dark:hover:bg-slate-900/80 transition-all duration-500 cursor-pointer flex flex-col items-center justify-center text-center group shadow-xl dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)]"
          >
            <div className="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
              <Info size={24} className="text-gray-500 dark:text-slate-400" />
            </div>
-           <h3 className="font-bold text-gray-800 dark:text-slate-200 mb-2">About Section</h3>
+           <h3 className="font-bold text-gray-800 dark:text-slate-200 mb-2">About Us</h3>
            <p className="text-xs text-gray-500 dark:text-slate-400 max-w-xs">Click here to learn more about DermaGuide&apos;s AI analysis system and capabilities.</p>
          </div>
       </motion.div>
