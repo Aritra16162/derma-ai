@@ -134,7 +134,7 @@ export function DashboardHome() {
         transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2"
       >
-         <div className="glass-card p-6 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700 transition-colors duration-300">
+         <div className="glass-card p-6 bg-white/50 dark:bg-slate-900/50 dark:border-slate-700/50 transition-colors duration-300">
             <h3 className="font-semibold text-gray-700 dark:text-slate-200 flex items-center gap-2 mb-4">
                <FileText size={18}/> Recent Consultations
             </h3>
@@ -170,7 +170,7 @@ export function DashboardHome() {
          
          <div 
            onClick={() => setIsAboutOpen(true)}
-           className="glass-card p-6 bg-white/60 dark:bg-slate-800/60 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition-colors duration-300 cursor-pointer flex flex-col items-center justify-center text-center group"
+           className="glass-card p-6 bg-white/50 dark:bg-slate-900/50 dark:border-slate-700/50 hover:bg-white/70 dark:hover:bg-slate-900/80 transition-colors duration-300 cursor-pointer flex flex-col items-center justify-center text-center group"
          >
            <div className="w-12 h-12 bg-gray-100 dark:bg-slate-700 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
              <Info size={24} className="text-gray-500 dark:text-slate-400" />
