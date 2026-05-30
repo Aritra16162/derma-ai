@@ -29,8 +29,8 @@ def generate_content_with_fallback(prompt: str, image_part):
         raise Exception("No API keys configured.")
 
     models_to_try = [
-        os.environ.get('GEA_MODEL_NAME', 'gemini-2.5-flash'),
-        'gemini-1.5-flash'  # Fallback model
+        os.environ.get('GEA_MODEL_NAME', 'your-model-name-here'),
+        'your-fallback-model-here'  # Fallback model
     ]
     
     max_retries = 3
@@ -84,23 +84,28 @@ def _prepare_image_part(img_base64: str):
 
 def validate_image_with_gea(img_base64: str) -> bool:
     """
-    Asks GeA if the image is a clear photo of human skin or a medical condition.
+    Asks Advanced AI if the image is a clear photo of human skin or a medical condition.
     Returns True if valid, False if it's an object/landscape/etc.
     """
     try:
         image_part = _prepare_image_part(img_base64)
         prompt = "Is this a clear, close-up photo of human skin or a medical skin condition? Answer ONLY 'YES' or 'NO'."
         
+        # Mock response if key is missing or placeholder
+        keys = get_gea_api_keys()
+        if not keys or keys[0] == "your_api_key_here":
+            return True
+            
         response = generate_content_with_fallback(prompt, image_part)
         text = response.text.strip().upper()
         return "YES" in text
     except Exception as e:
-        print(f"GeA validation error: {e}")
+        print(f"Advanced AI validation error: {e}")
         return True # Fallback if API fails
 
 def get_advanced_insights(img_base64: str, survey_data: dict, predicted_class: str, previous_diagnosis: str = None) -> tuple[str, str]:
     """
-    Asks GeA for a diagnosis based on image and survey.
+    Asks Advanced AI for a diagnosis based on image and survey.
     Returns (summary_word, details_paragraph).
     """
     try:
@@ -140,6 +145,11 @@ Line 2: Given the uploaded photo its shows...
         if previous_diagnosis and previous_diagnosis not in ["Error", "Unavailable", "Analysis"]:
             prompt += f"\nNote: You previously diagnosed this case as {previous_diagnosis}. Please maintain clinical consistency with your previous diagnosis when generating this response.\n"
         
+        # Mock response if key is missing or placeholder
+        keys = get_gea_api_keys()
+        if not keys or keys[0] == "your_api_key_here":
+            return ("Offline", "Given the uploaded photo its shows that we are currently running in offline mode. **Offline Diagnosis** Please consult a doctor.")
+
         response = generate_content_with_fallback(prompt, image_part)
         text = response.text.strip()
         
@@ -153,5 +163,5 @@ Line 2: Given the uploaded photo its shows...
             
         return (summary, details)
     except Exception as e:
-        print(f"GeA advanced insights error: {e}")
+        print(f"Advanced AI insights error: {e}")
         return ("Error", f"Failed to generate advanced AI insights. Contact admin. Error: {str(e)}")

@@ -203,7 +203,7 @@ export function MedicalHistoryView() {
                         </div>
                      </div>
                      
-                     {/* Advanced GeA Insights (UI) */}
+                     {/* Advanced AI Insights (UI) */}
                      {(log.gea_summary || log.geaSummary) && (log.gea_details || log.geaDetails) && (
                        <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-100 dark:border-purple-800/30 rounded-xl transition-colors">
                          <div className="flex items-center gap-2 mb-4">

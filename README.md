@@ -7,6 +7,7 @@ Derma-Guide AI is an interactive, AI-powered progressive web application (PWA) d
 - **AI Skin Classification**: Utilizes a customized TensorFlow MobileNetV2 model to analyze user-uploaded or camera-captured images for a variety of localized skin conditions (e.g., ringworm, impetigo, cellulitis).
 - **Reactive Symptom Survey**: Pairs visual analysis with a dynamic clinical questionnaire (assessing pain, duration, spreading, and fever) to assign a realistic urgency modifier.
 - **Smart Triage Engine**: Returns an algorithmic urgency status—_Routine_, _See Doctor_, or _Seek Care Today_—empowering users to make safer health decisions.
+- **Advanced AI Insights**: Provides a secondary, advanced analysis of the uploaded photo using a large language model to deliver detailed clinical observations and a secondary diagnostic opinion, presented seamlessly alongside the primary model.
 - **User Authentication**: Secure signup and signin flow featuring email-based OTP (One-Time Password) verification and password recovery.
 - **Secure Medical History & Reporting**: Stores personal consultation history and survey logs in a robust SQLite database. Users can view past reports and instantly receive automated, professional PDF medical reports via email.
 - **Beautiful Dark Mode UI**: Built with Next.js, Tailwind v4, and Framer Motion, featuring glassmorphism elements, CSS-animated starry backdrops, and interactive accordion-style widgets.
